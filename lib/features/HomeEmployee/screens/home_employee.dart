@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:badges/badges.dart' as badges;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/src/intl/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,11 +10,13 @@ import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
+import 'package:itsale/features/addEmployee/components/report_chart.dart';
 import 'package:itsale/features/auth/data/states.dart';
 import 'package:svg_flutter/svg.dart';
 import 'package:flutter_echarts/flutter_echarts.dart';
 import '../../../core/app/app.dart';
 import '../../../core/components/default_app_bar.dart';
+import '../../../core/constants/app_animation.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/token.dart';
 import '../../../core/utils/transition.dart';
@@ -21,10 +25,13 @@ import '../../Tasks_Screens/data/models/get_task_model.dart';
 import '../../Tasks_Screens/screens/task_details.dart';
 import '../../auth/data/cubit.dart';
 import '../../home/components/widgets_for_tasks_screen.dart';
+import '../components/company_details.dart';
 
 class HomeEmployeeScreen extends StatefulWidget {
   const HomeEmployeeScreen({super.key, required this.back});
+
   final bool back;
+
   @override
   State<HomeEmployeeScreen> createState() => _HomeEmployeeScreenState();
 }
@@ -64,7 +71,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
               }
               if (state is GetLoadingInfoState ||
                   AppCubit.get(context).getInfo == null) {
-                return loader();
+                return AppLottie.loader;
               }
 
               return Column(
@@ -79,29 +86,32 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                           onTap: () {
                             navigateTo(context, AppRoutes.notifications);
                           },
-                          child: Stack(
-                            children: [
-                              SvgPicture.asset(AppIcons.bell),
-                              // Positioned(
-                              //   top: 0,
-                              //   child: Container(
-                              //     height: 10.h,
-                              //     width: 10.w,
-                              //     decoration: const BoxDecoration(
-                              //       color: AppColors.errorColor,
-                              //       shape: BoxShape.circle,
-                              //     ),
-                              //   ),
-                              // ),
-                              //   Text("2",style: AppFonts.style14normalWhite,),
-                            ],
+                          child: badges.Badge(
+                            position:
+                                badges.BadgePosition.topEnd(top: -25, end: 10),
+                            showBadge: true,
+                            ignorePointer: false,
+                            onTap: () {},
+                            badgeContent: const Text(
+                              "3",
+                              textAlign: TextAlign.center,
+                            ),
+                            child: Image.asset("assets/images/bell.png"),
                           ),
                         ),
                       ],
                     ),
                     // const Divider(),
-                    const GreetingSection(),
-                    SizedBox(height: 16.h),
+
+SizedBox(height: 40.h,),
+                    Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                  const GreetingSection(),
+                         SizedBox(height: 16.h),
+                        CompanyDetails(),
+                   ]),
+                    SizedBox(height: 20.h,),
                     // Text(
                     //   'مهمات اليوم',
                     //   style: AppFonts.style20Bold,
@@ -133,7 +143,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                             .toList();
                         if (state is GetLoadingAllTaskState ||
                             state is GetLoadingUserTaskState) {
-                          return loaderAddition();
+                          return AppLottie.loader;
                         }
                         return TasksCubit.get(context)
                                     .getAllTaskList!
@@ -196,27 +206,7 @@ class GreetingSection extends StatelessWidget {
             '${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',
             style: AppFonts.style20Light,
           ),
-          role == "3"
-              ? Container()
-              : Row(
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          navigateTo(context, AppRoutes.addEmployee);
-                        },
-                        child: addEmployee('موظف', AppFonts.style12light,
-                            AppColors.placeholder)),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    InkWell(
-                        onTap: () {
-                          navigateTo(context, AppRoutes.addTask);
-                        },
-                        child: addEmployee('مهمة', AppFonts.style12light,
-                            AppColors.placeholder)),
-                  ],
-                ),
+
         ],
       ),
     );
@@ -230,6 +220,7 @@ class TaskSummarySection extends StatefulWidget {
       required this.uncompletedTasks,
       required this.completedTasksForUser,
       required this.uncompletedTasksForUser});
+
   List<DataAllTasks>? completedTasks;
   List<DataAllTasks>? uncompletedTasks;
   List<DataUserTask>? completedTasksForUser;
@@ -364,17 +355,18 @@ class ChartsSection extends StatelessWidget {
             style: AppFonts.style16semiBold,
             textAlign: TextAlign.right,
           ),
-          TasksCubit.get(context).getAllTaskListFilter!.isNotEmpty == false
-              ? const SimpleBarChart()
-              : Column(
-                  children: [
-                    SizedBox(height: 20.h),
-                    Center(
-                        child: Text(S.of(context).no_data,
-                            style: AppFonts.style12light)),
-                    SizedBox(height: 20.h),
-                  ],
-                ),
+          // TasksCubit.get(context).getAllTaskListFilter!.isNotEmpty
+          ReportChart()
+          //   : Column(
+          // children: [
+          //   SizedBox(height: 20.h),
+          //   Center(
+          //       child: Text(S.of(context).no_data,
+          //           style: AppFonts.style12light)),
+          //   SizedBox(height: 20.h),
+          // ],
+
+          //),
         ],
       ),
     );
@@ -386,27 +378,23 @@ class SimpleBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A custom bar chart can be drawn here
     return Container(
-      child: Echarts(
-        option: '''
-    {
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [{
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: 'line'
-      }]
-    }
-  ''',
-      ),
       width: 300,
       height: 230,
+      child: BarChart(
+        BarChartData(
+          barGroups: [
+            BarChartGroupData(x: 0, barRods: [
+              BarChartRodData(toY: 5, color: Colors.blue),
+            ]),
+            BarChartGroupData(x: 1, barRods: [
+              BarChartRodData(toY: 7, color: Colors.red),
+            ]),
+          ],
+          borderData: FlBorderData(show: false),
+          titlesData: const FlTitlesData(show: true),
+        ),
+      ),
     );
 
     //   Container(
@@ -422,7 +410,9 @@ class SimpleBarChart extends StatelessWidget {
 
 class CompletedTasksSection extends StatelessWidget {
   const CompletedTasksSection({super.key, required this.data});
+
   final List<DataAllTasks>? data;
+
   @override
   Widget build(BuildContext context) {
     return Container(

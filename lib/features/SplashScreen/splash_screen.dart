@@ -26,11 +26,11 @@ class _SplashScreenState extends State<SplashScreen> {
       bool seenOnBoarding = CacheHelper.getBool(key: 'seen') ?? false;
 
       if (seenOnBoarding) {
-       navigateFinish(context, AppRoutes.entryPoint);
+       navigateTo(context, AppRoutes.entryPoint);
 
       }
         else {
-        token != null ? navigateFinish(context, AppRoutes.entryPoint) :
+        token != null ? navigateTo(context, AppRoutes.entryPoint) :
         Navigator.of(context).pushAndRemoveUntil(
           loginTransition(const OnBoardingPage()), (route) => false,);
       }

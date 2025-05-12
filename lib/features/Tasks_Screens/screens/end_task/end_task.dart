@@ -16,6 +16,7 @@ import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 
+import '../../../../core/constants/app_animation.dart';
 import '../../../../core/utils/toast.dart';
 import '../../data/models/get_task_model.dart';
 
@@ -217,7 +218,7 @@ bool isLocationMatched = false ;
               builder: (context, state) {
                 if (
                     state is EditLoadingUserTaskState) {
-                  return loader();
+                  return AppLottie.loader;
                 }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

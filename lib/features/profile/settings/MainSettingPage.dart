@@ -32,16 +32,16 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
   final key = GlobalKey<FormState>();
 
   bool isPasswordShown = false;
-  onPassShowClicked() {
-    setState(()
-    {
-      isPasswordShown = !isPasswordShown;
 
+  onPassShowClicked() {
+    setState(() {
+      isPasswordShown = !isPasswordShown;
     });
   }
+
   var passController = TextEditingController();
   var verifyPassController = TextEditingController();
-  bool click = true ;
+  bool click = true;
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +49,14 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
     var fName = TextEditingController();
     var lName = TextEditingController();
     var email = TextEditingController();
-  //  var phone = TextEditingController();
+    //  var phone = TextEditingController();
 
-    fName.text  = cubit.getInfo!.first_name.toString() ?? '';
-    lName.text  = cubit.getInfo!.last_name.toString() ?? '';
-    email.text  = cubit.getInfo!.email.toString() ?? '';
-   // phone.text  = '${cubit.getInfo!.first_name.toString()} ${cubit.getInfo!.last_name.toString()}' ?? '';
-
+    fName.text = cubit.getInfo!.first_name.toString() ?? '';
+    lName.text = cubit.getInfo!.last_name.toString() ?? '';
+    email.text = cubit.getInfo!.email.toString() ?? '';
+    // phone.text  = '${cubit.getInfo!.first_name.toString()} ${cubit.getInfo!.last_name.toString()}' ?? '';
 
     return Scaffold(
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -68,33 +66,32 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                  const  CustomAppBar(back: true, title: 'تعديل الحساب'),
+                    const CustomAppBar(back: true, title: 'تعديل الحساب'),
                     SizedBox(height: 20.h),
                     ProfileHeader(),
 
                     SizedBox(height: 20.h),
 
-                    defaultTextFormFeild
-                      (context,
+                    defaultTextFormFeild(context,
                         prefix: Icon(Icons.perm_identity_sharp),
                         controller: fName,
-
                         keyboardType: TextInputType.name,
-                        validate: (v) {}, label: 'الاسم الاول'),
+                        validate: (v) {},
+                        label: 'الاسم الاول'),
                     SizedBox(height: 15.h),
-                    defaultTextFormFeild
-                      (context,
+                    defaultTextFormFeild(context,
                         prefix: const Icon(Icons.person_2_outlined),
                         keyboardType: TextInputType.name,
                         controller: lName,
-                        validate: (v) {}, label: 'الاسم الاخير'),
+                        validate: (v) {},
+                        label: 'الاسم الاخير'),
                     SizedBox(height: 15.h),
-                    defaultTextFormFeild
-                      (context,
+                    defaultTextFormFeild(context,
                         prefix: const Icon(Icons.email_outlined),
                         controller: email,
                         keyboardType: TextInputType.emailAddress,
-                        validate: (v) {}, label: 'البريد الالكتروني'),
+                        validate: (v) {},
+                        label: 'البريد الالكتروني'),
                     // SizedBox(height: 15.h),
                     // defaultTextFormFeild
                     //   (context,
@@ -102,48 +99,26 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                     //     keyboardType: TextInputType.phone,
                     //     validate: (v) {}, label: 'رقم الهاتف'),
 
-
-SizedBox(height: 20.h,),
-                   InkWell(
-                     onTap: ()
-                     {
-setState(() {
-  click = ! click ;
-});
-                     },
-                     child: Row(
-                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                       children: [
-                         Text(S.of(context).change_password,style: AppFonts.style16semiBold,),
-                       const  Icon(Icons.keyboard_arrow_down),
-                       ],
-                     ),
-                   ),
-
-                click ?  Container() : Form(
-                  key: key,
-                  child: Column(
+                    Form(
+                      key: key,
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 20.h),
                           defaultTextFormFeild(
                             context,
-
                             keyboardType: TextInputType.text,
-
                             controller: passController,
-
                             validate: Validators.password.call,
-
                             secure: !isPasswordShown,
-
                             prefix: const Icon(AppIcons.lock),
                             label: ' كلمة المرور الجديدة',
                             suffix: IconButton(
                               onPressed: onPassShowClicked,
                               icon: Icon(
-                                isPasswordShown ? AppIcons.eye :
-                                AppIcons.eyeNonVisible,
+                                isPasswordShown
+                                    ? AppIcons.eye
+                                    : AppIcons.eyeNonVisible,
                                 size: 24,
                               ),
                             ),
@@ -151,125 +126,123 @@ setState(() {
                           SizedBox(height: 10.h),
                           defaultTextFormFeild(
                             context,
-
                             keyboardType: TextInputType.text,
-
                             controller: verifyPassController,
-                  onChanged: (v)
-                  {
-                  if(key.currentState!.validate())
-                  {
-
-                  }
-                  },
-                            validate: (v)
-                            {
-                              if(v != passController.text) {
+                            onChanged: (v) {
+                              if (key.currentState!.validate()) {}
+                            },
+                            validate: (v) {
+                              if (v != passController.text) {
                                 return 'كلمة السر غير متطابقة';
                               }
-                              return null ;
+                              return null;
                             },
-
-
                             secure: !isPasswordShown,
-
                             prefix: const Icon(AppIcons.lock),
                             label: ' تأكيد كلمة المرور الجديدة',
                             suffix: IconButton(
                               onPressed: onPassShowClicked,
                               icon: Icon(
-                                isPasswordShown ? AppIcons.eye :
-                                AppIcons.eyeNonVisible,
+                                isPasswordShown
+                                    ? AppIcons.eye
+                                    : AppIcons.eyeNonVisible,
                                 size: 24,
                               ),
                             ),
                           ),
                         ],
                       ),
-                ) ,
+                    ),
                     SizedBox(height: 40.h),
 
                     defaultButton(
                         context: context,
                         text: 'حفظ التغييرات',
-                        width: 250.w, height: 48.h, isColor: true,
-                        textSize: 18.sp, toPage: ()
-                        {
-                          if(cubit.getInfo!.avatar == null && selectedImageForSetting == null)
-                          {
-                            EmployeeCubit.get(context).editUserFun
-                              (
+                        width: 250.w,
+                        height: 48.h,
+                        isColor: true,
+                        textSize: 18.sp,
+                        toPage: () {
+                          if (cubit.getInfo!.avatar == null &&
+                              selectedImageForSetting == null) {
+                            EmployeeCubit.get(context)
+                                .editUserFun(
                               password: passController.text,
                               idUser: userId.toString(),
                               firstName: fName.text,
-
-
-                              phone1: role == '1' ?
-                              EmployeeCubit
-                                  .get(context)
-                                  .users![int.parse(userId.toString())]
-                                  .employee_info![0].phone_1.toString() : '',
+                              phone1: role == '1'
+                                  ? EmployeeCubit.get(context)
+                                      .users![int.parse(userId.toString())]
+                                      .employee_info![0]
+                                      .phone_1
+                                      .toString()
+                                  : '',
                               employeeId: '0',
                               role: cubit.getInfo!.role!.id.toString(),
                               email: email.text,
                               lastName: lName.text,
-
                               status: 'active',
-
-                            ).then((onValue) {
+                            )
+                                .then((onValue) {
                               cubit.getUserDataFun(context);
                               log('done');
-                            navigateTo(context, AppRoutes.entryPoint);
+                              navigateTo(context, AppRoutes.entryPoint);
                             });
                           } else {
-                            selectedImageForSetting != null ?
-                            EmployeeCubit.get(context).uploadFile
-                              (
-
-
-                              selectedImageForSetting!,
-                              idUser: userId.toString(),
-                              firstName: fName.text,
-                              phone1: role == '1' ? EmployeeCubit
-                                  .get(context)
-                                  .users![int.parse(userId.toString())]
-                                  .employee_info![0].phone_1.toString() : '',
-                              employeeId: '0',
-                              role: cubit.getInfo!.role!.id.toString(),
-                              email: email.text,
-                              lastName: lName.text,
-                              edit: true,
-                              status: 'active',
-                              password: '1235689',
-                            ).then((onValue) {
-                              cubit.getUserDataFun(context);
-                              log('done 1');
-                             navigateTo(context, AppRoutes.entryPoint);
-                            }) :
-                            EmployeeCubit.get(context).editUserFun
-                              (
-                              password: passController.text,
-                              idUser: userId.toString(),
-                              firstName: fName.text,
-                              avatar: cubit.getInfo!.avatar?.id,
-                              phone1: role == '1' ?
-                              EmployeeCubit
-                                  .get(context)
-                                  .users![int.parse(userId.toString())]
-                                  .employee_info![0].phone_1.toString() : '',
-                              employeeId: '0',
-                              role: cubit.getInfo!.role!.id.toString(),
-                              email: email.text,
-                              lastName: lName.text,
-
-                              status: 'active',
-
-                            ).then((onValue) {
-                              cubit.getUserDataFun(context);
-                              log('done 2');
-                             navigateTo(context, AppRoutes.entryPoint);
-                            });
-                          }}),
+                            selectedImageForSetting != null
+                                ? EmployeeCubit.get(context)
+                                    .uploadFile(
+                                    selectedImageForSetting!,
+                                    idUser: userId.toString(),
+                                    firstName: fName.text,
+                                    phone1: role == '1'
+                                        ? EmployeeCubit.get(context)
+                                            .users![
+                                                int.parse(userId.toString())]
+                                            .employee_info![0]
+                                            .phone_1
+                                            .toString()
+                                        : '',
+                                    employeeId: '0',
+                                    role: cubit.getInfo!.role!.id.toString(),
+                                    email: email.text,
+                                    lastName: lName.text,
+                                    edit: true,
+                                    status: 'active',
+                                    password: '1235689',
+                                  )
+                                    .then((onValue) {
+                                    cubit.getUserDataFun(context);
+                                    log('done 1');
+                                    navigateTo(context, AppRoutes.entryPoint);
+                                  })
+                                : EmployeeCubit.get(context)
+                                    .editUserFun(
+                                    password: passController.text,
+                                    idUser: userId.toString(),
+                                    firstName: fName.text,
+                                    avatar: cubit.getInfo!.avatar?.id,
+                                    phone1: role == '1'
+                                        ? EmployeeCubit.get(context)
+                                            .users![
+                                                int.parse(userId.toString())]
+                                            .employee_info![0]
+                                            .phone_1
+                                            .toString()
+                                        : '',
+                                    employeeId: '0',
+                                    role: cubit.getInfo!.role!.id.toString(),
+                                    email: email.text,
+                                    lastName: lName.text,
+                                    status: 'active',
+                                  )
+                                    .then((onValue) {
+                                    cubit.getUserDataFun(context);
+                                    log('done 2');
+                                    navigateTo(context, AppRoutes.entryPoint);
+                                  });
+                          }
+                        }),
                   ],
                 ),
               ),
@@ -280,7 +253,9 @@ setState(() {
     );
   }
 }
-File? selectedImageForSetting ;
+
+File? selectedImageForSetting;
+
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
 
@@ -289,9 +264,9 @@ class ProfileHeader extends StatefulWidget {
 }
 
 class _ProfileHeaderState extends State<ProfileHeader> {
-@override
+  @override
   void initState() {
-  selectedImageForSetting = null;
+    selectedImageForSetting = null;
     // TODO: implement initState
     super.initState();
   }
@@ -299,68 +274,77 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   Future<void> pickImage() async {
     final pickedFile;
 
-    pickedFile = await ImagePicker.platform.getImageFromSource(source: ImageSource.gallery);
+    pickedFile = await ImagePicker.platform
+        .getImageFromSource(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         selectedImageForSetting = File(pickedFile.path);
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        selectedImageForSetting != null ? Stack(
-          children: [
-            Container(
-                height: 90.h,
-                width: 90.w,
-                decoration: BoxDecoration(
-                  color: AppColors.gray,
-                  borderRadius: BorderRadius.circular(5.r),
-                ),
-                child: Image.file(selectedImageForSetting!)),
-            Positioned(
-              top: 5.h,
-              right: 5.w,
-              child: InkWell(onTap: ()
-              {
-                setState(() {
-                  selectedImageForSetting = null ;
-                });
-              },
-              child: const Icon( Icons.cancel)),
-            ),
-          ],
-        ) :    AppCubit.get(context).getInfo!.avatar != null  ?
-        SizedBox(
-            height: 90.h,
-            width: 90.w,
-            child: NetworkImageWithLoader(
-                AppCubit.get(context).getInfo!.avatar!.data!.full_url.toString()))
-
-       :  Padding(
-      padding:  EdgeInsets.only(right: 2.0.w,left: 10.0.w),
-      child: Container(
-        height: 90.h,
-        width: 90.w,
-        decoration: BoxDecoration(
-          color: AppColors.gray,
-          borderRadius: BorderRadius.circular(5.r),
-        ),
-      ),
-    ),
-
+        selectedImageForSetting != null
+            ? Stack(
+                children: [
+                  Container(
+                      height: 90.h,
+                      width: 90.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.gray,
+                        borderRadius: BorderRadius.circular(5.r),
+                      ),
+                      child: Image.file(selectedImageForSetting!)),
+                  Positioned(
+                    top: 5.h,
+                    right: 5.w,
+                    child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            selectedImageForSetting = null;
+                          });
+                        },
+                        child: const Icon(Icons.cancel)),
+                  ),
+                ],
+              )
+            : AppCubit.get(context).getInfo!.avatar != null
+                ? SizedBox(
+                    height: 90.h,
+                    width: 90.w,
+                    child: NetworkImageWithLoader(AppCubit.get(context)
+                        .getInfo!
+                        .avatar!
+                        .data!
+                        .full_url
+                        .toString()))
+                : Padding(
+                    padding: EdgeInsets.only(right: 2.0.w, left: 10.0.w),
+                    child: Container(
+                      height: 90.h,
+                      width: 90.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.gray,
+                        borderRadius: BorderRadius.circular(5.r),
+                      ),
+                    ),
+                  ),
         SizedBox(height: 20.h),
         InkWell(
-          onTap: () {pickImage();},
+          onTap: () {
+            pickImage();
+          },
           child: Container(
             padding: EdgeInsets.all(8.h),
             decoration: BoxDecoration(
-
-              border: Border.all(color:  AppColors.placeholder,),
+              border: Border.all(
+                color: AppColors.placeholder,
+              ),
               borderRadius: BorderRadius.circular(8.r),
-              color: globalDark ?  AppColors.textBlack : AppColors.textWhite,
+              color: globalDark ? AppColors.textBlack : AppColors.textWhite,
             ),
             child: Text(
               'اختر صورة',
@@ -372,4 +356,3 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     );
   }
 }
-

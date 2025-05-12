@@ -15,9 +15,14 @@ class AppRoutes {
 
   /* <---- ENTRYPOINT -----> */
   static const entryPoint = '/entry_point';
+  static const selectAnyButtonBottomSheet = '/select_any_button_bottom_sheet';
+  static const reportsPge = '/reports_page';
+  static const helpPge = '/help_page';
+
   /* <---- add Employee / task -----> */
   static const addEmployee = '/add_employee';
   static const addTask = '/add_Task';
+
   /* <---- employee Process -----> */
   static const homeEmployee = '/home_employee';
   static const detailedProfile = '/detailed_employee_screens';

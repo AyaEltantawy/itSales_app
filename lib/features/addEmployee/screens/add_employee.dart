@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:itsale/core/components/network_image.dart';
+import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/utils/toast.dart';
@@ -148,7 +149,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Center(child: loader()),
+                                Center(child:AppLottie.loader),
                               ],
                             );
                           }

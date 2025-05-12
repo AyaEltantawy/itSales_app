@@ -6,6 +6,7 @@ import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/states.dart';
 
 
+import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/app_defaults.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/toast.dart';
@@ -31,7 +32,7 @@ class LoginPage extends StatelessWidget {
         {
           successMotionToast(context,text: 'تم تسجيل الدخول بنجاح');
 
-          navigateFinish(context, AppRoutes.entryPoint);
+          navigateTo(context, AppRoutes.entryPoint);
           print ('success');
         }
       },
@@ -53,7 +54,7 @@ class LoginPage extends StatelessWidget {
                           ),
 
 
-                      loaderAddition(),
+                      AppLottie.loader,
                     ],
                   ),
                 ),

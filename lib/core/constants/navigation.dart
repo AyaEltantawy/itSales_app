@@ -88,34 +88,34 @@ class _NoInternetState extends State<NoInternet> {
 
 
 
-Widget loader() => Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
-    SizedBox(height: 200.h,),
-    Center(
-      child: Lottie.asset(AppLottie.loader,height: 230.h,width: 230.w),),
-  ],
-);
-Widget loaderAddition() => Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
+// Widget loader() => Column(
+//   mainAxisAlignment: MainAxisAlignment.center,
+//   crossAxisAlignment: CrossAxisAlignment.center,
+//   children: [
+//     SizedBox(height: 200.h,),
+//     Center(
+//       child: Lottie.asset(AppLottie.loader,height: 230.h,width: 230.w),),
+//   ],
+// );
+// Widget loaderAddition() => Column(
+//   mainAxisAlignment: MainAxisAlignment.center,
+//   crossAxisAlignment: CrossAxisAlignment.center,
+//   children: [
+//
+//     Center(
+//       child: Lottie.asset(AppLottie.loader as String,height: 230.h,width: 230.w),),
+//   ],
+// );
+//
+// Future navigateFinish(
+//     BuildContext context,
+//     String name,
+//     ) =>
+//     Navigator.of(context).pushNamedAndRemoveUntil(name,
+//           (route) => false,
+//       // SliderRight(page: widget),
 
-    Center(
-      child: Lottie.asset(AppLottie.loader,height: 230.h,width: 230.w),),
-  ],
-);
-
-Future navigateFinish(
-    BuildContext context,
-    String name,
-    ) =>
-    Navigator.of(context).pushNamedAndRemoveUntil(name,
-          (route) => false,
-      // SliderRight(page: widget),
-
-    );
+   // );
 
 Future navigateTo(
     BuildContext context,

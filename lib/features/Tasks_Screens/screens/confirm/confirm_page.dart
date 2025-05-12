@@ -9,6 +9,7 @@ import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/Tasks_Screens/screens/confirm/confirm_task_for_employee.dart';
 import 'package:itsale/features/addEmployee/components/no_data_screen.dart';
 
+import '../../../../core/constants/app_animation.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/toast.dart';
 import '../../../../core/utils/token.dart';
@@ -55,7 +56,7 @@ class _ConfirmTaskListPageState extends State<ConfirmTaskListPage> {
                 }
                 if(state is EditLoadingUserTaskState)
                 {
-                  return loader();
+                  return AppLottie.loader;
                 }
 
                 return   TasksCubit.get(context).getUserTaskListWithStatus!.isNotEmpty ?

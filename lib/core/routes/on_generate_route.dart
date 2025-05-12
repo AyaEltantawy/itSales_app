@@ -11,8 +11,7 @@ import 'package:itsale/features/profile/settings/change_password_page.dart';
 import 'package:itsale/features/profile/settings/MainSettingPage.dart';
 import 'package:itsale/features/profile/settings/language_settings_page.dart';
 import 'package:itsale/features/notifications/notifications_settings_page.dart';
-import 'package:itsale/features/profile/settings/ProfilePage.dart';
-
+import 'package:itsale/features/profile/screens/ProfilePage.dart';
 
 import '../../features/HomeEmployee/screens/home_employee.dart';
 import '../../features/Tasks_Screens/screens/confirm/confirm_page.dart';
@@ -27,7 +26,10 @@ import '../../features/auth/screens/login_page.dart';
 import '../../features/auth/screens/number_verification_page.dart';
 import '../../features/auth/screens/password_reset_page.dart';
 import '../../features/detailed_employee_screen/screens/detailed_employee_screens.dart';
+import '../../features/entrypoint/components/select_any_button_bottom_sheet.dart';
 import '../../features/home/screens/employee_screen.dart';
+import '../../features/profile/widgets/help/help_view.dart';
+import '../../features/profile/widgets/reports/reports_view.dart';
 import '../utils/transition.dart';
 import 'app_routes.dart';
 import 'unknown_page.dart';
@@ -38,90 +40,103 @@ class RouteGenerator {
 
     switch (route) {
       case AppRoutes.introLogin:
-        return   animatedNavigation(screen: const IntroLoginPage());
+        return animatedNavigation(screen: const IntroLoginPage());
 
       case AppRoutes.splash:
-        return  animatedNavigation(screen: const SplashScreen());
+        return animatedNavigation(screen: const SplashScreen());
 
       case AppRoutes.onBoarding:
-        return  animatedNavigation(screen: const OnBoardingPage());
+        return animatedNavigation(screen: const OnBoardingPage());
 
       case AppRoutes.login:
-        return  animatedNavigation(screen: const LoginPage());
+        return animatedNavigation(screen: const LoginPage());
 
       case AppRoutes.choosePage:
-        return   animatedNavigation(screen: const ChoosePage());
+        return animatedNavigation(screen: const ChoosePage());
 
+      case AppRoutes.reportsPge:
+        return animatedNavigation(screen: ReportsPage());
 
       case AppRoutes.entryPoint:
-        return  animatedNavigation(screen: const EntryPointUI());
+        return animatedNavigation(screen: const EntryPointUI());
 
       case AppRoutes.addEmployee:
-        return
-          animatedNavigation(screen: const AddNewEmployee(isEdit: false, empId: 0,));
+        return animatedNavigation(
+            screen: const AddNewEmployee(
+          isEdit: false,
+          empId: 0,
+        ));
 
       case AppRoutes.allEmployees:
-        return  animatedNavigation(screen: const AllEmployeeScreen(admin: false,));
-
+        return animatedNavigation(
+            screen: const AllEmployeeScreen(
+          admin: false,
+        ));
 
       case AppRoutes.confirmPage:
-        return  animatedNavigation(screen: const ConfirmTaskListPage());
+        return animatedNavigation(screen: const ConfirmTaskListPage());
 
       case AppRoutes.homeTasks:
-        return  animatedNavigation(screen: const TasksScreenForEmployee(back: false,));
-
+        return animatedNavigation(
+            screen: const TasksScreenForEmployee(
+          back: false,
+        ));
 
       // case AppRoutes.taskDetails:
       //   return  animatedNavigation(screen: const TaskDetailsScreen());
       //
 
-
-
-
       case AppRoutes.signup:
-        return  animatedNavigation(screen: const SignUpPage());
+        return animatedNavigation(screen: const SignUpPage());
 
       case AppRoutes.loginOrSignup:
-        return  animatedNavigation(screen: const LoginOrSignUpPage());
+        return animatedNavigation(screen: const LoginOrSignUpPage());
 
       case AppRoutes.numberVerification:
         return animatedNavigation(screen: const NumberVerificationPage());
 
       case AppRoutes.forgotPassword:
-        return  animatedNavigation(screen: const ForgetPasswordPage());
+        return animatedNavigation(screen: const ForgetPasswordPage());
 
       case AppRoutes.passwordReset:
-        return  animatedNavigation(screen: const PasswordResetPage());
-
-
+        return animatedNavigation(screen: const PasswordResetPage());
 
       case AppRoutes.homeEmployee:
-        return  animatedNavigation(screen: const HomeEmployeeScreen(back: false,));
+        return animatedNavigation(
+            screen: const HomeEmployeeScreen(
+          back: false,
+        ));
+      case AppRoutes.helpPge:
+        return animatedNavigation(screen: const HelpPage());
 
       case AppRoutes.addTask:
-        return  animatedNavigation(screen: const AddTaskScreen(
+        return animatedNavigation(
+            screen: const AddTaskScreen(
           taskId: 0,
           isEdit: false,
-          back: true,));
+          back: true,
+        ));
 
       case AppRoutes.notifications:
-        return  animatedNavigation(screen: const NotificationPage());
+        return animatedNavigation(screen: const NotificationPage());
 
       case AppRoutes.settingsNotifications:
-        return  animatedNavigation(screen: const NotificationSettingsPage());
+        return animatedNavigation(screen: const NotificationSettingsPage());
 
       case AppRoutes.settings:
-        return  animatedNavigation(screen: const SettingsPage());
+        return animatedNavigation(screen: const SettingsPage());
 
       case AppRoutes.settingsLanguage:
-        return  animatedNavigation(screen: const LanguageSettingsPage());
+        return animatedNavigation(screen: const LanguageSettingsPage());
+
+      case AppRoutes.selectAnyButtonBottomSheet:
+        return animatedNavigation(screen: const SelectAnyButtonBottomSheet());
 
       case AppRoutes.changePassword:
-        return  animatedNavigation(screen: const ChangePasswordPage());
+        return animatedNavigation(screen: const ChangePasswordPage());
 
       case AppRoutes.changePhoneNumber:
-        return  animatedNavigation(screen: const MainSettingsPage());
-
+        return animatedNavigation(screen: const MainSettingsPage());
 
       default:
         return errorRoute();
@@ -129,5 +144,5 @@ class RouteGenerator {
   }
 
   static Route? errorRoute() =>
-        CupertinoPageRoute(builder: (_) => UnknownPage());
+      CupertinoPageRoute(builder: (_) => UnknownPage());
 }

@@ -8,6 +8,7 @@ import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 
 import '../../core/app/app.dart';
 import '../../core/components/default_app_bar.dart';
+import '../../core/constants/app_animation.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_defaults.dart';
 import '../../core/constants/navigation.dart';
@@ -48,7 +49,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(child: loader()),
+                    Center(child: AppLottie.loader),
                   ],
                 );
               }

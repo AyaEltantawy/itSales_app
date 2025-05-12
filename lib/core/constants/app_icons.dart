@@ -12,7 +12,7 @@ class AppIcons {
   static const eye = Icons.remove_red_eye_outlined;
   static const eyeNonVisible = Icons.visibility_off_outlined;
   static const logOut = Icons.logout;
-  static const help = Icons.info_outline;
+
 
   /// if icons svg
   static const add = 'assets/icons/add.svg';
@@ -41,7 +41,7 @@ class AppIcons {
   static const facebookIcon = 'assets/icons/facebook_icon.svg';
   static const googleIconRounded = 'assets/icons/google_icon_rounded.svg';
   static const googleIcon = 'assets/icons/google_icon.svg';
-  static const home = 'assets/icons/home.svg';
+
   static const location = 'assets/icons/location.svg';
   static var menu = 'assets/icons/menu.svg';
   static var list = 'assets/icons/list.svg';
@@ -87,4 +87,17 @@ class AppIcons {
   static const contactMap = 'assets/icons/contact_map.svg';
 
   static const cardAdd = 'assets/icons/card_add.svg';
+  static const IconData notifications = IconData(0xe44f, fontFamily: 'MaterialIcons');
+  static const IconData persons = IconData(0xe491, fontFamily: 'MaterialIcons');
+  static const IconData tasks = IconData(0xe645, fontFamily: 'MaterialIcons');
+  static const IconData settings = IconData(0xe57f, fontFamily: 'MaterialIcons');
+  static const IconData help = IconData(
+    0xe309,
+    fontFamily: 'MaterialIcons',
+    matchTextDirection: true,
+  );
+  static const IconData home_outlined = IconData(0xf107,fontFamily: 'MaterialIcons',);
+  static const IconData task_outlined = IconData(0xf429, fontFamily: 'MaterialIcons');
+  static const IconData menu_outlined = IconData(0xf1c4, fontFamily: 'MaterialIcons');
+  static const IconData person_2_outlined = IconData(0xf08ae, fontFamily: 'MaterialIcons');
 }

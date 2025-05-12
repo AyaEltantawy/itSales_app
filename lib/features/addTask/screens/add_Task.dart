@@ -16,6 +16,7 @@ import 'package:itsale/features/home/data/cubit.dart';
 
 import '../../../core/components/app_text_form_field.dart';
 import '../../../core/components/default_app_bar.dart';
+import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/token.dart';
 import 'package:intl/intl.dart';
@@ -24,18 +25,23 @@ import '../../../generated/l10n.dart';
 import '../componenets/maps.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key, required this.back, required this.isEdit, required this.taskId});
-  final bool back ;
-  final bool isEdit ;
-  final int taskId ;
+  const AddTaskScreen(
+      {super.key,
+      required this.back,
+      required this.isEdit,
+      required this.taskId});
+
+  final bool back;
+
+  final bool isEdit;
+
+  final int taskId;
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-
-
   var deadlineController = TextEditingController();
   var details = TextEditingController();
   var location = TextEditingController();
@@ -52,45 +58,66 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   List<Map<String, dynamic>> getUsers = [];
 
   Future<void> loadTaskData() async {
-      for(int x = 0 ; x < TasksCubit.get(context).getAllTaskList!.length ; x++ )
-    {
-      if(widget.taskId == TasksCubit.get(context).getAllTaskList![x].id)
-      {
-
-        taskTitle.text = TasksCubit.get(context).getAllTaskList![x].title.toString();
-        address.text = TasksCubit.get(context).getAllTaskList![x].location != null ? TasksCubit.get(context).getAllTaskList![x].location!.address.toString() : '';
-        deadlineController.text = TasksCubit.get(context).getAllTaskList![x].due_date.toString();
-        details.text = TasksCubit.get(context).getAllTaskList![x].description.toString();
-        notes.text = TasksCubit.get(context).getAllTaskList![x].notes.toString();
-        selectedName =  '${TasksCubit.get(context).getAllTaskList![x].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![x].assigned_to!.last_name.toString()}' ;
-        _selectedFruit =  '${TasksCubit.get(context).getAllTaskList![x].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![x].assigned_to!.last_name.toString()}' ;
-        selectedId =  TasksCubit.get(context).getAllTaskList![x].assigned_to!.id.toString() ;
-        selectedStatus =  TasksCubit.get(context).getAllTaskList![x].task_status.toString() ;
-        clientName.text = TasksCubit.get(context).getAllTaskList![x].client_name.toString();
-        clientNumber.text = TasksCubit.get(context).getAllTaskList![x].client_phone.toString();
-        location.text = TasksCubit.get(context).getAllTaskList![x].location != null ? TasksCubit.get(context).getAllTaskList![x].location!.map_url.toString() : '';
-
+    for (int x = 0; x < TasksCubit.get(context).getAllTaskList!.length; x++) {
+      if (widget.taskId == TasksCubit.get(context).getAllTaskList![x].id) {
+        taskTitle.text =
+            TasksCubit.get(context).getAllTaskList![x].title.toString();
+        address.text =
+            TasksCubit.get(context).getAllTaskList![x].location != null
+                ? TasksCubit.get(context)
+                    .getAllTaskList![x]
+                    .location!
+                    .address
+                    .toString()
+                : '';
+        deadlineController.text =
+            TasksCubit.get(context).getAllTaskList![x].due_date.toString();
+        details.text =
+            TasksCubit.get(context).getAllTaskList![x].description.toString();
+        notes.text =
+            TasksCubit.get(context).getAllTaskList![x].notes.toString();
+        selectedName =
+            '${TasksCubit.get(context).getAllTaskList![x].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![x].assigned_to!.last_name.toString()}';
+        _selectedFruit =
+            '${TasksCubit.get(context).getAllTaskList![x].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![x].assigned_to!.last_name.toString()}';
+        selectedId = TasksCubit.get(context)
+            .getAllTaskList![x]
+            .assigned_to!
+            .id
+            .toString();
+        selectedStatus =
+            TasksCubit.get(context).getAllTaskList![x].task_status.toString();
+        clientName.text =
+            TasksCubit.get(context).getAllTaskList![x].client_name.toString();
+        clientNumber.text =
+            TasksCubit.get(context).getAllTaskList![x].client_phone.toString();
+        location.text =
+            TasksCubit.get(context).getAllTaskList![x].location != null
+                ? TasksCubit.get(context)
+                    .getAllTaskList![x]
+                    .location!
+                    .map_url
+                    .toString()
+                : '';
       }
-      switch(selectedStatus)
-      {
-        case 'inbox' :
+      switch (selectedStatus) {
+        case 'inbox':
           selectedStatus = 'قيد الانتظار';
-        case 'completed' :
+        case 'completed':
           selectedStatus = 'مكتمل';
-        case 'cancelled' :
+        case 'cancelled':
           selectedStatus = 'ملغي';
-        case 'progress' :
+        case 'progress':
           selectedStatus = 'تم الاستلام';
       }
     }
-
   }
 
-List<String> status = ['قيد الانتظار','تم الاستلام','ملغي', 'مكتمل'] ;
+  List<String> status = ['قيد الانتظار', 'تم الاستلام', 'ملغي', 'مكتمل'];
+
   @override
   void initState() {
-
-widget.isEdit ? loadTaskData() : Container();
+    widget.isEdit ? loadTaskData() : Container();
     for (int i = 0; i < EmployeeCubit.get(context).users!.length; i++) {
       var user = EmployeeCubit.get(context).users![i];
       getUsers.add({
@@ -104,10 +131,8 @@ widget.isEdit ? loadTaskData() : Container();
     super.initState();
   }
 
-
-
-
   DateTime? selectedDateTime;
+
   Future<void> _selectDateTime(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -126,38 +151,38 @@ widget.isEdit ? loadTaskData() : Container();
       });
     }
   }
+
   final TextEditingController _dropdownSearchFieldController =
-  TextEditingController();
+      TextEditingController();
 
   String? _selectedFruit;
 
   SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
 
-   List<String> getSuggestions(String query) {
+  List<String> getSuggestions(String query) {
     return getUsers
-         .where((user) =>
-         '${user['fName']} ${user['lName']}'.toLowerCase().contains(query.toLowerCase()))
-         .map((user) => '${user['fName']} ${user['lName']}')
-         .toList();
+        .where((user) => '${user['fName']} ${user['lName']}'
+            .toLowerCase()
+            .contains(query.toLowerCase()))
+        .map((user) => '${user['fName']} ${user['lName']}')
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: BlocConsumer<TasksCubit, TasksStates>(
-          listener: (context, state)
-          {
-            if (state is AddErrorUserTaskState || state is EditErrorUserTaskState) {
-              errorMotionToast(context,
-                  text: 'عفوا حاول مرة اخرى');
-
-            } else if (state is AddSuccessUserTaskState || state is EditSuccessUserTaskState){
-              widget.isEdit ? successMotionToast(context,
-                  text: 'تم تعديل المهمة بنجاح') :  successMotionToast(context,
-                  text: 'تم اضافة المهمة بنجاح');
+          listener: (context, state) {
+            if (state is AddErrorUserTaskState ||
+                state is EditErrorUserTaskState) {
+              errorMotionToast(context, text: 'عفوا حاول مرة اخرى');
+            } else if (state is AddSuccessUserTaskState ||
+                state is EditSuccessUserTaskState) {
+              widget.isEdit
+                  ? successMotionToast(context, text: 'تم تعديل المهمة بنجاح')
+                  : successMotionToast(context, text: 'تم اضافة المهمة بنجاح');
               navigateTo(context, AppRoutes.entryPoint);
             }
           },
@@ -166,7 +191,7 @@ widget.isEdit ? loadTaskData() : Container();
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(child: loader()),
+                  Center(child: AppLottie.loader),
                 ],
               );
             }
@@ -182,164 +207,175 @@ widget.isEdit ? loadTaskData() : Container();
                         children: [
                           SizedBox(height: 10.h),
                           CustomAppBar(
-                            back: widget.back, title: widget.isEdit ?
-                          ' تعديل المهمة' : 'إضافة مهمة',
-                           ),
+                            back: widget.back,
+                            title:
+                                widget.isEdit ? ' تعديل المهمة' : 'إضافة مهمة',
+                          ),
                           const Divider(),
                           SizedBox(height: 10.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-
                               const SectionHeader(title: 'بيانات المهمة'),
-                            widget.isEdit ?  Container(
-                                width: 164.w,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w, vertical: 5.h),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: AppColors.placeholder),
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: DropdownButton<String>(
-                                  dropdownColor: Colors.grey.shade50,
-
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  isExpanded: true,
-                                  underline: Container(),
-                                  hint: Text(
-                                    selectedStatus.isNotEmpty
-                                        ? selectedStatus
-                                        : 'حالة المهمة',
-                                    style: AppFonts.style16Normal,
-                                  ),
-                                  value: null,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedStatus = value.toString();
-                                    }
-                                    );
-                                  },
-                                  items: status
-                                      .map(
-                                        (state) =>
-                                        DropdownMenuItem<String>(
-                                          enabled: true,
-                                          value: state,
-                                          child: Text(
-                                            state,
-                                            style: AppFonts.style16semiBold,
-                                          ),
+                              widget.isEdit
+                                  ? Container(
+                                      width: 164.w,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.w, vertical: 5.h),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: AppColors.placeholder),
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      child: DropdownButton<String>(
+                                        dropdownColor: Colors.grey.shade50,
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                        isExpanded: true,
+                                        underline: Container(),
+                                        hint: Text(
+                                          selectedStatus.isNotEmpty
+                                              ? selectedStatus
+                                              : 'حالة المهمة',
+                                          style: AppFonts.style16Normal,
                                         ),
-                                  )
-                                      .toList(),
-                                ),
-                              ) : Container(),
-
+                                        value: null,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedStatus = value.toString();
+                                          });
+                                        },
+                                        items: status
+                                            .map(
+                                              (state) =>
+                                                  DropdownMenuItem<String>(
+                                                enabled: true,
+                                                value: state,
+                                                child: Text(
+                                                  state,
+                                                  style:
+                                                      AppFonts.style16semiBold,
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
-
                           SizedBox(height: 16.h),
                           role == "1"
-                              ?
-                          Container(
-                            padding: EdgeInsetsDirectional.only(start: 16.w ),
-                            decoration: BoxDecoration(
-
-                              border: Border.all(color: AppColors.placeholder),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: DropDownSearchFormField(
-
-                              textFieldConfiguration: TextFieldConfiguration(
-                                decoration:  InputDecoration(
-                                    labelStyle: AppFonts.style16Normal,
-                                    labelText: 'اختر اسم الموظف'),
-                                controller: _dropdownSearchFieldController,
-                              ),
-                              suggestionsCallback: (pattern) {
-                                return getSuggestions(pattern);
-                              },
-
-                              itemBuilder: (context, String suggestion) {
-                                return ListTile(
-                                  title: Text(suggestion),
-
-                                );
-                              },
-                              itemSeparatorBuilder: (context, index) {
-                                return const Divider();
-                              },
-                              transitionBuilder: (context, suggestionsBox, controller) {
-                                return suggestionsBox;
-                              },
-                              onSuggestionSelected: (String suggestion) {
-                                _dropdownSearchFieldController.text = suggestion;
-                                var selectedUser = getUsers.firstWhere((user) =>
-                                '${user['fName']} ${user['lName']}' == suggestion);
-                                selectedId = selectedUser['id'].toString();
-
-                              },
-                              suggestionsBoxController: suggestionBoxController,
-                              validator: (value) =>
-                              value!.isEmpty ? 'اختر اسم الموظف' : null,
-                              onSaved: (value) {
-                               _selectedFruit = value;
-                               var selectedUser = getUsers.firstWhere((user) =>
-                               '${user['fName']} ${user['lName']}' == value);
-                               selectedId = selectedUser['id'].toString();
-
-                                  },
-                              displayAllSuggestionWhenTap: true,
-                            ),
-                          )
-                          // Container(
-                          //         padding: EdgeInsets.symmetric(
-                          //             horizontal: 16.w, vertical: 5.h),
-                          //         decoration: BoxDecoration(
-                          //           border: Border.all(color: AppColors.placeholder),
-                          //           borderRadius: BorderRadius.circular(8.r),
-                          //         ),
-                          //         child: DropdownButton<Map<String, dynamic>>(
-                          //           dropdownColor: Colors.grey.shade50,
-                          //
-                          //           borderRadius: BorderRadius.circular(8.r),
-                          //           isExpanded: true,
-                          //           underline: Container(),
-                          //           hint: Text(
-                          //             selectedName.isNotEmpty
-                          //                 ? selectedName
-                          //                 : '    اختر اسم الموظف',
-                          //             style: AppFonts.style16Normal,
-                          //           ),
-                          //           value: null,
-                          //           onChanged: (value) {
-                          //             setState(() {
-                          //               selectedName =
-                          //                   '${value!['fName'].toString()} ${value!['lName'].toString()}';
-                          //               selectedId = value['id'];
-                          //             });
-                          //           },
-                          //           items: getUsers
-                          //               .map(
-                          //                 (user) =>
-                          //                     DropdownMenuItem<Map<String, dynamic>>(
-                          //                   enabled: true,
-                          //                   value: user,
-                          //                   child: Text(
-                          //                     '${user['fName'].toString()} ${user['lName'].toString()}',
-                          //                     style: AppFonts.style16semiBold,
-                          //                   ),
-                          //                 ),
-                          //               )
-                          //               .toList(),
-                          //         ),
-                          //       )
+                              ? Container(
+                                  padding:
+                                      EdgeInsetsDirectional.only(start: 16.w),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: AppColors.placeholder),
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: DropDownSearchFormField(
+                                    textFieldConfiguration:
+                                        TextFieldConfiguration(
+                                      decoration: InputDecoration(
+                                          labelStyle: AppFonts.style16Normal,
+                                          labelText: 'اختر اسم الموظف'),
+                                      controller:
+                                          _dropdownSearchFieldController,
+                                    ),
+                                    suggestionsCallback: (pattern) {
+                                      return getSuggestions(pattern);
+                                    },
+                                    itemBuilder: (context, String suggestion) {
+                                      return ListTile(
+                                        title: Text(suggestion),
+                                      );
+                                    },
+                                    itemSeparatorBuilder: (context, index) {
+                                      return const Divider();
+                                    },
+                                    transitionBuilder:
+                                        (context, suggestionsBox, controller) {
+                                      return suggestionsBox;
+                                    },
+                                    onSuggestionSelected: (String suggestion) {
+                                      _dropdownSearchFieldController.text =
+                                          suggestion;
+                                      var selectedUser = getUsers.firstWhere(
+                                          (user) =>
+                                              '${user['fName']} ${user['lName']}' ==
+                                              suggestion);
+                                      selectedId =
+                                          selectedUser['id'].toString();
+                                    },
+                                    suggestionsBoxController:
+                                        suggestionBoxController,
+                                    validator: (value) => value!.isEmpty
+                                        ? 'اختر اسم الموظف'
+                                        : null,
+                                    onSaved: (value) {
+                                      _selectedFruit = value;
+                                      var selectedUser = getUsers.firstWhere(
+                                          (user) =>
+                                              '${user['fName']} ${user['lName']}' ==
+                                              value);
+                                      selectedId =
+                                          selectedUser['id'].toString();
+                                    },
+                                    displayAllSuggestionWhenTap: true,
+                                  ),
+                                )
+                              // Container(
+                              //         padding: EdgeInsets.symmetric(
+                              //             horizontal: 16.w, vertical: 5.h),
+                              //         decoration: BoxDecoration(
+                              //           border: Border.all(color: AppColors.placeholder),
+                              //           borderRadius: BorderRadius.circular(8.r),
+                              //         ),
+                              //         child: DropdownButton<Map<String, dynamic>>(
+                              //           dropdownColor: Colors.grey.shade50,
+                              //
+                              //           borderRadius: BorderRadius.circular(8.r),
+                              //           isExpanded: true,
+                              //           underline: Container(),
+                              //           hint: Text(
+                              //             selectedName.isNotEmpty
+                              //                 ? selectedName
+                              //                 : '    اختر اسم الموظف',
+                              //             style: AppFonts.style16Normal,
+                              //           ),
+                              //           value: null,
+                              //           onChanged: (value) {
+                              //             setState(() {
+                              //               selectedName =
+                              //                   '${value!['fName'].toString()} ${value!['lName'].toString()}';
+                              //               selectedId = value['id'];
+                              //             });
+                              //           },
+                              //           items: getUsers
+                              //               .map(
+                              //                 (user) =>
+                              //                     DropdownMenuItem<Map<String, dynamic>>(
+                              //                   enabled: true,
+                              //                   value: user,
+                              //                   child: Text(
+                              //                     '${user['fName'].toString()} ${user['lName'].toString()}',
+                              //                     style: AppFonts.style16semiBold,
+                              //                   ),
+                              //                 ),
+                              //               )
+                              //               .toList(),
+                              //         ),
+                              //       )
                               : Container(
                                   height: 50.h,
                                   width: double.infinity,
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.w),
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: AppColors.placeholder),
+                                    border: Border.all(
+                                        color: AppColors.placeholder),
                                     borderRadius: BorderRadius.circular(8.r),
                                   ),
                                   child: Row(
@@ -367,7 +403,7 @@ widget.isEdit ? loadTaskData() : Container();
                             },
                             label: 'اسم المهمة',
                             onTap: () {},
-                            prefix:  Icon(
+                            prefix: Icon(
                               Icons.task,
                               color: AppColors.placeholder,
                             ),
@@ -386,7 +422,7 @@ widget.isEdit ? loadTaskData() : Container();
                             },
                             label: 'تحديد مهلة المهمة',
                             onTap: () => _selectDateTime(context),
-                            prefix:  Icon(
+                            prefix: Icon(
                               Icons.timelapse,
                               color: AppColors.placeholder,
                             ),
@@ -401,7 +437,8 @@ widget.isEdit ? loadTaskData() : Container();
                             },
                             controller: details,
                             keyboardType: TextInputType.multiline,
-                            minLines: 4, // Set this
+                            minLines: 4,
+                            // Set this
                             maxLines: 6,
                             decoration: InputDecoration(
                               labelText: '        تفاصيل المهمة',
@@ -417,7 +454,7 @@ widget.isEdit ? loadTaskData() : Container();
                               focusColor: AppColors.placeholder,
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.r),
-                                  borderSide:  BorderSide(
+                                  borderSide: BorderSide(
                                     color: AppColors.placeholder,
                                     style: BorderStyle.solid,
                                   )),
@@ -455,7 +492,7 @@ widget.isEdit ? loadTaskData() : Container();
                             label: 'عنوان المهمة',
                             onTap: () {},
                             controller: address,
-                            prefix:  Icon(
+                            prefix: Icon(
                               Icons.location_on,
                               color: AppColors.placeholder,
                             ),
@@ -467,7 +504,6 @@ widget.isEdit ? loadTaskData() : Container();
                             validate: (value) {
                               if (value == null || value == '') {
                                 return 'لا تترك هذا الحقل فارغا';
-
                               }
 
                               final uri = Uri.tryParse(value);
@@ -479,7 +515,7 @@ widget.isEdit ? loadTaskData() : Container();
                             label: 'الصق رابط Google Map الخاص بموقع المهمة',
                             onTap: () {},
                             controller: location,
-                            prefix:  Icon(
+                            prefix: Icon(
                               Icons.link,
                               color: AppColors.placeholder,
                             ),
@@ -487,11 +523,12 @@ widget.isEdit ? loadTaskData() : Container();
                           SizedBox(height: 16.h),
                           Center(
                             child: InkWell(
-                                onTap: ()  async {
+                                onTap: () async {
                                   final result = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const LocationPickerScreen(),
+                                      builder: (context) =>
+                                          const LocationPickerScreen(),
                                     ),
                                   );
                                   if (result != null) {
@@ -501,8 +538,8 @@ widget.isEdit ? loadTaskData() : Container();
                                     setState(() {
                                       address.text = result['address'];
 
-
-                                      location.text = 'https://www.google.com/maps/search/?api=1&query=${result['address'].toString()}';
+                                      location.text =
+                                          '${result['address'].toString()}';
                                     });
                                   }
                                 },
@@ -512,11 +549,19 @@ widget.isEdit ? loadTaskData() : Container();
                                     padding: EdgeInsets.all(12.w),
                                     decoration: BoxDecoration(
                                         borderRadius: AppDefaults.borderRadius,
-                                        color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
-
-                                        border: Border.all(color: AppColors.primary)),
-                                    child:  Text(S.of(context).location_on_map,
-                                      style: TextStyle(color: globalDark ? AppColors.textWhite :   AppColors.textBlack ,fontSize: 14.sp),))),
+                                        color: globalDark
+                                            ? AppColors.cardColorDark
+                                            : AppColors.textWhite,
+                                        border: Border.all(
+                                            color: AppColors.primary)),
+                                    child: Text(
+                                      S.of(context).location_on_map,
+                                      style: TextStyle(
+                                          color: globalDark
+                                              ? AppColors.textWhite
+                                              : AppColors.textBlack,
+                                          fontSize: 14.sp),
+                                    ))),
                           ),
                           SizedBox(height: 24.h),
                           const SectionHeader(title: 'بيانات العميل'),
@@ -533,7 +578,7 @@ widget.isEdit ? loadTaskData() : Container();
                             label: 'أكتب اسم العميل',
                             controller: clientName,
                             onTap: () {},
-                            prefix:  Icon(
+                            prefix: Icon(
                               Icons.person,
                               color: AppColors.placeholder,
                             ),
@@ -551,7 +596,7 @@ widget.isEdit ? loadTaskData() : Container();
                             label: 'أكتب رقم العميل',
                             controller: clientNumber,
                             onTap: () {},
-                            prefix:  Icon(
+                            prefix: Icon(
                               Icons.phone_outlined,
                               color: AppColors.placeholder,
                             ),
@@ -565,7 +610,8 @@ widget.isEdit ? loadTaskData() : Container();
                             },
                             controller: notes,
                             keyboardType: TextInputType.multiline,
-                            minLines: 4, // Set this
+                            minLines: 4,
+                            // Set this
                             maxLines: 6,
                             decoration: InputDecoration(
                               labelText: '       ملاحظات',
@@ -581,7 +627,7 @@ widget.isEdit ? loadTaskData() : Container();
                               focusColor: AppColors.placeholder,
                               enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.r),
-                                  borderSide:  BorderSide(
+                                  borderSide: BorderSide(
                                     color: AppColors.placeholder,
                                     style: BorderStyle.solid,
                                   )),
@@ -604,7 +650,6 @@ widget.isEdit ? loadTaskData() : Container();
                               // constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width - 18 ),
                             ),
                           ),
-
                         ],
                       ),
                     ),
@@ -612,13 +657,17 @@ widget.isEdit ? loadTaskData() : Container();
                   SizedBox(height: 24.h),
                   InkWell(
                       onTap: () {
-                        role == '1' ? selectedId = selectedId :   selectedId = userId.toString();
+                        role == '1'
+                            ? selectedId = selectedId
+                            : selectedId = userId.toString();
                         if (formKeyTask.currentState!.validate() &&
                             selectedId != '' &&
-                            deadlineController.text != '' && !widget.isEdit) {
+                            deadlineController.text != '' &&
+                            !widget.isEdit) {
                           TasksCubit.get(context).addTaskFun(
                             status: 'published',
-                            assigned_to: role == '1' ? selectedId : userId.toString(),
+                            assigned_to:
+                                role == '1' ? selectedId : userId.toString(),
                             due_date: deadlineController.text,
                             description: details.text,
                             mapUrl: location.text,
@@ -628,46 +677,35 @@ widget.isEdit ? loadTaskData() : Container();
                             notes: notes.text,
                             title: taskTitle.text,
                             address: address.text,
-
                           );
-
                         }
 
-                        if(widget.isEdit)
-                        {
-
-                          switch(selectedStatus)
-                          {
-                            case 'قيد الانتظار' :
+                        if (widget.isEdit) {
+                          switch (selectedStatus) {
+                            case 'قيد الانتظار':
                               selectedStatus = 'inbox';
-                            case 'مكتمل' :
+                            case 'مكتمل':
                               selectedStatus = 'completed';
-                            case 'ملغي' :
+                            case 'ملغي':
                               selectedStatus = 'cancelled';
-                            case 'تم الاستلام' :
+                            case 'تم الاستلام':
                               selectedStatus = 'progress';
                           }
                           TasksCubit.get(context).getLocationFun(
-
-
                             taskId: widget.taskId.toString(),
                             assigned_to: selectedId,
                             due_date: deadlineController.text,
                             description: details.text,
-                            map_url : location.text,
+                            map_url: location.text,
                             client_name: clientName.text,
-
                             client_phone: clientNumber.text,
                             task_status: selectedStatus,
                             notes: notes.text,
                             title: taskTitle.text,
                             address: address.text,
-
                           );
                         }
                       },
-
-
                       child: _buildSubmitButton()),
                 ],
               ),
@@ -702,7 +740,7 @@ widget.isEdit ? loadTaskData() : Container();
         ),
         child: Center(
           child: Text(
-            widget.isEdit ?  'تعديل المهمة' : 'إنشاء المهمة',
+            widget.isEdit ? 'تعديل المهمة' : 'إنشاء المهمة',
             style: TextStyle(
               fontFamily: 'Tajawal',
               fontSize: 20.sp,

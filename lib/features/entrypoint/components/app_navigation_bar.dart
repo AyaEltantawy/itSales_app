@@ -39,15 +39,16 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
           children: [
             BottomAppBarItem(
               name: '',
-              iconLocation: AppIcons.menu,
+             icon:AppIcons.menu_outlined ,
               isActive: widget.currentIndex == 4,
               onTap: () => widget.onNavTap(4),
             ),
             BottomAppBarItem(
               name: '',
-              iconLocation: role == "3"  ? AppIcons.taskBottom :
-              AppIcons.users,
-              isActive: widget.currentIndex == 3,
+              icon: AppIcons.person_2_outlined, isActive: widget.currentIndex == 3,
+
+
+
               onTap: () => widget.onNavTap(3),
             ),
 
@@ -58,14 +59,14 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
 
             BottomAppBarItem(
               name: '',
-              iconLocation: AppIcons.task,
+              icon: AppIcons.task_outlined,
               isActive: widget.currentIndex == 1,
               onTap: () => widget.onNavTap(1),
             ),
 
             BottomAppBarItem(
               name: '',
-              iconLocation: AppIcons.home,
+              icon: AppIcons.home_outlined,
               isActive: widget.currentIndex == 0,
               onTap: () => widget.onNavTap(0),
             ),
