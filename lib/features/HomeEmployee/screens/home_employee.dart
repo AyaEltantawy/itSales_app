@@ -103,15 +103,20 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                     ),
                     // const Divider(),
 
-SizedBox(height: 40.h,),
-                    Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                  const GreetingSection(),
-                         SizedBox(height: 16.h),
-                        CompanyDetails(),
-                   ]),
-                    SizedBox(height: 20.h,),
+                    SizedBox(
+                      height: 40.h,
+                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const GreetingSection(),
+                          SizedBox(height: 16.h),
+                          const CompanyDetails(),
+                        ]),
+                    SizedBox(
+                      height: 20.h,
+                    ),
                     // Text(
                     //   'مهمات اليوم',
                     //   style: AppFonts.style20Bold,
@@ -206,7 +211,6 @@ class GreetingSection extends StatelessWidget {
             '${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',
             style: AppFonts.style20Light,
           ),
-
         ],
       ),
     );
