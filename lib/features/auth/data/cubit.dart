@@ -19,6 +19,12 @@ class AppCubit extends Cubit<AppStates> {
 
 
 
+  bool isChecked = false;
+
+  void toggleCheckbox() {
+    isChecked = !isChecked;
+    emit(CheckBoxUpdate());
+  }
 
 
 bool isDarkMode = CacheHelper.getData(key: 'isDark') ?? false ;

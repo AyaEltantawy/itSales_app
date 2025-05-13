@@ -99,60 +99,7 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                     //     keyboardType: TextInputType.phone,
                     //     validate: (v) {}, label: 'رقم الهاتف'),
 
-                    Form(
-                      key: key,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 20.h),
-                          defaultTextFormFeild(
-                            context,
-                            keyboardType: TextInputType.text,
-                            controller: passController,
-                            validate: Validators.password.call,
-                            secure: !isPasswordShown,
-                            prefix: const Icon(AppIcons.lock),
-                            label: ' كلمة المرور الجديدة',
-                            suffix: IconButton(
-                              onPressed: onPassShowClicked,
-                              icon: Icon(
-                                isPasswordShown
-                                    ? AppIcons.eye
-                                    : AppIcons.eyeNonVisible,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10.h),
-                          defaultTextFormFeild(
-                            context,
-                            keyboardType: TextInputType.text,
-                            controller: verifyPassController,
-                            onChanged: (v) {
-                              if (key.currentState!.validate()) {}
-                            },
-                            validate: (v) {
-                              if (v != passController.text) {
-                                return 'كلمة السر غير متطابقة';
-                              }
-                              return null;
-                            },
-                            secure: !isPasswordShown,
-                            prefix: const Icon(AppIcons.lock),
-                            label: ' تأكيد كلمة المرور الجديدة',
-                            suffix: IconButton(
-                              onPressed: onPassShowClicked,
-                              icon: Icon(
-                                isPasswordShown
-                                    ? AppIcons.eye
-                                    : AppIcons.eyeNonVisible,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+
                     SizedBox(height: 40.h),
 
                     defaultButton(

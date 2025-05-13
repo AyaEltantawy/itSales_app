@@ -30,6 +30,11 @@ class AppRoutes {
   static const homeTasks = '/tasks';
   static const taskDetails = '/task_details';
   static const confirmPage = '/confirm_page';
+  static const registerPage = '/register_page';
+  static const chooseLoginOrSignUpPage= '/choose_login_or_sign_up_page';
+  static const otpPage= '/otp';
+  static const resetPasswordPage= '/resetPasswordPage';
+  static const passwordChangedSuccessPage= '/passwordChangedSuccessPage';
 
   static const notifications = '/notifications';
   static const settings = '/settings';

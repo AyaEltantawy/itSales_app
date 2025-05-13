@@ -8,7 +8,7 @@ class InitialState extends AppStates{
 class PostLoadingLoginSalesState extends AppStates{}
 class PostSuccessLoginSalesState extends AppStates{}
 class PostErrorLoginSalesState extends AppStates{}
-
+class CheckBoxUpdate extends AppStates{}
 
   class ThemeState extends AppStates{
     final bool isDarkMode;

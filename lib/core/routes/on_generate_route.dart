@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:itsale/features/SplashScreen/splash_screen.dart';
+import 'package:itsale/features/auth/screens/otp/otp_view.dart';
+import 'package:itsale/features/auth/screens/register/register_view.dart';
+import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
 
 import 'package:itsale/features/auth/screens/sign_up_page.dart';
 
@@ -19,11 +22,14 @@ import '../../features/Tasks_Screens/screens/task_details.dart';
 import '../../features/Tasks_Screens/screens/tasks.dart';
 import '../../features/addEmployee/screens/add_employee.dart';
 import '../../features/addTask/screens/add_Task.dart';
-import '../../features/auth/screens/forget_password_page.dart';
+import '../../features/auth/screens/choose_login_or_sign_up/choose_login_or_sign_up_view.dart';
+import '../../features/auth/screens/forget_password/forget_password_view.dart';
+
 import '../../features/auth/screens/intro_login_page.dart';
 import '../../features/auth/screens/login_or_signup_page.dart';
 import '../../features/auth/screens/login_page.dart';
 import '../../features/auth/screens/number_verification_page.dart';
+import '../../features/auth/screens/password_changed_success/password_changed_success_view.dart';
 import '../../features/auth/screens/password_reset_page.dart';
 import '../../features/detailed_employee_screen/screens/detailed_employee_screens.dart';
 import '../../features/entrypoint/components/select_any_button_bottom_sheet.dart';
@@ -59,6 +65,12 @@ class RouteGenerator {
 
       case AppRoutes.entryPoint:
         return animatedNavigation(screen: const EntryPointUI());
+      case AppRoutes.otpPage:
+        return animatedNavigation(screen: OtpPage());
+      case AppRoutes.registerPage:
+        return animatedNavigation(screen: RegisterPage());
+      case AppRoutes.passwordChangedSuccessPage:
+        return animatedNavigation(screen: PasswordChangedSuccessPage());
 
       case AppRoutes.addEmployee:
         return animatedNavigation(
@@ -75,6 +87,8 @@ class RouteGenerator {
 
       case AppRoutes.confirmPage:
         return animatedNavigation(screen: const ConfirmTaskListPage());
+      case AppRoutes.resetPasswordPage:
+        return animatedNavigation(screen: ResetPasswordPage());
 
       case AppRoutes.homeTasks:
         return animatedNavigation(
@@ -128,7 +142,8 @@ class RouteGenerator {
 
       case AppRoutes.settingsLanguage:
         return animatedNavigation(screen: const LanguageSettingsPage());
-
+      case AppRoutes.chooseLoginOrSignUpPage:
+        return animatedNavigation(screen: ChooseLoginOrSignUpPage());
       case AppRoutes.selectAnyButtonBottomSheet:
         return animatedNavigation(screen: const SelectAnyButtonBottomSheet());
 

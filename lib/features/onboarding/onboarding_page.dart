@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../core/cache_helper/cache_helper.dart';
+import '../../core/components/app_buttons.dart';
 import '../../core/constants/constants.dart';
 import '../../core/routes/app_routes.dart';
+import '../auth/screens/choose_login_or_sign_up/choose_login_or_sign_up_view.dart';
 import 'components/onboarding_view.dart';
 import 'data/onboarding_data.dart';
 import 'data/onboarding_model.dart';
@@ -33,14 +35,27 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         curve: Curves.ease,
       );
     } else {
-   CacheHelper.saveData(key: 'seen',value: true) ;
+      CacheHelper.saveData(key: 'seen', value: true);
 
       _gotoLoginSignUp();
     }
   }
 
+  _gotoPreviousPage() {
+    if (currentPage > 0) {
+      controller.previousPage(
+        duration: AppDefaults.duration,
+        curve: Curves.ease,
+      );
+    }
+  }
+
   _gotoLoginSignUp() {
-    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login,(route) => false,);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
+    );
   }
 
   @override
@@ -58,88 +73,116 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const Spacer(),
-            SmoothPageIndicator(
-              controller: controller,
-              effect: const ExpandingDotsEffect(
-                dotColor: Colors.grey,
-                activeDotColor: AppColors.primary,
-                expansionFactor: 3,
-                spacing: 5.0,
-                dotHeight: 10.0,
-                dotWidth: 10.0,
-              ),
-              count: items.length,
+        body: SafeArea(
+      child: Column(children: [
+        const Spacer(),
+        SmoothPageIndicator(
+          controller: controller,
+          effect: const ExpandingDotsEffect(
+            dotColor: Colors.grey,
+            activeDotColor: AppColors.primary,
+            expansionFactor: 3,
+            spacing: 5.0,
+            dotHeight: 10.0,
+            dotWidth: 10.0,
+          ),
+          count: items.length,
+        ),
+        Expanded(
+          flex: 8,
+          child: PageView.builder(
+            onPageChanged: onPageChange,
+            itemCount: items.length,
+            controller: controller,
+            itemBuilder: (context, index) {
+              return OnboardingView(
+                data: items[index],
+              );
+            },
+          ),
+        ),
+        const Spacer(),
+
+        if (currentPage == 0)
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsets.only(left: 120.w),
+              child: defaultButton(
+                  width: 160.w,
+                  height: 56.h,
+                  text: "ابدء الآن",
+                  isColor: true,
+                  textSize: 15.sp,
+                  toPage: _gotoNextPage,
+                  context: context),
             ),
-            Expanded(
-              flex: 8,
-              child: PageView.builder(
-                onPageChanged: onPageChange,
-                itemCount: items.length,
-                controller: controller,
-                itemBuilder: (context, index) {
-                  return OnboardingView(
-                    data: items[index],
-                  );
-                },
-              ),
-            ),
-            const Spacer(),
-            Stack(
-              alignment: AlignmentDirectional.center,
+          ),
+        SizedBox(height: AppDefaults.padding.h),
+        if (currentPage == 1)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: Column(
               children: [
-                TweenAnimationBuilder(
-                  duration: AppDefaults.duration,
-                  tween: Tween<double>(
-                      begin: 0, end: (1 / items.length) * (currentPage + 1)),
-                  curve: Curves.easeInOutBack,
-                  builder: (context, double value, _) => SizedBox(
-                    height: 70.h,
-                    width: 75.w,
-                    child: CircularProgressIndicator(
-                      value: value,
-                      strokeWidth: 5,
-                      backgroundColor: AppColors.cardColor,
-                      color: AppColors.primary,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    defaultButton(
+                      width: 160.w,
+                      height: 56.h,
+                      text: "التالي",
+                      isColor: true,
+                      textSize: 15.sp,
+                      toPage: _gotoNextPage,
+                      context: context,
                     ),
-                  ),
+                    defaultButton(
+                      width: 160.w,
+                      height: 56.h,
+                      text: "عودة",
+                      isColor: false,
+                      textSize: 15.sp,
+                      toPage: _gotoPreviousPage,
+                      context: context,
+                    ),
+                  ],
                 ),
-                InkWell(
-                  onTap: _gotoNextPage,
-                  child: Container(
+                SizedBox(height: AppDefaults.padding.h),
+              ],
+            ),
+          ),
 
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    margin: EdgeInsets.symmetric(horizontal: 10.w),
-                    height: 60.h,
-                    width: 60.w,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primary
-                    ),
-                    child: const Center(
-                      child:  Padding(
-                        padding:  EdgeInsets.all(8.0),
-                        child:  Icon(
-                          AppIcons.arrowBackward,
-
-                          color:
-                            Colors.white,
-
-
-                        ),
-                      ),
-                    ),
-                  ),
+        if (currentPage == 2)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                defaultButton(
+                  width: 160.w,
+                  height: 56.h,
+                  text: "تسجيل الدخول",
+                  isColor: true,
+                  textSize: 15.sp,
+                  toPage: () {
+                    navigateTo(context,AppRoutes.chooseLoginOrSignUpPage);
+                  },
+                  context: context,
+                ),
+                defaultButton(
+                  width: 160.w,
+                  height: 56.h,
+                  text: "عودة",
+                  isColor: false,
+                  textSize: 15.sp,
+                  toPage: _gotoPreviousPage,
+                  context: context,
                 ),
               ],
             ),
-             SizedBox(height: AppDefaults.padding.h),
-          ],
-        ),
-      ),
-    );
+          ),
+        SizedBox(height: AppDefaults.padding.h),
+      ]),
+    ));
   }
 }

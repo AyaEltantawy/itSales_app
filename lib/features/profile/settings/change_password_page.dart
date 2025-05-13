@@ -55,12 +55,12 @@ class ChangePasswordPage extends StatelessWidget {
                 TextFormField(
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     suffixIcon: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16),
                       child: Icon(AppIcons.eye),
                     ),
-                    suffixIconConstraints: const BoxConstraints(),
+                    suffixIconConstraints: BoxConstraints(),
                   ),
                 ),
                 const SizedBox(height: AppDefaults.padding),

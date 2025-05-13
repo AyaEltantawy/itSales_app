@@ -23,8 +23,10 @@ Widget defaultButton(
         width: width,
 
           decoration: BoxDecoration(
+
             color: isColor? AppColors.primary : AppColors.textWhite,
-            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(width: 1,color: AppColors.primary),
+            borderRadius: BorderRadius.circular(30.r),
           ),
           child: Center(
             child: Text(
@@ -32,7 +34,7 @@ Widget defaultButton(
               style: TextStyle(
                   fontSize:  textSize
                   ,fontWeight: FontWeight.w700
-                  ,color: isColor ? AppColors.textWhite : AppColors.secondary),
+                  ,color: isColor ? AppColors.textWhite : AppColors.primary),
             ),
 
 

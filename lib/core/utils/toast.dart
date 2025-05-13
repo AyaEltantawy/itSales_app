@@ -12,6 +12,8 @@ void successMotionToast(context,
 
 }) {
   MotionToast toast = MotionToast.success(
+
+    height: 20.h,
     description:  Text(
       text,
       style: AppFonts.style20whiteMedium,
@@ -29,13 +31,15 @@ void warningMotionToast(context, {
 
 }) {
   MotionToast.warning(
+
     title:  Text(
-      'warning !',
+      'warning',
       style: AppFonts.style20BoldColored,
     ),
+    barrierColor:Colors.white,
     description:  Text(text, style: AppFonts.style16LightPrimary,),
-    animationCurve: Curves.bounceIn,
-    animationType: AnimationType.fromTop,
+    animationCurve: Curves.linear,
+    animationType: AnimationType.fromBottom,
     borderRadius: 0,
     animationDuration: const Duration(milliseconds: 1000),
     opacity: .9,
@@ -54,7 +58,7 @@ void errorMotionToast(context,
       style: AppFonts.style20whiteMedium,
     ),
     description:  Text(text,style: AppFonts.style14normalWhite,),
-    position: MotionToastPosition.top,
+    position: MotionToastPosition.bottom,
     barrierColor: AppColors.textWhite,
 
     animationType: AnimationType.fromRight ,
@@ -73,7 +77,7 @@ void displayInfoMotionToast(context) {
         fontWeight: FontWeight.bold,
       ),
     ),
-    position: MotionToastPosition.center,
+    position: MotionToastPosition.bottom,
     description: const Text('Example of Info Toast'),
   ).show(context);
 }
@@ -98,7 +102,7 @@ void displayCustomMotionToast(context) {
   MotionToast(
     width: MediaQuery.of(context).size.width * 0.75,
     height: MediaQuery.of(context).size.height * 0.10,
-    primaryColor: Colors.pink,
+    primaryColor: Colors.white,
     title: const Text(
       'Bugatti',
       style: TextStyle(
@@ -115,7 +119,7 @@ void displayCustomMotionToast(context) {
 void displayMotionToastWithoutSideBar(context) {
   MotionToast(
     icon: Icons.zoom_out,
-    primaryColor: Colors.orange[500]!,
+    primaryColor: Colors.white,
     secondaryColor: Colors.grey,
     title: const Text('Two Color Motion Toast'),
     description: const Text('Another motion toast example'),
@@ -131,7 +135,7 @@ void displayMotionToastWithBorder(context) {
     title: const Text('Top Motion Toast'),
     description: const Text('Another motion toast example'),
     position: MotionToastPosition.top,
-    animationType: AnimationType.fromTop,
+    animationType: AnimationType.fromBottom,
     displayBorder: true,
     width: 350,
     height: 100,
@@ -144,7 +148,7 @@ void displayMotionToastWithBorder(context) {
 void displayTwoColorsMotionToast(context) {
   MotionToast(
     icon: Icons.zoom_out,
-    primaryColor: Colors.orange[500]!,
+    primaryColor: Colors.white,
     secondaryColor: Colors.grey,
     title: const Text(
       'Two Color Motion Toast',
@@ -153,8 +157,8 @@ void displayTwoColorsMotionToast(context) {
       ),
     ),
     description: const Text('Another motion toast example'),
-    position: MotionToastPosition.top,
-    animationType: AnimationType.fromTop,
+    position: MotionToastPosition.bottom,
+    animationType: AnimationType.fromBottom,
     width: 350,
     height: 100,
   ).show(context);
@@ -164,7 +168,7 @@ void displayTransparentMotionToast(context) {
   MotionToast(
     icon: Icons.zoom_out,
     primaryColor: Colors.grey[400]!,
-    secondaryColor: Colors.yellow,
+    secondaryColor: Colors.white,
     title: const Text(
       'Two Color Motion Toast',
       style: TextStyle(
@@ -199,8 +203,8 @@ void displaySimultaneouslyToasts(context) {
       ),
     ),
     description: const Text('Please enter your name'),
-    animationType: AnimationType.fromLeft,
-    position: MotionToastPosition.top,
+    animationType: AnimationType.fromBottom,
+    position: MotionToastPosition.bottom,
     width: 300,
     height: 80,
   ).show(context);
@@ -236,7 +240,7 @@ Color? chooseToastColor(ToastStates state) {
       color = Colors.redAccent;
       break;
     case ToastStates.warning:
-      color = Colors.amber;
+      color = Colors.white;
       break;
   }
   return color;

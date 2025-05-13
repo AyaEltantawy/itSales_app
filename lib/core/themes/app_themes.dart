@@ -11,13 +11,10 @@ class AppTheme {
     return ThemeData(
       colorSchemeSeed: AppColors.primary,
       fontFamily: "Tajawal",
-      textTheme:  TextTheme(
-
-        labelMedium:  TextStyle(color: AppColors.textBlack,fontSize: 16.sp ),
-        bodyLarge: TextStyle(color: AppColors.textBlack,fontSize: 18.sp ),
-        bodyMedium: TextStyle(color: AppColors.textBlack,fontSize: 18.sp),
-
-
+      textTheme: TextTheme(
+        labelMedium: TextStyle(color: AppColors.textBlack, fontSize: 16.sp),
+        bodyLarge: TextStyle(color: AppColors.textBlack, fontSize: 18.sp),
+        bodyMedium: TextStyle(color: AppColors.textBlack, fontSize: 18.sp),
         headlineLarge: TextStyle(color: AppColors.textBlack),
         bodySmall: TextStyle(color: AppColors.textBlack),
         titleLarge: TextStyle(color: AppColors.textBlack),
@@ -30,43 +27,33 @@ class AppTheme {
         headlineMedium: TextStyle(color: AppColors.textBlack),
         headlineSmall: TextStyle(color: AppColors.textBlack),
         labelLarge: TextStyle(color: AppColors.textBlack),
-
-
-
-
       ),
       scaffoldBackgroundColor: AppColors.background,
-floatingActionButtonTheme: const FloatingActionButtonThemeData(
-  backgroundColor: AppColors.primary,
-  foregroundColor: AppColors.primary,
-  focusColor: AppColors.primary,
-  hoverColor: AppColors.primary,
-  splashColor: AppColors.primary,
-),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.primary,
+        focusColor: AppColors.primary,
+        hoverColor: AppColors.primary,
+        splashColor: AppColors.primary,
+      ),
       brightness: Brightness.light,
-      appBarTheme:  AppBarTheme(
+      appBarTheme: AppBarTheme(
         elevation: 0.3,
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         titleTextStyle: GoogleFonts.tajawal(
           color: Colors.black,
           fontWeight: FontWeight.bold,
-
         ),
-
-        systemOverlayStyle:  SystemUiOverlayStyle(
-
+        systemOverlayStyle: SystemUiOverlayStyle(
           statusBarBrightness: Brightness.light,
           statusBarColor: AppColors.textWhite,
           statusBarIconBrightness: Brightness.dark,
-
         ),
       ),
-
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-
           foregroundColor: Colors.white,
           padding: const EdgeInsets.all(AppDefaults.padding),
           elevation: 0,
@@ -88,9 +75,8 @@ floatingActionButtonTheme: const FloatingActionButtonThemeData(
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          textStyle:  GoogleFonts.tajawal(
+          textStyle: GoogleFonts.tajawal(
             fontWeight: FontWeight.bold,
-
           ),
         ),
       ),
@@ -99,7 +85,7 @@ floatingActionButtonTheme: const FloatingActionButtonThemeData(
         showValueIndicator: ShowValueIndicator.always,
         thumbColor: Colors.white,
       ),
-      tabBarTheme:  TabBarTheme(
+      tabBarTheme: TabBarTheme(
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.placeholder,
         labelPadding: const EdgeInsets.all(AppDefaults.padding),
@@ -121,6 +107,7 @@ floatingActionButtonTheme: const FloatingActionButtonThemeData(
       ),
     );
   }
+
   static ThemeData get darkTheme {
     return ThemeData(
       fontFamily: "Tajawal",
@@ -132,18 +119,15 @@ floatingActionButtonTheme: const FloatingActionButtonThemeData(
 
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
-foregroundColor: AppColors.primary,
+        foregroundColor: AppColors.primary,
         focusColor: AppColors.primary,
         hoverColor: AppColors.primary,
         splashColor: AppColors.primary,
       ),
       textTheme: TextTheme(
-
-        labelMedium: TextStyle(
-            color: Colors.white, fontSize: 16.sp),
+        labelMedium: TextStyle(color: Colors.white, fontSize: 16.sp),
         bodyLarge: TextStyle(color: Colors.white, fontSize: 18.sp),
         bodyMedium: TextStyle(color: Colors.white, fontSize: 18.sp),
-
         headlineLarge: TextStyle(color: Colors.white),
         bodySmall: TextStyle(color: Colors.white),
         titleLarge: TextStyle(color: Colors.white),
@@ -156,8 +140,6 @@ foregroundColor: AppColors.primary,
         headlineMedium: TextStyle(color: Colors.white),
         headlineSmall: TextStyle(color: Colors.white),
         labelLarge: TextStyle(color: Colors.white),
-
-
       ),
       scaffoldBackgroundColor: AppColors.darkBackground,
 
@@ -165,12 +147,14 @@ foregroundColor: AppColors.primary,
       appBarTheme: AppBarTheme(
         elevation: 0.3,
         backgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white, ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         titleTextStyle: GoogleFonts.tajawal(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
-        systemOverlayStyle:  SystemUiOverlayStyle(
+        systemOverlayStyle: SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarColor: Colors.black,
           statusBarIconBrightness: Brightness.light,
@@ -179,7 +163,6 @@ foregroundColor: AppColors.primary,
       // Add other theme configurations as needed, similar to your light theme
     );
   }
-
 
   /* <---- Input Decorations Theme -----> */
   static final defaultInputDecorationTheme = InputDecorationTheme(

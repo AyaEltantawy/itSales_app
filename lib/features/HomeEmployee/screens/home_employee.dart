@@ -18,6 +18,7 @@ import '../../../core/app/app.dart';
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_animation.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../core/themes/styles.dart';
 import '../../../core/utils/token.dart';
 import '../../../core/utils/transition.dart';
 import '../../../generated/l10n.dart';
@@ -106,7 +107,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                     SizedBox(
                       height: 40.h,
                     ),
-                    Row(
+                   Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -400,15 +401,6 @@ class SimpleBarChart extends StatelessWidget {
         ),
       ),
     );
-
-    //   Container(
-    //   height: 200,
-    //   color: Colors.grey[300],
-    //   // Placeholder for bar chart
-    //   child: Center(
-    //     child: Text('Bar Chart Placeholder'),
-    //   ),
-    // );
   }
 }
 
@@ -542,11 +534,12 @@ class TaskListItem extends StatelessWidget {
               children: [
                 Text(
                   taskName,
-                  style: AppFonts.style12medium,
+                  style: TextStyles.font18Weight500Black,
                 ),
                 Text(
                   location,
-                  style: AppFonts.style10light,
+
+                  style: TextStyles.font16Weight300EmeraldWithoutLine,
                 ),
               ],
             ),

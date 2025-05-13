@@ -27,30 +27,28 @@ class OnboardingView extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(AppDefaults.padding),
-          child: Column(
-            children: [
-              Text(
-                data.headline,
+        Column(
+          children: [
+            Text(
+              data.headline,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w900, fontSize: 32),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(AppDefaults.padding),
+              child: Text(
+                data.description,
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.w900, fontSize: 32),
+                    ?.copyWith(fontWeight: FontWeight.normal, fontSize: 20),
+                textAlign: TextAlign.center,
               ),
-              Padding(
-                padding: const EdgeInsets.all(AppDefaults.padding),
-                child: Text(
-                  data.description,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.normal, fontSize: 20),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
+            ),
+
+          ],
         ),
       ],
     );

@@ -7,9 +7,9 @@ import 'package:itsale/core/constants/app_colors.dart';
 Widget defaultTextFormFeild(context,
     {
       required TextInputType keyboardType,
-      required String? Function(String?) validate,
+       String? Function(String?)? validate,
       String? hint,
-      required String label,
+       String? label,
 
 
       bool secure = false,
@@ -27,6 +27,7 @@ Widget defaultTextFormFeild(context,
     }) =>
 
     TextFormField(
+
 textDirection: TextDirection.rtl,
       readOnly: readOnly  ,
       focusNode: focusNode,

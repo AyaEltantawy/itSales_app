@@ -10,6 +10,7 @@ import 'package:itsale/features/HomeEmployee/screens/home_employee.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/states.dart';
 import 'package:itsale/features/home/screens/employee_screen.dart';
+import 'package:itsale/features/profile/widgets/change_password_page/change_password_page_view.dart';
 import 'package:itsale/features/profile/widgets/help/help_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:svg_flutter/svg.dart';
@@ -258,7 +259,23 @@ class _SettingsPageState extends State<SettingsPage> {
                             }
                             //  Navigator.pushNamed(context, AppRoutes.profileEdit),
                             ),
-
+                        AppSettingsListTile(
+                            style: AppFonts.style16semiBold,
+                            widget: Icon(AppIcons.settings,
+                              color: AppCubit.get(context).isDarkMode
+                                  ? AppColors.textWhite
+                                  : AppColors.textBlack,
+                            ),
+                            label: 'تغيير كلمة المرور',
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChangePasswordPage(),
+                                  ));
+                            }
+                          //  Navigator.pushNamed(context, AppRoutes.profileEdit),
+                        ),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
                             widget: Icon(
@@ -273,6 +290,20 @@ class _SettingsPageState extends State<SettingsPage> {
                             }
                             //  Navigator.pushNamed(context, AppRoutes.profileEdit),
                             ),
+                        AppSettingsListTile(
+                            style: AppFonts.style16semiBold,
+                            widget: Icon(
+                              AppIcons.help,
+                              color: AppCubit.get(context).isDarkMode
+                                  ? AppColors.textWhite
+                                  : AppColors.textBlack,
+                            ),
+                            label: 'اللغة',
+                            onTap: () {
+                              navigateTo(context, AppRoutes.helpPge);
+                            }
+                          //  Navigator.pushNamed(context, AppRoutes.profileEdit),
+                        ),
                         BlocBuilder<AppCubit, AppStates>(
                           builder: (context, state) {
                             return Row(

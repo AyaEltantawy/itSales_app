@@ -15,10 +15,12 @@ class LoginPageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-       // Image.asset(AppIcons.logo,
-       //   height: 78.h,width: 195.w,fit: BoxFit.cover,),
+        // Image.asset(AppIcons.logo,
+        //   height: 78.h,width: 195.w,fit: BoxFit.cover,),
 
-SizedBox(height: 20.h,),
+        SizedBox(
+          height: 80.h,
+        ),
         Text(
           S.of(context).welcome_back,
           style: AppFonts.style36medium,
@@ -26,8 +28,7 @@ SizedBox(height: 20.h,),
         Text(
           S.of(context).write_your_data_for_login,
           style: AppFonts.style20Light,
-              ),
-
+        ),
       ],
     );
   }
