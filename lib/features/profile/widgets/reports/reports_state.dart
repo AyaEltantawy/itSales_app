@@ -1,9 +1,3 @@
-class ReportsState {
-  ReportsState init() {
-    return ReportsState();
-  }
-
-  ReportsState clone() {
-    return ReportsState();
-  }
-}
+abstract class ReportsState {}
+class ReportsStateInit extends ReportsState{}
+class ToggleExportType extends ReportsState{}

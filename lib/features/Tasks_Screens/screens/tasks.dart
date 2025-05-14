@@ -47,88 +47,101 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _refreshData() async {
+      if (role == '3') {
+        await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
+      } else {
+        await TasksCubit.get(context).getAllTasksFun();
+      }
+    }
+
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(height: 10.h),
-              CustomAppBar(back: widget.back, title: 'المهمات'),
-              BuildSearchFilter(
-                  task: true,
-                  admin: false,
-                  emp: false,
-                  isGrid: isGrid,
-                  toggleViewMode: toggleViewMode),
-              BlocConsumer<TasksCubit, TasksStates>(
-                  listener: (context, state) {},
-                  builder: (context, state) {
-                    if (state is NoInternetState) {
-                      return const NoInternet();
-                    }
-                    if (state is GetLoadingSearchTaskFilterState) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          const LinearProgressIndicator(),
-                        ],
-                      );
-                    }
+        body: RefreshIndicator(
+            onRefresh: _refreshData,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10.h),
+                      CustomAppBar(back: widget.back, title: 'المهمات'),
+                      BuildSearchFilter(
+                          task: true,
+                          admin: false,
+                          emp: false,
+                          isGrid: isGrid,
+                          toggleViewMode: toggleViewMode),
+                      BlocConsumer<TasksCubit, TasksStates>(
+                          listener: (context, state) {},
+                          builder: (context, state) {
+                            if (state is NoInternetState) {
+                              return const NoInternet();
+                            }
+                            if (state is GetLoadingSearchTaskFilterState) {
+                              return Column(
+                                children: [
+                                  SizedBox(
+                                    height: 10.h,
+                                  ),
+                                  const LinearProgressIndicator(),
+                                ],
+                              );
+                            }
 
-                    if (state is GetSuccessSearchTaskFilterState) {
-                      return role == '1'
-                          ? (TasksCubit.get(context)
-                                  .getAllTaskListFilter!
-                                  .isNotEmpty
-                              ? TaskListFilter(isGrid: isGrid)
-                              : nothing(context,
-                                  route: AppRoutes.addTask,
-                                  button: 'مهمة',
-                                  text: 'لا يوجد'))
-                          : (TasksCubit.get(context)
-                                  .getTaskListForOneUserSearch!
-                                  .isNotEmpty
-                              ? TaskListFilter(isGrid: isGrid)
-                              : nothing(context,
-                                  route: AppRoutes.addTask,
-                                  button: 'مهمة',
-                                  text: 'لا يوجد'));
-                    }
-                    if (state is GetLoadingUserTaskState ||
-                        state is GetLoadingAllTaskState ||
-                        state is GetLoadingAllTaskFilterState) {
-                      return AppLottie.loader;
-                    }
-                    if (state is GetSuccessAllTaskFilterState) {
-                      return TasksCubit.get(context)
-                              .getAllTaskListFilter!
-                              .isNotEmpty
-                          ? TaskListFilter(isGrid: isGrid)
-                          : nothing(context,
-                              route: AppRoutes.addTask,
-                              button: 'مهمة',
-                              text: 'لا يوجد');
-                    }
+                            if (state is GetSuccessSearchTaskFilterState) {
+                              return role == '1'
+                                  ? (TasksCubit.get(context)
+                                          .getAllTaskListFilter!
+                                          .isNotEmpty
+                                      ? TaskListFilter(isGrid: isGrid)
+                                      : nothing(context,
+                                          route: AppRoutes.addTask,
+                                          button: 'مهمة',
+                                          text: 'لا يوجد'))
+                                  : (TasksCubit.get(context)
+                                          .getTaskListForOneUserSearch!
+                                          .isNotEmpty
+                                      ? TaskListFilter(isGrid: isGrid)
+                                      : nothing(context,
+                                          route: AppRoutes.addTask,
+                                          button: 'مهمة',
+                                          text: 'لا يوجد'));
+                            }
+                            if (state is GetLoadingUserTaskState ||
+                                state is GetLoadingAllTaskState ||
+                                state is GetLoadingAllTaskFilterState) {
+                              return AppLottie.loader;
+                            }
+                            if (state is GetSuccessAllTaskFilterState) {
+                              return TasksCubit.get(context)
+                                      .getAllTaskListFilter!
+                                      .isNotEmpty
+                                  ? TaskListFilter(isGrid: isGrid)
+                                  : nothing(context,
+                                      route: AppRoutes.addTask,
+                                      button: 'مهمة',
+                                      text: 'لا يوجد');
+                            }
 
-                    return (TasksCubit.get(context)
-                                .getUserTaskList!
-                                .isNotEmpty ||
-                            TasksCubit.get(context).getAllTaskList!.isNotEmpty)
-                        ? TaskList(isGrid: isGrid)
-                        : nothing(context,
-                            route: AppRoutes.addTask,
-                            button: 'مهمة',
-                            text: 'لا يوجد مهام الى الان');
-                  }),
-            ],
-          ),
-        ),
-      ),
-    );
+                            return (TasksCubit.get(context)
+                                        .getUserTaskList!
+                                        .isNotEmpty ||
+                                    TasksCubit.get(context)
+                                        .getAllTaskList!
+                                        .isNotEmpty)
+                                ? TaskList(isGrid: isGrid)
+                                : nothing(context,
+                                    route: AppRoutes.addTask,
+                                    button: 'مهمة',
+                                    text: 'لا يوجد مهام الى الان');
+                          }),
+                    ],
+                  ),
+                ),
+              ),
+            )));
   }
 }
 

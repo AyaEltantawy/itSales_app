@@ -50,143 +50,156 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _refreshData() async {
+      if (role == '1') {
+        await TasksCubit.get(context).getAllTasksFun();
+      } else {
+        await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
+      }
+      // Optional: call setState if needed
+    }
+
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDefaults.padding.w),
-            child:
-                BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
-              if (state is ThemeState) {
-                globalDark = state.isDarkMode;
-                setState(() {});
-              } else {
-                globalDark = context.read<AppCubit>().isDarkMode;
-                setState(() {});
-              }
-            }, builder: (context, state) {
-              if (state is NoInternetState ||
-                  AppCubit.get(context).getInfo == null) {
-                return const NoInternet();
-              }
-              if (state is GetLoadingInfoState ||
-                  AppCubit.get(context).getInfo == null) {
-                return AppLottie.loader;
-              }
+        body: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppDefaults.padding.w),
+              child:
+                  BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
+                if (state is ThemeState) {
+                  globalDark = state.isDarkMode;
+                  setState(() {});
+                } else {
+                  globalDark = context.read<AppCubit>().isDarkMode;
+                  setState(() {});
+                }
+              }, builder: (context, state) {
+                if (state is NoInternetState ||
+                    AppCubit.get(context).getInfo == null) {
+                  return const NoInternet();
+                }
+                if (state is GetLoadingInfoState ||
+                    AppCubit.get(context).getInfo == null) {
+                  return AppLottie.loader;
+                }
 
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10.h),
-                    CustomAppBar(
-                      back: widget.back,
-                      title: 'الصفحة الرئيسية',
-                      actions: [
-                        InkWell(
-                          onTap: () {
-                            navigateTo(context, AppRoutes.notifications);
-                          },
-                          child: badges.Badge(
-                            position:
-                                badges.BadgePosition.topEnd(top: -25, end: 10),
-                            showBadge: true,
-                            ignorePointer: false,
-                            onTap: () {},
-                            badgeContent: const Text(
-                              "3",
-                              textAlign: TextAlign.center,
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10.h),
+                      CustomAppBar(
+                        back: widget.back,
+                        title: 'الصفحة الرئيسية',
+                        actions: [
+                          InkWell(
+                            onTap: () {
+                              navigateTo(context, AppRoutes.notifications);
+                            },
+                            child: badges.Badge(
+                              position: badges.BadgePosition.topEnd(
+                                  top: -25, end: 10),
+                              showBadge: true,
+                              ignorePointer: false,
+                              onTap: () {},
+                              badgeContent: const Text(
+                                "3",
+                                textAlign: TextAlign.center,
+                              ),
+                              child: Image.asset("assets/images/bell.png"),
                             ),
-                            child: Image.asset("assets/images/bell.png"),
                           ),
-                        ),
-                      ],
-                    ),
-                    // const Divider(),
+                        ],
+                      ),
+                      // const Divider(),
 
-                    SizedBox(
-                      height: 40.h,
-                    ),
-                   Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const GreetingSection(),
-                          SizedBox(height: 16.h),
-                          const CompanyDetails(),
-                        ]),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    // Text(
-                    //   'مهمات اليوم',
-                    //   style: AppFonts.style20Bold,
-                    // ),
-                    SizedBox(height: 8.h),
-                    BlocConsumer<TasksCubit, TasksStates>(
-                      listener: (context, state) {},
-                      builder: (context, state) {
-                        List<DataAllTasks>? completedTasks;
-                        List<DataAllTasks>? uncompletedTasks;
+                      SizedBox(
+                        height: 40.h,
+                      ),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const GreetingSection(),
+                            SizedBox(height: 16.h),
+                            const CompanyDetails(),
+                          ]),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      // Text(
+                      //   'مهمات اليوم',
+                      //   style: AppFonts.style20Bold,
+                      // ),
+                      SizedBox(height: 8.h),
+                      BlocConsumer<TasksCubit, TasksStates>(
+                        listener: (context, state) {},
+                        builder: (context, state) {
+                          List<DataAllTasks>? completedTasks;
+                          List<DataAllTasks>? uncompletedTasks;
 
-                        List<DataUserTask>? completedTasksForUser;
-                        List<DataUserTask>? uncompletedTasksForUser;
-                        completedTasks = TasksCubit.get(context)
-                            .getAllTaskList!
-                            .where((task) => task.task_status == 'completed')
-                            .toList();
-                        uncompletedTasks = TasksCubit.get(context)
-                            .getAllTaskList!
-                            .where((task) => task.task_status != 'completed')
-                            .toList();
-                        completedTasksForUser = TasksCubit.get(context)
-                            .getUserTaskList!
-                            .where((task) => task.task_status == 'completed')
-                            .toList();
-                        uncompletedTasksForUser = TasksCubit.get(context)
-                            .getUserTaskList!
-                            .where((task) => task.task_status != 'completed')
-                            .toList();
-                        if (state is GetLoadingAllTaskState ||
-                            state is GetLoadingUserTaskState) {
-                          return AppLottie.loader;
-                        }
-                        return TasksCubit.get(context)
-                                    .getAllTaskList!
-                                    .isNotEmpty ||
-                                TasksCubit.get(context)
-                                    .getUserTaskList!
-                                    .isNotEmpty
-                            ? TaskSummarySection(
-                                completedTasks: completedTasks,
-                                completedTasksForUser: completedTasksForUser,
-                                uncompletedTasks: uncompletedTasks,
-                                uncompletedTasksForUser:
-                                    uncompletedTasksForUser,
-                              )
-                            : Center(child: Text(S.of(context).no_tasks));
-                      },
-                    ),
-                    SizedBox(height: 20.h),
-                    const ChartsSection(),
-                    SizedBox(height: 16.h),
-                    BlocConsumer<TasksCubit, TasksStates>(
-                      listener: (context, state) {},
-                      builder: (context, state) {
-                        if (state is GetErrorAllTaskState) {
-                          return Center(child: Text(S.of(context).sorry_error));
-                        }
+                          List<DataUserTask>? completedTasksForUser;
+                          List<DataUserTask>? uncompletedTasksForUser;
+                          completedTasks = TasksCubit.get(context)
+                              .getAllTaskList!
+                              .where((task) => task.task_status == 'completed')
+                              .toList();
+                          uncompletedTasks = TasksCubit.get(context)
+                              .getAllTaskList!
+                              .where((task) => task.task_status != 'completed')
+                              .toList();
+                          completedTasksForUser = TasksCubit.get(context)
+                              .getUserTaskList!
+                              .where((task) => task.task_status == 'completed')
+                              .toList();
+                          uncompletedTasksForUser = TasksCubit.get(context)
+                              .getUserTaskList!
+                              .where((task) => task.task_status != 'completed')
+                              .toList();
+                          if (state is GetLoadingAllTaskState ||
+                              state is GetLoadingUserTaskState) {
+                            return AppLottie.loader;
+                          }
+                          return TasksCubit.get(context)
+                                      .getAllTaskList!
+                                      .isNotEmpty ||
+                                  TasksCubit.get(context)
+                                      .getUserTaskList!
+                                      .isNotEmpty
+                              ? TaskSummarySection(
+                                  completedTasks: completedTasks,
+                                  completedTasksForUser: completedTasksForUser,
+                                  uncompletedTasks: uncompletedTasks,
+                                  uncompletedTasksForUser:
+                                      uncompletedTasksForUser,
+                                )
+                              : Center(child: Text(S.of(context).no_tasks));
+                        },
+                      ),
+                      SizedBox(height: 20.h),
+                      const ChartsSection(),
+                      SizedBox(height: 16.h),
+                      BlocConsumer<TasksCubit, TasksStates>(
+                        listener: (context, state) {},
+                        builder: (context, state) {
+                          if (state is GetErrorAllTaskState) {
+                            return Center(
+                                child: Text(S.of(context).sorry_error));
+                          }
 
-                        return CompletedTasksSection(
-                            data: role == '1'
-                                ? TasksCubit.get(context).getLastTaskList
-                                : TasksCubit.get(context)
-                                    .getLastTaskListForOneUser);
-                      },
-                    ),
-                    SizedBox(height: 32.h),
-                  ]);
-            }),
+                          return CompletedTasksSection(
+                              data: role == '1'
+                                  ? TasksCubit.get(context).getLastTaskList
+                                  : TasksCubit.get(context)
+                                      .getLastTaskListForOneUser);
+                        },
+                      ),
+                      SizedBox(height: 32.h),
+                    ]);
+              }),
+            ),
           ),
         ),
       ),
@@ -538,7 +551,6 @@ class TaskListItem extends StatelessWidget {
                 ),
                 Text(
                   location,
-
                   style: TextStyles.font16Weight300EmeraldWithoutLine,
                 ),
               ],

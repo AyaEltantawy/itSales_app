@@ -7,6 +7,7 @@ import 'package:itsale/features/auth/data/cubit.dart';
 import '../../../core/app/app.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_fonts.dart';
+import '../../../core/themes/styles.dart';
 import '../../../core/utils/token.dart';
 import '../data/cubit/cubit.dart';
 
@@ -97,7 +98,7 @@ class TaskCardGrid extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ) :
                             Text(names,
-                              style: AppFonts.style10light,
+                              style: TextStyles.font18Weight500Black,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -114,7 +115,7 @@ class TaskCardGrid extends StatelessWidget {
                 SizedBox(height: 8.h),
                 Text(
                   taskName,
-                  style: AppFonts.style12bold,
+                  style: TextStyles.font16Weight300EmeraldWithoutLine,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
 

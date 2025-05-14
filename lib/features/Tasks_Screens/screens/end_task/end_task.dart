@@ -17,7 +17,7 @@ import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 
 import '../../../../core/constants/app_animation.dart';
-import '../../../../core/utils/toast.dart';
+import '../../../../core/utils/snack_bar.dart';
 import '../../data/models/get_task_model.dart';
 
 class CompleteTask extends StatefulWidget {
@@ -31,7 +31,10 @@ class CompleteTask extends StatefulWidget {
       required this.clientName,
       required this.clientPhone,
       required this.notes,
-      required this.due_date, required this.link, required this.address});
+      required this.due_date,
+      required this.link,
+      required this.address});
+
   final int taskId;
   final String locationId;
   final String title;
@@ -44,6 +47,7 @@ class CompleteTask extends StatefulWidget {
   final String clientPhone;
   final String notes;
   final String due_date;
+
   @override
   State<CompleteTask> createState() => _CompleteTaskState();
 }
@@ -53,6 +57,7 @@ class _CompleteTaskState extends State<CompleteTask> {
   String? address;
   Position? _currentPosition;
   bool check = false;
+
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -145,7 +150,9 @@ class _CompleteTaskState extends State<CompleteTask> {
 
     print('enter ...');
   }
-bool isLocationMatched = false ;
+
+  bool isLocationMatched = false;
+
   Future<void> _getAddressFromLatLng(Position position) async {
     await placemarkFromCoordinates(
             _currentPosition!.latitude, _currentPosition!.longitude)
@@ -156,23 +163,31 @@ bool isLocationMatched = false ;
             '${place.street}, ${place.name}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.country}';
       });
 
-      showToast(text: _currentAddress.toString(), state: ToastStates.success);
+      Utils.showSnackBar(
+        context,
+        _currentAddress.toString(),
+      );
 
       isLocationMatched = widget.address.contains(place.street ?? '') ||
-          widget.link.contains(place.street ?? '') || widget.address.contains(place.name ?? '') || widget.link.contains(place.name ?? '')  ;
+          widget.link.contains(place.street ?? '') ||
+          widget.address.contains(place.name ?? '') ||
+          widget.link.contains(place.name ?? '');
 
       if (isLocationMatched) {
-        showToast(
-            text: ' الموقع مطابق${place.street}', state: ToastStates.success);
+        Utils.showSnackBar(
+          context,
+          ' الموقع مطابق${place.street}',
+        );
       } else {
-        showToast(
-            text: ' ${place.street} الموقع غير مطابق ', state: ToastStates.error);
+        Utils.showSnackBar(
+          context,
+          ' ${place.street} الموقع غير مطابق ',
+        );
       }
 
       setState(() {
         check = false;
       });
-
     }).catchError((e) {
       debugPrint(e);
     });
@@ -204,20 +219,17 @@ bool isLocationMatched = false ;
           child: SingleChildScrollView(
             child: BlocConsumer<TasksCubit, TasksStates>(
               listener: (context, state) {
-                if (
-                    state is EditErrorUserTaskState) {
-                  errorMotionToast(context, text: 'error ');
+                if (state is EditErrorUserTaskState) {
+                  Utils.showSnackBar(context, 'error ');
                 }
 
-                if (
-                    state is EditSuccessUserTaskState) {
-                  successMotionToast(context, text: 'تم اكتمال المهمة بنجاح');
+                if (state is EditSuccessUserTaskState) {
+                  Utils.showSnackBar(context, 'تم اكتمال المهمة بنجاح');
                   navigateTo(context, AppRoutes.entryPoint);
                 }
               },
               builder: (context, state) {
-                if (
-                    state is EditLoadingUserTaskState) {
+                if (state is EditLoadingUserTaskState) {
                   return AppLottie.loader;
                 }
                 return Column(
@@ -254,19 +266,32 @@ bool isLocationMatched = false ;
                             style: AppFonts.style14normal,
                           )
                         : Container(),
-                    SizedBox(height: 10.h,),
-                    _currentAddress != null  ? Row(
-                      children: [
-                      isLocationMatched ? Icon(Icons.check_circle ,color: AppColors.greenColor,):
-                      Icon(Icons.cancel ,color: AppColors.errorColor,),
-
-                        SizedBox(width: 10.w,),
-                        Text(
-                          !isLocationMatched ?  'موقعك لا يطابق موقع المهمة' : 'تم التحقق بنجاح من الموقع',
-                          style: AppFonts.style14normal,
-                        ),
-                      ],
-                    )
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    _currentAddress != null
+                        ? Row(
+                            children: [
+                              isLocationMatched
+                                  ? Icon(
+                                      Icons.check_circle,
+                                      color: AppColors.greenColor,
+                                    )
+                                  : Icon(
+                                      Icons.cancel,
+                                      color: AppColors.errorColor,
+                                    ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                !isLocationMatched
+                                    ? 'موقعك لا يطابق موقع المهمة'
+                                    : 'تم التحقق بنجاح من الموقع',
+                                style: AppFonts.style14normal,
+                              ),
+                            ],
+                          )
                         : Container(),
                     SizedBox(
                       height: 20.h,
@@ -304,12 +329,11 @@ bool isLocationMatched = false ;
                           toPage: () {
                             _pickImage().then((onValue) async {
                               if (selectedImage != null) {
-                                filesId =
-                                    await cubit.uploadFileInTasks(selectedImage!);
+                                filesId = await cubit
+                                    .uploadFileInTasks(selectedImage!);
                                 filesIdReady.add(Files(
                                     directus_files_id:
                                         DirectusFilesIdRequest(id: filesId)));
-
                               }
                             });
                           }),
@@ -329,47 +353,51 @@ bool isLocationMatched = false ;
                       height: 20.h,
                     ),
 
-                   isLocationMatched ? Center(
-                      child: defaultButton(
-                          context: context,
-                          text: 'اكمال المهمة',
-                          width: 200.w,
-                          height: 48.h,
-                          isColor: true,
-                          textSize: 16.sp,
-                          toPage: () {
-                            // launchUrl(Uri.parse(
-                            //      log('https://www.google.com/maps/search/?api=1&query=${_currentAddress.toString()}');
-                            //
-                            log(DateTime.now()
-                                .toUtc()
-                                .toIso8601String()
-                                .replaceFirst('Z', '+00:00'));
-                            if (_currentAddress != null &&
-                                selectedImage != null) {
-                              cubit.updateLocationFun(
-                                  files: filesIdReady,
-                                  title: widget.title,
-                                  description: widget.description,
-                                  client_phone: widget.clientPhone,
-                                  notes: widget.notes,
-                                  assigned_to: widget.assign_to,
-                                  client_name: widget.clientName,
-                                  complete_date: DateFormat('yyyy-MM-dd', 'en')
-                                      .format(DateTime.now()),
-                                  due_date: widget.due_date,
-                                  task_status: 'completed',
-                                  locationId: widget.locationId == 'لا يوجد' ||
-                                          widget.locationId == ''
-                                      ? '10'
-                                      : widget.locationId,
-                                  taskId: widget.taskId.toString(),
-                                  address: _currentAddress.toString(),
-                                  map_url:
-                                      'https://www.google.com/maps/search/?api=1&query=${_currentAddress.toString()}');
-                            }
-                          }),
-                    ) : Container(),
+                    isLocationMatched
+                        ? Center(
+                            child: defaultButton(
+                                context: context,
+                                text: 'اكمال المهمة',
+                                width: 200.w,
+                                height: 48.h,
+                                isColor: true,
+                                textSize: 16.sp,
+                                toPage: () {
+                                  // launchUrl(Uri.parse(
+                                  //      log('https://www.google.com/maps/search/?api=1&query=${_currentAddress.toString()}');
+                                  //
+                                  log(DateTime.now()
+                                      .toUtc()
+                                      .toIso8601String()
+                                      .replaceFirst('Z', '+00:00'));
+                                  if (_currentAddress != null &&
+                                      selectedImage != null) {
+                                    cubit.updateLocationFun(
+                                        files: filesIdReady,
+                                        title: widget.title,
+                                        description: widget.description,
+                                        client_phone: widget.clientPhone,
+                                        notes: widget.notes,
+                                        assigned_to: widget.assign_to,
+                                        client_name: widget.clientName,
+                                        complete_date:
+                                            DateFormat('yyyy-MM-dd', 'en')
+                                                .format(DateTime.now()),
+                                        due_date: widget.due_date,
+                                        task_status: 'completed',
+                                        locationId:
+                                            widget.locationId == 'لا يوجد' ||
+                                                    widget.locationId == ''
+                                                ? '10'
+                                                : widget.locationId,
+                                        taskId: widget.taskId.toString(),
+                                        address: _currentAddress.toString(),
+                                        map_url:
+                                            'https://www.google.com/maps/search/?api=1&query=${_currentAddress.toString()}');
+                                  }
+                                }),
+                          )
+                        : Container(),
                   ],
                 );
               },

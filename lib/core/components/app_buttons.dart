@@ -9,7 +9,7 @@ Widget defaultButton(
       required double width,
       required double height,
       required bool isColor,
-
+IconData? icon,
       required double textSize,
 
       required Function() toPage}) =>
@@ -29,12 +29,17 @@ Widget defaultButton(
             borderRadius: BorderRadius.circular(30.r),
           ),
           child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                  fontSize:  textSize
-                  ,fontWeight: FontWeight.w700
-                  ,color: isColor ? AppColors.textWhite : AppColors.primary),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon),
+                Text(
+                  text,
+                  style: TextStyle(
+                      fontSize:  textSize
+                      ,fontWeight: FontWeight.w700
+                      ,color: isColor ? AppColors.textWhite : AppColors.primary),
+                ),
+              ],
             ),
 
 

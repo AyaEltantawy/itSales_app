@@ -68,7 +68,7 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                   children: [
                     const CustomAppBar(back: true, title: 'تعديل الحساب'),
                     SizedBox(height: 20.h),
-                    ProfileHeader(),
+                    const ProfileHeader(),
 
                     SizedBox(height: 20.h),
 
@@ -92,14 +92,6 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                         keyboardType: TextInputType.emailAddress,
                         validate: (v) {},
                         label: 'البريد الالكتروني'),
-                    // SizedBox(height: 15.h),
-                    // defaultTextFormFeild
-                    //   (context,
-                    //
-                    //     keyboardType: TextInputType.phone,
-                    //     validate: (v) {}, label: 'رقم الهاتف'),
-
-
                     SizedBox(height: 40.h),
 
                     defaultButton(

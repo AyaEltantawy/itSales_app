@@ -11,7 +11,7 @@ import 'package:itsale/features/addEmployee/components/no_data_screen.dart';
 
 import '../../../../core/constants/app_animation.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/utils/toast.dart';
+import '../../../../core/utils/snack_bar.dart';
 import '../../../../core/utils/token.dart';
 import '../../../../generated/l10n.dart';
 
@@ -82,7 +82,7 @@ class _ConfirmTaskListPageState extends State<ConfirmTaskListPage> {
               }, listener: (context, state) {
 if(state is EditSuccessUserTaskState)
 {
-  successMotionToast(context, text: 'تم استلام المهمة بنجاح');
+  Utils.showSnackBar(context, 'تم استلام المهمة بنجاح');
 
 }
               },),

@@ -40,7 +40,7 @@ class ReportChart extends StatelessWidget {
       width: 300,
       height: 250,
       child: SfCartesianChart(
-
+title: ChartTitle(alignment:ChartAlignment.far,text: "إحصائيات الاسبوع",),
         primaryXAxis: CategoryAxis(),
         primaryYAxis: NumericAxis(
             minimum: 0,

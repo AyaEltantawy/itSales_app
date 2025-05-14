@@ -6,7 +6,7 @@ import 'package:itsale/core/routes/app_routes.dart';
 import '../../../../../core/components/app_buttons.dart';
 import '../../../../../core/components/app_text_form_field.dart';
 import '../../../../../core/constants/app_icons.dart';
-import '../../../../../core/utils/toast.dart' show warningMotionToast;
+import '../../../../../core/utils/snack_bar.dart' show Utils, warningMotionToast;
 import '../../../../../core/utils/validators.dart';
 import '../../../data/cubit.dart' show AppCubit;
 
@@ -33,7 +33,7 @@ class RegisterPageForm extends StatelessWidget {
         AppCubit.get(context).postLoginSales(context,
             email: emailController.text, password: passController.text);
       } else {
-        warningMotionToast(context, text: 'يرجى الالتزام بالتعليمات');
+        Utils.showSnackBar(context,  'يرجى الالتزام بالتعليمات');
       }
     }
 

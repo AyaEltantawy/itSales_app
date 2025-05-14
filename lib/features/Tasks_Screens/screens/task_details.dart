@@ -14,7 +14,7 @@ import 'package:itsale/generated/l10n.dart';
 
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_fonts.dart';
-import '../../../core/utils/toast.dart';
+import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/transition.dart';
 import '../components/details_screen_widget.dart';
 import '../data/models/get_task_model.dart';
@@ -101,8 +101,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   } else if (result == 'delete') {
                  TasksCubit.get(context).editTaskFun(taskId: widget.id.toString())
                      .then((value) {
-                  successMotionToast(context,
-                   text: 'تم حذف المهمة بنجاح'); });
+                  Utils.showSnackBar(context,
+                   'تم حذف المهمة بنجاح'); });
                  navigateTo(context, AppRoutes.entryPoint);
 
                   }
@@ -228,7 +228,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                 taskId: widget.id.toString(),
                        ).then((onValue){
                          Navigator.pop(context);
-                         showToast(text: 'تم رفع الملف بنجاح', state: ToastStates.success);
+                        Utils.showSnackBar(context, 'تم رفع الملف بنجاح', );
                        });
 
 

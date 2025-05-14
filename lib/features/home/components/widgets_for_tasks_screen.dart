@@ -17,6 +17,7 @@ class BuildSearchFilter extends StatefulWidget {
   final bool emp;
   final bool task;
   final bool admin;
+  final VoidCallback? onSearchPressed;
   final VoidCallback toggleViewMode;
 
   const BuildSearchFilter({
@@ -25,7 +26,7 @@ class BuildSearchFilter extends StatefulWidget {
     required this.emp,
     required this.task,
     required this.admin,
-    required this.toggleViewMode,
+    required this.toggleViewMode, this.onSearchPressed,
   });
 
   @override
@@ -47,15 +48,84 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        showSearch
-            ? Container(
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showSearch = !showSearch;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 14),
+                  child: Image.asset("assets/images/search_icon.png"),
+                ),
+              ),
+              if (!widget.admin && role != '3') ...[
+                SizedBox(width: 10.w),
+                InkWell(
+                  onTap: () {
+                    _showFilterDialog(context);
+                  },
+                  child: Container(
+                    width: 42.w,
+                    height: 42.h,
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: SvgPicture.asset(
+                      AppIcons.filterIcon,
+                      colorFilter: ColorFilter.mode(
+                          AppColors.textWhite, BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+              ],
+              if (!widget.emp) ...[
+                SizedBox(width: 8.w),
+                InkWell(
+                  onTap: widget.toggleViewMode,
+                  child: Container(
+                    width: 42.w,
+                    height: 42.h,
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: widget.isGrid
+                          ? AppColors.backArrowsContainerColor
+                          : globalDark
+                          ? AppColors.lightGreenColor
+                          : AppColors.backArrowsContainerColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: SvgPicture.asset(
+                      widget.isGrid ? AppIcons.list : AppIcons.shapeIcon,
+                      colorFilter: widget.isGrid
+                          ? null
+                          : ColorFilter.mode(
+                          AppColors.textBlack, BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+              ]
+            ],
+          ),
+
+
+          if (showSearch) ...[
+            SizedBox(height: 20.h),
+            Container(
                 height: 40.h,
-                width: widget.admin
-                    ? 328.w
-                    : (widget.emp || role == '3' ? 250.w : 220.w),
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: globalDark
                       ? AppColors.cardColorDark
@@ -69,151 +139,45 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
                   borderRadius: BorderRadius.circular(8.0.r),
                 ),
                 child: TextFormField(
-                  textDirection: TextDirection.rtl,
-                  onFieldSubmitted: (value) {
-                    widget.task
-                        ? (role == '1'
-                            ? TasksCubit.get(context)
-                                .getAllTasksFunWithFilter(text: value)
-                            : TasksCubit.get(context).getAllTasksFunWithFilter(
-                                textEmp: value, employee: userId))
-                        : EmployeeCubit.get(context)
-                            .getAdmins(search: value.toString());
-                  },
-                  onChanged: (value) {
-                    widget.task
-                        ? (role == '1'
-                            ? TasksCubit.get(context)
-                                .getAllTasksFunWithFilter(text: value)
-                            : TasksCubit.get(context).getAllTasksFunWithFilter(
-                                textEmp: value, employee: userId))
-                        : EmployeeCubit.get(context)
-                            .getAdmins(search: value.toString());
-                  },
-                  decoration: InputDecoration(
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: globalDark
-                            ? AppColors.textBlack
-                            : AppColors.textWhite,
-                      ),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: globalDark
-                            ? AppColors.textBlack
-                            : AppColors.textWhite,
-                      ),
-                    ),
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(AppIcons.searchIcon),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                    prefixIconConstraints:
-                        const BoxConstraints(minWidth: 20, minHeight: 20),
-                    labelText: 'ابحث هنا ',
-                    labelStyle: AppFonts.style14normal,
-                  ),
-                ),
-              )
-            : GestureDetector(
-                onTap: () {
-                  setState(() {
-                    showSearch = true;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
-                  child: Image.asset("assets/images/search_icon.png"),
-                ),
-              ),
-        widget.emp
-            ? const Spacer()
-            : SizedBox(
-                width: 10.w,
-              ),
-        widget.admin
-            ? Container()
-            : role == '3'
-                ? Container(
-                    width: 10.w,
-                  )
-                : InkWell(
-                    onTap: () {
-                      _showFilterDialog(context);
+                    textDirection: TextDirection.rtl,
+                    onFieldSubmitted: (value) {
+                      widget.task
+                          ? (role == '1'
+                          ? TasksCubit.get(context).getAllTasksFunWithFilter(
+                          text: value)
+                          : TasksCubit.get(context).getAllTasksFunWithFilter(
+                          textEmp: value, employee: userId))
+                          : EmployeeCubit.get(context).getAdmins(
+                          search: value.toString());
                     },
-                    child: Container(
-                      width: 42.w,
-                      height: 42.h,
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: SvgPicture.asset(
-                        AppIcons.filterIcon,
-                        colorFilter: ColorFilter.mode(
-                            AppColors.textWhite, BlendMode.srcIn),
-                        width: 40.w,
-                        height: 40.h,
+                    onChanged: (value) {
+                      widget.task
+                          ? (role == '1'
+                          ? TasksCubit.get(context).getAllTasksFunWithFilter(
+                          text: value)
+                          : TasksCubit.get(context).getAllTasksFunWithFilter(
+                          textEmp: value, employee: userId))
+                          : EmployeeCubit.get(context).getAdmins(
+                          search: value.toString());
+                    },
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(AppIcons.searchIcon),
                       ),
-                    ),
-                  ),
-        widget.emp
-            ? Container()
-            : SizedBox(
-                width: 8.w,
-              ),
-        widget.emp
-            ? Container()
-            : widget.isGrid
-                ? InkWell(
-                    onTap: widget.toggleViewMode,
-                    child: Container(
-                      width: 42.w,
-                      height: 42.h,
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                          color: AppColors.backArrowsContainerColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: SvgPicture.asset(
-                        AppIcons.list,
-                        width: 20.w,
-                        height: 20.h,
-                      ),
-                    ),
-                  )
-                : InkWell(
-                    onTap: widget.toggleViewMode,
-                    child: Container(
-                      width: 42.w,
-                      height: 42.h,
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                          color: globalDark
-                              ? AppColors.lightGreenColor
-                              : AppColors.backArrowsContainerColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: SvgPicture.asset(
-                        AppIcons.shapeIcon,
-                        colorFilter: ColorFilter.mode(
-                            AppColors.textBlack, BlendMode.srcIn),
-                        width: 40.w,
-                        height: 40.h,
-                      ),
-                    ),
-                  ),
-      ],
-    );
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                      prefixIconConstraints:
+                      const BoxConstraints(minWidth: 20, minHeight: 20),
+                      labelText: 'ابحث هنا',
+                      labelStyle: AppFonts.style14normal,
+                    )))
+          ]
+        ]);
   }
 }
 
-Widget addEmployee(String text, TextStyle style, Color color) {
+Widget addEmployee(String? text, TextStyle style, Color color) {
   return Container(
     width: 120.w,
     height: 30.h,
@@ -232,9 +196,9 @@ Widget addEmployee(String text, TextStyle style, Color color) {
           ),
           Expanded(
               child: Text(
-            '  إضافة $text',
-            style: style,
-          )),
+                '  إضافة $text',
+                style: style,
+              )),
         ],
       ),
     ),

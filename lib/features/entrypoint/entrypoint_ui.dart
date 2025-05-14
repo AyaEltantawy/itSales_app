@@ -81,7 +81,7 @@ class _EntryPointUIState extends State<EntryPointUI> {
     // const SavePage(isHomePage: false),
     role.toString() == "1"
         ? const AllEmployeeScreen(
-            admin: false,
+            admin: false, task: false,
           )
         : const ConfirmTaskListPage(),
     // const AllEmployeeScreen(),

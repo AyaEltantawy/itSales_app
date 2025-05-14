@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:itsale/core/routes/magic_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:itsale/core/utils/toast.dart';
+import 'package:itsale/core/utils/snack_bar.dart';
 Future<void> downloadImage(String url, String fileName) async {
   try {
     //
@@ -17,9 +18,9 @@ Future<void> downloadImage(String url, String fileName) async {
     Dio dio = Dio();
     await dio.download(url, savePath);
 
-    showToast(text: 'تم الحفظ في المعرض', state: ToastStates.success);
+    Utils.showSnackBar(MagicRouter.currentContext, 'تم الحفظ في المعرض', );
   } catch (e) {
-    showToast(text: 'عفوا حاول مرة اخرى', state: ToastStates.error);
+    Utils.showSnackBar(MagicRouter.currentContext ,'عفوا حاول مرة اخرى',);
 
 
   }

@@ -6,7 +6,7 @@ import 'package:itsale/core/cache_helper/cache_helper.dart';
 import 'package:itsale/features/auth/data/repo.dart';
 import 'package:itsale/features/auth/data/states.dart';
 
-import '../../../core/utils/toast.dart';
+import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/token.dart';
 import 'models/login_model.dart';
 
@@ -94,7 +94,7 @@ if(value.data!.token != null ) {
 
 
     if ( await InternetConnectionChecker().hasConnection == false) {
-      showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      Utils.showSnackBar( context,'أنت غير متصل بالانترنت' );
 
       emit(NoInternetAppState());
 
@@ -112,7 +112,7 @@ if(value.data!.token != null ) {
     }).catchError((onError) async
     {
       if ( await InternetConnectionChecker().hasConnection == false) {
-        showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+        Utils.showSnackBar( context,'أنت غير متصل بالانترنت');
 
         emit(NoInternetAppState());
 

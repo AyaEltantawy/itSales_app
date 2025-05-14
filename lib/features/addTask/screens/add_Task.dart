@@ -8,7 +8,7 @@ import 'package:itsale/core/constants/app_defaults.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
-import 'package:itsale/core/utils/toast.dart';
+import 'package:itsale/core/utils/snack_bar.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
@@ -177,12 +177,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           listener: (context, state) {
             if (state is AddErrorUserTaskState ||
                 state is EditErrorUserTaskState) {
-              errorMotionToast(context, text: 'عفوا حاول مرة اخرى');
+             Utils.showSnackBar(context,  'عفوا حاول مرة اخرى');
             } else if (state is AddSuccessUserTaskState ||
                 state is EditSuccessUserTaskState) {
               widget.isEdit
-                  ? successMotionToast(context, text: 'تم تعديل المهمة بنجاح')
-                  : successMotionToast(context, text: 'تم اضافة المهمة بنجاح');
+                  ? Utils.showSnackBar(context,  'تم تعديل المهمة بنجاح')
+                  : Utils.showSnackBar(context,  'تم اضافة المهمة بنجاح');
               navigateTo(context, AppRoutes.entryPoint);
             }
           },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:itsale/core/utils/toast.dart';
+import 'package:itsale/core/utils/snack_bar.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import '../../../../core/constants/app_colors.dart';

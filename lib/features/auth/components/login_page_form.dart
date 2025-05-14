@@ -9,7 +9,7 @@ import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/themes/app_themes.dart';
-import '../../../core/utils/toast.dart';
+import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/components/app_buttons.dart';
 import '../data/cubit.dart';
@@ -48,7 +48,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
       AppCubit.get(context).postLoginSales(context,
           email: emailController.text, password: passController.text);
     } else {
-      warningMotionToast(context, text: 'يرجى الالتزام بالتعليمات');
+      Utils.showSnackBar(context, 'يرجى الالتزام بالتعليمات');
     }
   }
 

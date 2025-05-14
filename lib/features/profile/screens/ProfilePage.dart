@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/components/network_image.dart';
+
 import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/features/HomeEmployee/screens/home_employee.dart';
@@ -12,6 +13,7 @@ import 'package:itsale/features/auth/data/states.dart';
 import 'package:itsale/features/home/screens/employee_screen.dart';
 import 'package:itsale/features/profile/widgets/change_password_page/change_password_page_view.dart';
 import 'package:itsale/features/profile/widgets/help/help_view.dart';
+import 'package:itsale/features/profile/widgets/language_show_dialog/language_show_dialog_cubit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:svg_flutter/svg.dart';
 
@@ -25,6 +27,7 @@ import '../../../generated/l10n.dart';
 import '../../Tasks_Screens/screens/tasks.dart';
 import '../../home/dialogs/not_work.dart';
 import '../settings/MainSettingPage.dart';
+import '../widgets/language_show_dialog/language_show_dialog_view.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -178,12 +181,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             const AllEmployeeScreen(
-                                                admin: true),
+                                                task: false, admin: true),
                                       ));
                                 },
                                 child: AppSettingsListTile(
                                   style: AppFonts.style16semiBold,
-                                  widget: Icon(AppIcons.persons,
+                                  widget: Icon(
+                                    AppIcons.persons,
                                     color: AppCubit.get(context).isDarkMode
                                         ? AppColors.textWhite
                                         : AppColors.textBlack,
@@ -194,7 +198,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             : Container(),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.tasks,
+                            widget: Icon(
+                              AppIcons.tasks,
                               color: AppCubit.get(context).isDarkMode
                                   ? AppColors.textWhite
                                   : AppColors.textBlack,
@@ -213,13 +218,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget:
-
-                               Icon( AppLottie.report,
-                                color: AppCubit.get(context).isDarkMode
-                                    ? AppColors.textWhite
-                                    : AppColors.textBlack,
-
+                            widget: Icon(
+                              AppLottie.report,
+                              color: AppCubit.get(context).isDarkMode
+                                  ? AppColors.textWhite
+                                  : AppColors.textBlack,
                             ),
                             label: 'التقارير',
                             onTap: () {
@@ -229,12 +232,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget:
-                           Icon( AppIcons.notifications,
-                                color: AppCubit.get(context).isDarkMode
-                                    ? AppColors.textWhite
-                                    : AppColors.textBlack,
-
+                            widget: Icon(
+                              AppIcons.notifications,
+                              color: AppCubit.get(context).isDarkMode
+                                  ? AppColors.textWhite
+                                  : AppColors.textBlack,
                             ),
                             label: 'الاشعارات',
                             onTap: () {
@@ -244,7 +246,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.settings,
+                            widget: Icon(
+                              AppIcons.settings,
                               color: AppCubit.get(context).isDarkMode
                                   ? AppColors.textWhite
                                   : AppColors.textBlack,
@@ -261,7 +264,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.settings,
+                            widget: Icon(
+                              AppIcons.settings,
                               color: AppCubit.get(context).isDarkMode
                                   ? AppColors.textWhite
                                   : AppColors.textBlack,
@@ -274,8 +278,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     builder: (context) => ChangePasswordPage(),
                                   ));
                             }
-                          //  Navigator.pushNamed(context, AppRoutes.profileEdit),
-                        ),
+                            //  Navigator.pushNamed(context, AppRoutes.profileEdit),
+                            ),
                         AppSettingsListTile(
                             style: AppFonts.style16semiBold,
                             widget: Icon(
@@ -300,10 +304,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             label: 'اللغة',
                             onTap: () {
-                              navigateTo(context, AppRoutes.helpPge);
-                            }
-                          //  Navigator.pushNamed(context, AppRoutes.profileEdit),
-                        ),
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      LanguageShowDialogPage());
+                            }),
                         BlocBuilder<AppCubit, AppStates>(
                           builder: (context, state) {
                             return Row(

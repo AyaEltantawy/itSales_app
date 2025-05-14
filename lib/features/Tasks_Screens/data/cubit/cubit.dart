@@ -1,6 +1,5 @@
-
-
 import 'dart:io';
+import 'package:itsale/core/routes/magic_router.dart';
 import 'package:path/path.dart';
 import 'package:intl/src/intl/date_format.dart';
 import 'package:bloc/bloc.dart';
@@ -13,97 +12,81 @@ import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/Tasks_Screens/data/models/notifications_model.dart';
 import 'package:itsale/features/auth/data/repo.dart';
 
-import '../../../../core/utils/toast.dart';
+import '../../../../core/utils/snack_bar.dart';
 import '../../../../core/utils/token.dart';
 import '../models/get_task_model.dart';
 
-
 class TasksCubit extends Cubit<TasksStates> {
   Repository repo;
-  TasksCubit(this.repo) : super(InitialTaskState());
 
+  TasksCubit(this.repo) : super(InitialTaskState());
 
   static TasksCubit get(context) => BlocProvider.of(context);
 
-
-
   List<DataUserTask>? getUserTaskList = [];
   List<DataUserTask>? getUserTaskListWithStatus = [];
- getUserTaskFun({
 
+  getUserTaskFun({
     required String userId,
-     String? status,
+    String? status,
+  }) async {
+    if (await InternetConnectionChecker().hasConnection == false) {
+      Utils.showSnackBar(
+        MagicRouter.currentContext,
+        'أنت غير متصل بالانترنت',
+      );
 
-  }) async
- {
-   if (await InternetConnectionChecker().hasConnection == false) {
-     showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      emit(NoInternetState());
+    } else {
+      emit(GetLoadingUserTaskState());
+      Map<String, String> queryParams = {};
+      if (status != null) {
+        queryParams['filter[task_status][eq]'] = status;
+      }
+      await repo.getUserTask(userId, queryParams).then((value) {
+        if (status != null) {
+          emit(GetLoadingUserTaskStateForEmpScreens());
 
-     emit(NoInternetState());
-   }
-   else {
-     emit(GetLoadingUserTaskState());
-     Map<String, String> queryParams = {};
-     if (status != null) {
-       queryParams['filter[task_status][eq]'] = status;
-     }
-     await repo.getUserTask(userId,queryParams).then((value) {
-       if(status != null)
-       {
-         emit(GetLoadingUserTaskStateForEmpScreens());
+          getUserTaskListWithStatus = value.data;
+          emit(GetSuccessUserTaskState());
+        } else if (status == null) {
+          getUserTaskList = value.data;
 
-         getUserTaskListWithStatus = value.data;
-         emit(GetSuccessUserTaskState());
+          emit(GetSuccessUserTaskState());
+        }
+      }).catchError((onError) async {
+        if (await InternetConnectionChecker().hasConnection == false) {
+          Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
-       }
-      else if(status == null ){
-         getUserTaskList = value.data;
-
-         emit(GetSuccessUserTaskState());
-       }
-     }).catchError((onError) async
-     {
-       if (await InternetConnectionChecker().hasConnection == false) {
-         showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
-
-         emit(NoInternetState());
-       }
-       emit(GetErrorUserTaskState());
-       debugPrint('error get task user ${onError.toString()}');
-     });
-   }
- }
-
-
+          emit(NoInternetState());
+        }
+        emit(GetErrorUserTaskState());
+        debugPrint('error get task user ${onError.toString()}');
+      });
+    }
+  }
 
   addTaskFun({
-
-
     required String status,
     required String title,
     required String description,
     required String client_phone,
     required String notes,
     required String assigned_to,
-     String? cancelled_date,
+    String? cancelled_date,
     required String client_name,
-     String? complete_date,
+    String? complete_date,
     required String due_date,
-
     required String address,
     required String mapUrl,
-
-
-     String? priority,
-     String? start_date,
+    String? priority,
+    String? start_date,
     required String task_status,
-
-  }) async
-  {
+  }) async {
     emit(AddLoadingUserTaskState());
 
-    await repo.addTask(
-        AddTaskRequestModel(
+    await repo
+        .addTask(AddTaskRequestModel(
       status: status,
       title: title,
       description: description,
@@ -114,140 +97,114 @@ class TasksCubit extends Cubit<TasksStates> {
       client_name: client_name,
       complete_date: complete_date,
       due_date: due_date,
-
       priority: priority,
       start_date: start_date,
       task_status: task_status,
-    )).then((value) {
-
-
+    ))
+        .then((value) {
       emit(AddSuccessUserTaskState());
- postLocationFun
-  (
+      postLocationFun(
+          title: title,
+          description: description,
+          client_phone: client_phone,
+          notes: notes,
+          assigned_to: assigned_to,
+          client_name: client_name,
+          due_date: due_date,
+          priority: 'high',
+          task_status: task_status,
+          address: address,
+          map_url: mapUrl,
+          taskId: value.data!.id.toString());
 
-     title: title,
-     description: description,
-     client_phone: client_phone,
-     notes: notes,
-     assigned_to: assigned_to,
+      postNotificationFun(
+          isRead: false,
+          message: ' راجع مهماتك الواردة:  ${value.data!.title.toString()}',
+          title: 'هناك مهمة جديدة',
+          user: value.data!.assigned_to!.id!.toInt());
+    }).catchError((onError) async {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(MagicRouter.currentContext, 'أنت غير متصل بالانترنت', );
 
-     client_name: client_name,
-
-     due_date: due_date,
-
-     priority: 'high',
-
-     task_status: task_status,
-    address: address,
-    map_url: mapUrl,
-    taskId: value.data!.id.toString());
-
-postNotificationFun( isRead: false,
-    message:  ' راجع مهماتك الواردة:  ${value.data!.title.toString()}',
-    title: 'هناك مهمة جديدة',
-    user: value.data!.assigned_to!.id!.toInt());
-
-    }).catchError((onError) async
-    {
-      if ( await InternetConnectionChecker().hasConnection == false) {
-    showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
-
-    emit(NoInternetState());
-
-
-    }
+        emit(NoInternetState());
+      }
 
       emit(AddErrorUserTaskState());
       debugPrint('errrrrror ${onError.toString()}');
-
     });
-
   }
 
-
-
-Future  editTaskFun({
-
-   required  String taskId,
-     String? status,
-
-     String? title,
-     String? description,
-     String? client_phone,
-     String? notes,
-     String? assigned_to,
-     String? cancelled_date,
-     String? client_name,
-     String? complete_date,
-     String? due_date,
-
-     String? priority,
-     String? start_date,
-     String? task_status,
-     int? locationId,
-  List<Files>? files ,
-
-  }) async
-  {
+  Future editTaskFun({
+    required String taskId,
+    String? status,
+    String? title,
+    String? description,
+    String? client_phone,
+    String? notes,
+    String? assigned_to,
+    String? cancelled_date,
+    String? client_name,
+    String? complete_date,
+    String? due_date,
+    String? priority,
+    String? start_date,
+    String? task_status,
+    int? locationId,
+    List<Files>? files,
+  }) async {
     emit(EditLoadingUserTaskState());
 
-    await repo.editTask(
-        taskId,AddTaskRequestModel(
-      status: status ,
-      title: title,
-      files: files,
-      description: description,
-      client_phone: client_phone,
-      notes: notes,
-      assigned_to: assigned_to,
-      cancelled_date: cancelled_date,
-      client_name: client_name,
-      complete_date: complete_date ?? '2024-11-18',
-      due_date: due_date,
-      location: locationId,
-      priority: priority,
-      start_date: start_date,
-      task_status: task_status,
-    )).then((value) {
-
-
+    await repo
+        .editTask(
+            taskId,
+            AddTaskRequestModel(
+              status: status,
+              title: title,
+              files: files,
+              description: description,
+              client_phone: client_phone,
+              notes: notes,
+              assigned_to: assigned_to,
+              cancelled_date: cancelled_date,
+              client_name: client_name,
+              complete_date: complete_date ?? '2024-11-18',
+              due_date: due_date,
+              location: locationId,
+              priority: priority,
+              start_date: start_date,
+              task_status: task_status,
+            ))
+        .then((value) {
       emit(EditSuccessUserTaskState());
       getAllTasksFun();
       getUserTaskFun(userId: userId.toString());
-      getUserTaskFun(userId: userId.toString(),status: 'inbox');
-      if(value.data!.task_status == 'progress')
-      {
+      getUserTaskFun(userId: userId.toString(), status: 'inbox');
+      if (value.data!.task_status == 'progress') {
         postNotificationFun(
-            isRead: false, message:
-        ' تم استلام المهمة  ${title.toString()}'  , title: 'راجع المهمات', user: value.data!.owner!.id!.toInt() );
-      } else if (value.data!.task_status == 'completed')
-      {
+            isRead: false,
+            message: ' تم استلام المهمة  ${title.toString()}',
+            title: 'راجع المهمات',
+            user: value.data!.owner!.id!.toInt());
+      } else if (value.data!.task_status == 'completed') {
         postNotificationFun(
-            isRead: false, message:
-        ' تم اكتمال المهمة  ${title.toString()}'  , title: 'راجع المهمات', user: value.data!.owner!.id!.toInt() );
-
+            isRead: false,
+            message: ' تم اكتمال المهمة  ${title.toString()}',
+            title: 'راجع المهمات',
+            user: value.data!.owner!.id!.toInt());
       }
+    }).catchError((onError) async {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar( MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
-
-    }).catchError((onError) async
-    {
-      if ( await InternetConnectionChecker().hasConnection == false) {
-    showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
-
-    emit(NoInternetState());
-
-
-    }
+        emit(NoInternetState());
+      }
       emit(EditErrorUserTaskState());
-      if(onError.toString().contains('null'))
-      {
+      if (onError.toString().contains('null')) {
         emit(EditSuccessUserTaskState());
         getAllTasksFun();
       }
       debugPrint('error edit task ${onError.toString()}');
-
     });
-
   }
 
   List<DataAllTasks>? getAllTaskList = [];
@@ -255,10 +212,10 @@ Future  editTaskFun({
   List<DataAllTasks>? getLastTaskListForOneUser = [];
   List<DataAllTasks>? getTaskListForOneUserSearch = [];
   List<DataAllTasks>? getAllTaskListFilter = [];
-  getAllTasksFun() async
-  {
+
+  getAllTasksFun() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
       emit(NoInternetState());
     } else {
@@ -268,10 +225,9 @@ Future  editTaskFun({
         getAllTaskList = value.data;
 
         emit(GetSuccessAllTaskState());
-      }).catchError((onError) async
-      {
+      }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+         Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
           emit(NoInternetState());
         }
@@ -282,19 +238,18 @@ Future  editTaskFun({
     }
   }
 
-
   getAllTasksFunWithFilter({
     String? status,
     String? date,
     String? employee,
     String? location,
     String? sort,
-    String? text ,
-    String? textEmp ,
+    String? text,
+    String? textEmp,
   }) async {
     getUserTaskList = [];
     if (await InternetConnectionChecker().hasConnection == false) {
-      showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
       emit(NoInternetState());
       return;
     } else {
@@ -326,37 +281,30 @@ Future  editTaskFun({
         emit(GetLoadingSearchTaskFilterState());
       }
       await repo.getAllTasks(queryParams).then((value) {
-        if(textEmp != null && employee != null) {
-
+        if (textEmp != null && employee != null) {
           getTaskListForOneUserSearch = value.data;
           emit(GetSuccessSearchTaskFilterState());
-        }
-       else if(text != null) {
-
+        } else if (text != null) {
           getAllTaskListFilter = value.data;
           emit(GetSuccessSearchTaskFilterState());
-        }
-
-       else {
-
+        } else {
           getAllTaskListFilter = value.data;
           emit(GetSuccessAllTaskFilterState());
-
         }
-        if(sort !=null) {
+        if (sort != null) {
           getLastTaskList = value.data;
         }
 
-        if(sort !=null && employee != null) {
+        if (sort != null && employee != null) {
           getLastTaskListForOneUser = value.data;
         }
         emit(GetSuccessAllTaskFilterState());
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+          Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
           emit(NoInternetState());
         } else {
-          if(text != null) {
+          if (text != null) {
             emit(GetErrorSearchTaskFilterState());
           }
           emit(GetErrorAllTaskFilterState());
@@ -369,10 +317,10 @@ Future  editTaskFun({
   /// notification
 
   List<DataNotificationUser>? getNotificationsList = [];
-  getAllNotificationFun() async
-  {
+
+  getAllNotificationFun() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
       emit(NoInternetState());
     } else {
@@ -382,10 +330,9 @@ Future  editTaskFun({
         getNotificationsList = value.data;
 
         emit(GetSuccessAllNotificationState());
-      }).catchError((onError) async
-      {
+      }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+          Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
           emit(NoInternetState());
         }
@@ -394,26 +341,25 @@ Future  editTaskFun({
       });
     }
   }
+
   List<DataNotificationUser>? getNotificationsForOneUserList = [];
-  getNotificationForOneUserFun() async
-  {
+
+  getNotificationForOneUserFun() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
       emit(NoInternetState());
     } else {
       emit(GetLoadingUserNotificationState());
 
-      await repo.getNotificationsForOneUser
-        (userId.toString()).then((value) {
+      await repo.getNotificationsForOneUser(userId.toString()).then((value) {
         getNotificationsForOneUserList = value.data;
         getNotificationsList = value.data;
 
         emit(GetSuccessUserNotificationState());
-      }).catchError((onError) async
-      {
+      }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+          Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
           emit(NoInternetState());
         }
@@ -423,51 +369,39 @@ Future  editTaskFun({
       });
     }
   }
-  postNotificationFun({
 
+  postNotificationFun({
     required bool isRead,
     required String message,
     required String title,
     required int user,
-}) async
-  {
+  }) async {
     emit(PostLoadingAllNotificationState());
 
-    await repo.postNotifications(DataNotificationUser(
-
+    await repo
+        .postNotifications(DataNotificationUser(
       status: 'published',
       is_read: isRead,
       message: message,
       title: title,
-       user: user,
-
-    )).then((value) {
-
-
-
+      user: user,
+    ))
+        .then((value) {
       emit(PostSuccessAllNotificationState());
+    }).catchError((onError) async {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
-    }).catchError((onError) async
-    {
-      if ( await InternetConnectionChecker().hasConnection == false) {
-    showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
-
-    emit(NoInternetState());
-
-
-    }
+        emit(NoInternetState());
+      }
       emit(PostErrorAllNotificationState());
       debugPrint('errrrrror ${onError.toString()}');
-
     });
-
   }
 
-/// location
+  /// location
   postLocationFun({
-
     required String address,
-
     required String map_url,
     required String taskId,
     required String title,
@@ -475,78 +409,54 @@ Future  editTaskFun({
     required String client_phone,
     required String notes,
     required String assigned_to,
-
     required String client_name,
-
     required String due_date,
-
-
-
-   required String priority,
-
+    required String priority,
     required String task_status,
-
-  }) async
-  {
+  }) async {
     emit(PostLoadingLocationState());
 
-    await repo.addLocation(LocationRequestModel(
-      status: 'published' ,
+    await repo
+        .addLocation(LocationRequestModel(
+      status: 'published',
       address: address,
       latitude: '99999999',
       longitude: '88888888',
       map_url: map_url,
       task: taskId,
-
-    )).then((value) {
-
-
-
+    ))
+        .then((value) {
       emit(PostSuccessLocationState());
       editTaskFun(
-         status: 'published',
+        status: 'published',
         taskId: taskId,
-
         title: title,
         description: description,
         client_phone: client_phone,
         notes: notes,
         assigned_to: assigned_to,
-
         client_name: client_name,
-
         due_date: due_date,
-
         priority: priority,
-
         task_status: task_status,
-
         locationId: value.data!.id!.toInt(),
       );
-    }).catchError((onError) async
-    {
-      if ( await InternetConnectionChecker().hasConnection == false) {
-    showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+    }).catchError((onError) async {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
-    emit(NoInternetState());
-
-
-    }
+        emit(NoInternetState());
+      }
       emit(PostErrorLocationState());
       debugPrint('error add location ${onError.toString()}');
-
     });
-
   }
 
   updateLocationFun({
     required String locationId,
-
-     String? address,
-
-     String? map_url,
-    required   String? taskId,
-
+    String? address,
+    String? map_url,
+    required String? taskId,
     String? title,
     String? description,
     String? client_phone,
@@ -557,101 +467,76 @@ Future  editTaskFun({
     String? complete_date,
     String? due_date,
     List<Files>? files,
-
     String? start_date,
     String? task_status,
-
-  }) async
-  {
+  }) async {
     emit(UpdateLoadingLocationState());
 
-    await repo.updateLocation(locationId,LocationRequestModel(
-      status: 'published' ,
-      address: address,
-      longitude: '999998' ,
-      latitude: '99999999',
-      map_url: map_url,
-      task: taskId,
-
-    )).then((value) {
-
-
-
+    await repo
+        .updateLocation(
+            locationId,
+            LocationRequestModel(
+              status: 'published',
+              address: address,
+              longitude: '999998',
+              latitude: '99999999',
+              map_url: map_url,
+              task: taskId,
+            ))
+        .then((value) {
       emit(UpdateSuccessLocationState());
-editTaskFun(
-  status: 'published',
-  taskId: taskId.toString(),
+      editTaskFun(
+        status: 'published',
+        taskId: taskId.toString(),
+        title: title,
+        description: description,
+        client_phone: client_phone,
+        notes: notes,
+        assigned_to: assigned_to,
+        files: files,
+        client_name: client_name,
+        due_date: due_date,
+        priority: 'high',
+        complete_date: complete_date ??
+            DateFormat('yyyy-MM-dd', 'en').format(DateTime.now()),
+        task_status: task_status,
+        locationId: value.data!.id!.toInt(),
+      );
+    }).catchError((onError) async {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
-
-  title: title,
-  description: description,
-  client_phone: client_phone,
-  notes: notes,
-  assigned_to: assigned_to,
-files: files,
-  client_name: client_name,
-
-  due_date: due_date,
-
-  priority: 'high',
-  complete_date: complete_date ?? DateFormat('yyyy-MM-dd' , 'en').format(DateTime.now()),
-
-
-  task_status: task_status,
-
-  locationId: value.data!.id!.toInt(),
-
-
-);
-
-    }).catchError((onError) async
-    {
-      if ( await InternetConnectionChecker().hasConnection == false) {
-    showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
-
-    emit(NoInternetState());
-
-
-    }
+        emit(NoInternetState());
+      }
 
       emit(UpdateErrorLocationState());
       debugPrint('errrrrror ${onError.toString()}');
-
     });
-
   }
-
 
   getLocationFun({
     required String taskId,
-
     required String address,
-
     required String map_url,
-
-
-  required String title,
-  required String description,
-  required String client_phone,
-  required String notes,
-  required String assigned_to,
+    required String title,
+    required String description,
+    required String client_phone,
+    required String notes,
+    required String assigned_to,
 //  required String cancelled_date,
-  required String client_name,
- // required String complete_date,
-  required String due_date,
-  required String task_status,
-
-  }) async
-  {
+    required String client_name,
+    // required String complete_date,
+    required String due_date,
+    required String task_status,
+  }) async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
       emit(NoInternetState());
     } else {
       emit(GetLoadingLocationState());
 
       await repo.getOneLocation(taskId).then((value) {
-
         emit(GetSuccessLocationState());
         updateLocationFun(
           locationId: value.data![0].id.toString(),
@@ -662,26 +547,19 @@ files: files,
           taskId: taskId,
           address: address,
           map_url: map_url,
-       // complete_date: complete_date,
-        //  cancelled_date: cancelled_date,
+          // complete_date: complete_date,
+          //  cancelled_date: cancelled_date,
           assigned_to: assigned_to,
 
           client_name: client_name,
 
           due_date: due_date,
 
-
           task_status: task_status,
-
-
-
-
         );
-
-      }).catchError((onError) async
-      {
+      }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+          Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
           emit(NoInternetState());
         }
@@ -691,25 +569,22 @@ files: files,
     }
   }
 
-int? idFiles ;
-  Future<int?> uploadFileInTasks(File file,
+  int? idFiles;
 
-
+  Future<int?> uploadFileInTasks(
+    File file,
   ) async {
-
     Dio dio = Dio();
     try {
       emit(UploadLoadingFilesState());
-      String baseUrl = "https://eby-itsales.guessitt.com/public/itsales/"; // Replace with your base URL
+      String baseUrl =
+          "https://eby-itsales.guessitt.com/public/itsales/"; // Replace with your base URL
       String endpoint = "files";
       String fileName = basename(file.path);
 
       FormData formData = FormData.fromMap({
         "data": await MultipartFile.fromFile(file.path, filename: fileName),
       });
-
-
-
 
       Response response = await dio.post(
         "$baseUrl$endpoint",
@@ -721,34 +596,27 @@ int? idFiles ;
         ),
       );
 
-
       if (response.statusCode == 200) {
-
         emit(UploadSuccessFilesState());
         print("File uploaded successfully!");
-        idFiles =  response.data['data']['id'];
-        print( response.data['data']['id']);
+        idFiles = response.data['data']['id'];
+        print(response.data['data']['id']);
 
-      return idFiles;
-      }
-      else {
+        return idFiles;
+      } else {
         emit(UploadErrorFilesState());
         print("File upload failed with status: ${response.statusCode}");
       }
-       return idFiles;
+      return idFiles;
     } catch (e) {
-      if ( await InternetConnectionChecker().hasConnection == false) {
-        showToast(text: 'أنت غير متصل بالانترنت', state: ToastStates.error);
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت', );
 
         emit(NoInternetState());
-
-
       }
       emit(UploadErrorFilesState());
       print("Error during file upload: $e");
     }
-      return idFiles;
+    return idFiles;
   }
-
-
 }

@@ -4,6 +4,7 @@ class AppRoutes {
   static const splash = '/splash_screen';
   static const onBoarding = '/onboarding';
   static const choosePage = '/choose_page';
+  static const  profilePage= '/profile_page';
 
   /* <---- Login, Signup -----> */
   static const login = '/login';

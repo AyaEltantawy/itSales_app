@@ -11,4 +11,5 @@ class AppLottie {
   );
   static const nothing = 'assets/animation/nothing.json';
   static const IconData report = IconData(0xe52a, fontFamily: 'MaterialIcons');
+
 }

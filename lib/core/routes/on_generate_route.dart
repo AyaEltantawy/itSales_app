@@ -82,6 +82,7 @@ class RouteGenerator {
       case AppRoutes.allEmployees:
         return animatedNavigation(
             screen: const AllEmployeeScreen(
+              task: false,
           admin: false,
         ));
 
@@ -102,6 +103,8 @@ class RouteGenerator {
 
       case AppRoutes.signup:
         return animatedNavigation(screen: const SignUpPage());
+      case AppRoutes.profilePage:
+        return animatedNavigation(screen: const SettingsPage());
 
       case AppRoutes.loginOrSignup:
         return animatedNavigation(screen: const LoginOrSignUpPage());

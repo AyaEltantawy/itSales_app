@@ -11,7 +11,7 @@ import '../components/checkbox_and_text.dart';
 import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/app_defaults.dart';
 import '../../../core/routes/app_routes.dart';
-import '../../../core/utils/toast.dart';
+import '../../../core/utils/snack_bar.dart';
 import '../components/login_header.dart';
 import '../components/login_page_form.dart';
 
@@ -22,11 +22,11 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
       if (state is PostErrorLoginSalesState) {
-        errorMotionToast(context, text: 'عفوا البيانات غير صحيحة');
+       Utils.showSnackBar(context,  'عفوا البيانات غير صحيحة');
       }
 
       if (state is PostSuccessLoginSalesState) {
-        successMotionToast(context, text: 'تم تسجيل الدخول بنجاح');
+        Utils.showSnackBar(context,'تم تسجيل الدخول بنجاح');
 
         navigateTo(context, AppRoutes.entryPoint);
         print('success');

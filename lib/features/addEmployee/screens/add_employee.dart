@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,7 @@ import 'package:itsale/core/components/network_image.dart';
 import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/routes/app_routes.dart';
-import 'package:itsale/core/utils/toast.dart';
+import 'package:itsale/core/routes/magic_router.dart';
 import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/features/home/data/states.dart';
 import 'package:svg_flutter/svg.dart';
@@ -20,6 +21,7 @@ import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/navigation.dart';
+import '../../../core/utils/snack_bar.dart';
 import '../../../generated/l10n.dart';
 
 class AddNewEmployee extends StatefulWidget {
@@ -124,21 +126,23 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                         listener: (context, state) {
                           if( state is AddErrorEmployeeInfoState || state is EditErrorEmployeeInfoState || state is ErrorEditUserState )
                           {
-                            return errorMotionToast(context, text: 'حدثت مشكلة حاول مرة اخرى');
+                            return Utils.showSnackBar(context, 'حدثت مشكلة حاول مرة اخرى');
                           }
                           if (state is AddSuccessEmployeeInfoState || state is EditSuccessEmployeeInfoState || state is SuccessEditUserState  )
                           {
                             if(widget.isEdit)
                             {
                              navigateTo(context, AppRoutes.entryPoint);
-                              return successMotionToast(context, text: 'تم التعديل بنجاح');
+                            return  Utils.showSnackBar(MagicRouter.currentContext,
+                               'تم التعديل بنجاح',
+
+                             );
 
                             }
                             else
                             {
 
-                              return
-                          successMotionToast(context, text: 'تمت الاضافة بنجاح');
+                              return  Utils.showSnackBar(context, 'تمت الاضافة بنجاح');
 
                         }
                                }
