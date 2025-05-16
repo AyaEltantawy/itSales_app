@@ -16,50 +16,54 @@ class TaskCardGrid extends StatelessWidget {
   final String statusText;
   final String taskName;
   final String taskNotes;
-  final int  index;
- final  bool?  search  ;
- final  bool?    detailsUser  ;
+  final int index;
+  final bool? search;
+
+  final bool? detailsUser;
+
   final String? completeDate;
-  final  String? progressDate;
+  final String? progressDate;
   final String? createDate;
   final String? cancelDate;
   final String location;
   final String names;
   final String avatar;
 
-  const TaskCardGrid({super.key,
+  const TaskCardGrid({
+    super.key,
     required this.statusColor,
     required this.statusText,
     this.search,
     required this.taskName,
     required this.taskNotes,
     required this.index,
-
     required this.location,
     required this.names,
-    required this.avatar, this.completeDate, this.progressDate, this.createDate, this.cancelDate, this.detailsUser,
+    required this.avatar,
+    this.completeDate,
+    this.progressDate,
+    this.createDate,
+    this.cancelDate,
+    this.detailsUser,
   });
 
   @override
   Widget build(BuildContext context) {
-    var cubit =  TasksCubit.get(context);
+    var cubit = TasksCubit.get(context);
 
-    switch(statusText)
-    {
-      case 'inbox' :
+    switch (statusText) {
+      case 'inbox':
         return Container(
-
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
-
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(
-                color: globalDark ? AppColors.cardColorDark  : AppColors.placeholder
-            ),
+                color: globalDark
+                    ? AppColors.cardColorDark
+                    : AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:  EdgeInsets.only(left: 8.0.h,right: 8.w,top: 16.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 16.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -69,39 +73,44 @@ class TaskCardGrid extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          avatar != 'null' ? Container(
-                              height: 30.h,
-                              width: 30.w,
-                              margin: EdgeInsets.only(left: 10.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.r),
-
-                              ),
-                              child: NetworkImageWithLoader(avatar.toString(),                              borderRadius: BorderRadius.circular(5.r),
-                              )) :   Padding(
-                            padding:  EdgeInsets.only(right: 2.0.w,left: 8.0.w),
-                            child: Container(
-                              height: 30.h,
-                              width: 30.w,
-                              decoration: const  BoxDecoration(
-                                color: AppColors.gray,
-                                shape: BoxShape.rectangle,
-                              ),
-                            ),
-                          ),
-
+                          avatar != 'null'
+                              ? Container(
+                                  height: 30.h,
+                                  width: 30.w,
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: NetworkImageWithLoader(
+                                    avatar.toString(),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ))
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 2.0.w, left: 8.0.w),
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 30.w,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.gray,
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                  ),
+                                ),
                           Flexible(
-                            child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}' ,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ) :
-                            Text(names,
-                              style: TextStyles.font18Weight500Black,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            child: role == "3"
+                                ? Text(
+                                    '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : Text(
+                                    names,
+                                    style: TextStyles.font18Weight500Black,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                           ),
                         ],
                       ),
@@ -109,7 +118,6 @@ class TaskCardGrid extends StatelessWidget {
 
                     // const  Spacer(),
                     // // const Icon(Icons.more_vert),
-
                   ],
                 ),
                 SizedBox(height: 8.h),
@@ -118,7 +126,6 @@ class TaskCardGrid extends StatelessWidget {
                   style: TextStyles.font16Weight300EmeraldWithoutLine,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -126,15 +133,14 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12light,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color:
-                     globalDark ? AppColors.placeholder
-                         : AppColors.textBlack),
+                    Icon(Icons.location_on_outlined,
+                        color: globalDark
+                            ? AppColors.placeholder
+                            : AppColors.textBlack),
                     SizedBox(width: 4.h),
                     Flexible(
                       child: Text(
@@ -142,7 +148,6 @@ class TaskCardGrid extends StatelessWidget {
                         style: AppFonts.style12light,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-
                       ),
                     ),
                   ],
@@ -156,42 +161,42 @@ class TaskCardGrid extends StatelessWidget {
                   ),
                   child: Text(
                     'قيد الإنتظار',
-                    style: AppFonts.style12bold.copyWith(color: AppColors.warning),
-
+                    style:
+                        AppFonts.style12bold.copyWith(color: AppColors.warning),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-
                   ),
                 ),
-
-                SizedBox(height: 10.w,),
+                SizedBox(
+                  height: 10.w,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        search != null ? Container() :  Text(
-                          'تاريخ الانشاء',
-                          style: AppFonts.style10light,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-                        search != null ? Container() :  Text(
-                          detailsUser != null ?
-                          createDate.toString() :
-                          cubit.getAllTaskList![index].created_on.toString(),
-                          style: AppFonts.style10light,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-
+                        search != null
+                            ? Container()
+                            : Text(
+                                'تاريخ الانشاء',
+                                style: AppFonts.style10light,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                        search != null
+                            ? Container()
+                            : Text(
+                                detailsUser != null
+                                    ? createDate.toString()
+                                    : cubit.getAllTaskList![index].created_on
+                                        .toString(),
+                                style: AppFonts.style10light,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                       ],
                     ),
                   ],
@@ -200,21 +205,18 @@ class TaskCardGrid extends StatelessWidget {
             ),
           ),
         );
-      case 'progress' :
+      case 'progress':
         return Container(
-
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
-
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(
-                color: globalDark ? AppColors.cardColorDark  : AppColors.placeholder
-
-            ),
+                color: globalDark
+                    ? AppColors.cardColorDark
+                    : AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:  EdgeInsets.only(left: 8.0.h,right: 8.w,top: 16.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 16.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -224,39 +226,44 @@ class TaskCardGrid extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          avatar != 'null' ? Container(
-                              height: 30.h,
-                              width: 30.w,
-                              margin: EdgeInsets.only(left: 10.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.r),
-
-                              ),
-                              child: NetworkImageWithLoader(avatar.toString(),                              borderRadius: BorderRadius.circular(5.r),
-                              )) :   Padding(
-                            padding:  EdgeInsets.only(right: 2.0.w,left: 8.0.w),
-                            child: Container(
-                              height: 30.h,
-                              width: 30.w,
-                              decoration: const  BoxDecoration(
-                                color: AppColors.gray,
-                                shape: BoxShape.rectangle,
-                              ),
-                            ),
-                          ),
-
+                          avatar != 'null'
+                              ? Container(
+                                  height: 30.h,
+                                  width: 30.w,
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: NetworkImageWithLoader(
+                                    avatar.toString(),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ))
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 2.0.w, left: 8.0.w),
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 30.w,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.gray,
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                  ),
+                                ),
                           Flexible(
-                            child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}' ,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ) :
-                            Text(names,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            child: role == "3"
+                                ? Text(
+                                    '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : Text(
+                                    names,
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                           ),
                         ],
                       ),
@@ -264,7 +271,6 @@ class TaskCardGrid extends StatelessWidget {
 
                     // const  Spacer(),
                     // const Icon(Icons.more_vert),
-
                   ],
                 ),
                 SizedBox(height: 8.h),
@@ -273,7 +279,6 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12bold,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -281,14 +286,14 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12light,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color: globalDark ? AppColors.placeholder
-                         : AppColors.textBlack),
+                    Icon(Icons.location_on_outlined,
+                        color: globalDark
+                            ? AppColors.placeholder
+                            : AppColors.textBlack),
                     SizedBox(width: 4.h),
                     Flexible(
                       child: Text(
@@ -296,7 +301,6 @@ class TaskCardGrid extends StatelessWidget {
                         style: AppFonts.style12light,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-
                       ),
                     ),
                   ],
@@ -311,41 +315,40 @@ class TaskCardGrid extends StatelessWidget {
                   child: Text(
                     'تم الإستلام',
                     style: AppFonts.style12bold.copyWith(color: AppColors.info),
-
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-
                   ),
                 ),
-
-                SizedBox(height: 10.w,),
+                SizedBox(
+                  height: 10.w,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        search != null ? Container() :   Text(
-                          'تاريخ الاستلام',
-                          style: AppFonts.style10light,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-                     search != null ? Container():   Text(
-                       detailsUser != null ?
-                          progressDate.toString() :
-                          cubit.getAllTaskList![index].modified_on.toString(),
-                          style: AppFonts.style10lightGrey,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-
+                        search != null
+                            ? Container()
+                            : Text(
+                                'تاريخ الاستلام',
+                                style: AppFonts.style10light,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                        search != null
+                            ? Container()
+                            : Text(
+                                detailsUser != null
+                                    ? progressDate.toString()
+                                    : cubit.getAllTaskList![index].modified_on
+                                        .toString(),
+                                style: AppFonts.style10lightGrey,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                       ],
                     ),
                   ],
@@ -354,20 +357,18 @@ class TaskCardGrid extends StatelessWidget {
             ),
           ),
         );
-      case 'cancelled' :
+      case 'cancelled':
         return Container(
-
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
-
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(
-                color: globalDark ? AppColors.cardColorDark  : AppColors.placeholder
-            ),
+                color: globalDark
+                    ? AppColors.cardColorDark
+                    : AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:  EdgeInsets.only(left: 8.0.h,right: 8.w,top: 16.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 16.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -377,39 +378,44 @@ class TaskCardGrid extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          avatar != 'null' ? Container(
-                              height: 30.h,
-                              width: 30.w,
-                              margin: EdgeInsets.only(left: 10.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.r),
-
-                              ),
-                              child: NetworkImageWithLoader(avatar.toString(),                              borderRadius: BorderRadius.circular(5.r),
-                              )) :   Padding(
-                            padding:  EdgeInsets.only(right: 2.0.w,left: 8.0.w),
-                            child: Container(
-                              height: 30.h,
-                              width: 30.w,
-                              decoration: const  BoxDecoration(
-                                color: AppColors.gray,
-                                shape: BoxShape.rectangle,
-                              ),
-                            ),
-                          ),
-
+                          avatar != 'null'
+                              ? Container(
+                                  height: 30.h,
+                                  width: 30.w,
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: NetworkImageWithLoader(
+                                    avatar.toString(),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ))
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 2.0.w, left: 8.0.w),
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 30.w,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.gray,
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                  ),
+                                ),
                           Flexible(
-                            child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}' ,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ) :
-                            Text(names,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            child: role == "3"
+                                ? Text(
+                                    '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : Text(
+                                    names,
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                           ),
                         ],
                       ),
@@ -417,7 +423,6 @@ class TaskCardGrid extends StatelessWidget {
 
                     // const  Spacer(),
                     // const Icon(Icons.more_vert),
-
                   ],
                 ),
                 SizedBox(height: 8.h),
@@ -426,7 +431,6 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12bold,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -434,14 +438,14 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12light,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color: globalDark ? AppColors.placeholder
-                         : AppColors.textBlack),
+                    Icon(Icons.location_on_outlined,
+                        color: globalDark
+                            ? AppColors.placeholder
+                            : AppColors.textBlack),
                     SizedBox(width: 4.h),
                     Flexible(
                       child: Text(
@@ -449,7 +453,6 @@ class TaskCardGrid extends StatelessWidget {
                         style: AppFonts.style12light,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-
                       ),
                     ),
                   ],
@@ -463,42 +466,43 @@ class TaskCardGrid extends StatelessWidget {
                   ),
                   child: Text(
                     'ملغي',
-                    style: AppFonts.style12bold.copyWith(color: AppColors.danger),
-
+                    style:
+                        AppFonts.style12bold.copyWith(color: AppColors.danger),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-
                   ),
                 ),
-
-                SizedBox(height: 10.w,),
+                SizedBox(
+                  height: 10.w,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        search != null ? Container():   Text(
-                          'تاريخ الالغاء',
-                          style: AppFonts.style10light,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-                    search != null ? Container() :   Text(
-                      detailsUser != null ?
-                          cancelDate.toString() :
-                          cubit.getAllTaskList![index].cancelled_date.toString(),
-                          style: AppFonts.style10lightGrey,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-
+                        search != null
+                            ? Container()
+                            : Text(
+                                'تاريخ الالغاء',
+                                style: AppFonts.style10light,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                        search != null
+                            ? Container()
+                            : Text(
+                                detailsUser != null
+                                    ? cancelDate.toString()
+                                    : cubit
+                                        .getAllTaskList![index].cancelled_date
+                                        .toString(),
+                                style: AppFonts.style10lightGrey,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                       ],
                     ),
                   ],
@@ -507,20 +511,18 @@ class TaskCardGrid extends StatelessWidget {
             ),
           ),
         );
-      case 'completed' :
+      case 'completed':
         return Container(
-
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
-
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(
-                color: globalDark ? AppColors.cardColorDark  : AppColors.placeholder
-            ),
+                color: globalDark
+                    ? AppColors.cardColorDark
+                    : AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:  EdgeInsets.only(left: 8.0.h,right: 8.w,top: 16.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 16.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -530,39 +532,44 @@ class TaskCardGrid extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          avatar != 'null' ? Container(
-                              height: 30.h,
-                              width: 30.w,
-                              margin: EdgeInsets.only(left: 10.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.r),
-
-                              ),
-                              child: NetworkImageWithLoader(avatar.toString(),                              borderRadius: BorderRadius.circular(5.r),
-                              )) :   Padding(
-                            padding:  EdgeInsets.only(right: 2.0.w,left: 8.0.w),
-                            child: Container(
-                              height: 30.h,
-                              width: 30.w,
-                              decoration: const  BoxDecoration(
-                                color: AppColors.gray,
-                                shape: BoxShape.rectangle,
-                              ),
-                            ),
-                          ),
-
+                          avatar != 'null'
+                              ? Container(
+                                  height: 30.h,
+                                  width: 30.w,
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: NetworkImageWithLoader(
+                                    avatar.toString(),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ))
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 2.0.w, left: 8.0.w),
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 30.w,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.gray,
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                  ),
+                                ),
                           Flexible(
-                            child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}' ,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ) :
-                            Text(names,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            child: role == "3"
+                                ? Text(
+                                    '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : Text(
+                                    names,
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                           ),
                         ],
                       ),
@@ -570,7 +577,6 @@ class TaskCardGrid extends StatelessWidget {
 
                     // const  Spacer(),
                     // const Icon(Icons.more_vert),
-
                   ],
                 ),
                 SizedBox(height: 8.h),
@@ -579,7 +585,6 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12bold,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -587,15 +592,14 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12light,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color:
-                     globalDark ? AppColors.placeholder
-                         : AppColors.textBlack),
+                    Icon(Icons.location_on_outlined,
+                        color: globalDark
+                            ? AppColors.placeholder
+                            : AppColors.textBlack),
                     SizedBox(width: 4.h),
                     Flexible(
                       child: Text(
@@ -603,7 +607,6 @@ class TaskCardGrid extends StatelessWidget {
                         style: AppFonts.style12light,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-
                       ),
                     ),
                   ],
@@ -617,42 +620,42 @@ class TaskCardGrid extends StatelessWidget {
                   ),
                   child: Text(
                     'مكتمل',
-                    style: AppFonts.style12bold.copyWith(color: AppColors.success),
-
+                    style:
+                        AppFonts.style12bold.copyWith(color: AppColors.success),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-
                   ),
                 ),
-
-                SizedBox(height: 10.w,),
+                SizedBox(
+                  height: 10.w,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        search != null ? Container( ): Text(
-                          'تاريخ الاكتمال',
-                          style: AppFonts.style10light,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-                        search != null ? Container() :     Text(
-                          detailsUser != null ?
-                          completeDate.toString() :
-                          cubit.getAllTaskList![index].complete_date.toString(),
-                          style: AppFonts.style10lightGrey,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-
+                        search != null
+                            ? Container()
+                            : Text(
+                                'تاريخ الاكتمال',
+                                style: AppFonts.style10light,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                        search != null
+                            ? Container()
+                            : Text(
+                                detailsUser != null
+                                    ? completeDate.toString()
+                                    : cubit.getAllTaskList![index].complete_date
+                                        .toString(),
+                                style: AppFonts.style10lightGrey,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                       ],
                     ),
                   ],
@@ -811,20 +814,18 @@ class TaskCardGrid extends StatelessWidget {
       //     ),
       //   );
 
-      default :
+      default:
         return Container(
-
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
-
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(
-                color: globalDark ? AppColors.cardColorDark  : AppColors.placeholder
-            ),
+                color: globalDark
+                    ? AppColors.cardColorDark
+                    : AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:  EdgeInsets.only(left: 8.0.h,right: 8.w,top: 16.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 16.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -834,39 +835,44 @@ class TaskCardGrid extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          avatar != 'null' ? Container(
-                              height: 30.h,
-                              width: 30.w,
-                              margin: EdgeInsets.only(left: 10.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.r),
-
-                              ),
-                              child: NetworkImageWithLoader(avatar.toString(),                              borderRadius: BorderRadius.circular(5.r),
-                              )) :   Padding(
-                            padding:  EdgeInsets.only(right: 2.0.w,left: 8.0.w),
-                            child: Container(
-                              height: 30.h,
-                              width: 30.w,
-                              decoration: const  BoxDecoration(
-                                color: AppColors.gray,
-                                shape: BoxShape.rectangle,
-                              ),
-                            ),
-                          ),
-
+                          avatar != 'null'
+                              ? Container(
+                                  height: 30.h,
+                                  width: 30.w,
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: NetworkImageWithLoader(
+                                    avatar.toString(),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ))
+                              : Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 2.0.w, left: 8.0.w),
+                                  child: Container(
+                                    height: 30.h,
+                                    width: 30.w,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.gray,
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                  ),
+                                ),
                           Flexible(
-                            child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}' ,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ) :
-                            Text(names,
-                              style: AppFonts.style10light,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            child: role == "3"
+                                ? Text(
+                                    '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : Text(
+                                    names,
+                                    style: AppFonts.style10light,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                           ),
                         ],
                       ),
@@ -874,7 +880,6 @@ class TaskCardGrid extends StatelessWidget {
 
                     // const  Spacer(),
                     // const Icon(Icons.more_vert),
-
                   ],
                 ),
                 SizedBox(height: 8.h),
@@ -883,7 +888,6 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12bold,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -891,15 +895,14 @@ class TaskCardGrid extends StatelessWidget {
                   style: AppFonts.style12light,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-
                 ),
                 SizedBox(height: 8.h),
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color:
-                     globalDark ? AppColors.placeholder
-                         : AppColors.textBlack),
+                    Icon(Icons.location_on_outlined,
+                        color: globalDark
+                            ? AppColors.placeholder
+                            : AppColors.textBlack),
                     SizedBox(width: 4.h),
                     Flexible(
                       child: Text(
@@ -907,7 +910,6 @@ class TaskCardGrid extends StatelessWidget {
                         style: AppFonts.style12light,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-
                       ),
                     ),
                   ],
@@ -924,38 +926,38 @@ class TaskCardGrid extends StatelessWidget {
                     style: AppFonts.style12light,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-
                   ),
                 ),
-
-                SizedBox(height: 10.w,),
+                SizedBox(
+                  height: 10.w,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        search != null ? Container() :    Text(
-                          'تاريخ الانشاء',
-                          style: AppFonts.style10light,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-                        search != null ? Container() :    Text(
-                          detailsUser != null ?
-                         createDate.toString() :
-                          cubit.getAllTaskList![index].created_on.toString(),
-                          style: AppFonts.style10lightGrey,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-
-                        ),
-
+                        search != null
+                            ? Container()
+                            : Text(
+                                'تاريخ الانشاء',
+                                style: AppFonts.style10light,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                        search != null
+                            ? Container()
+                            : Text(
+                                detailsUser != null
+                                    ? createDate.toString()
+                                    : cubit.getAllTaskList![index].created_on
+                                        .toString(),
+                                style: AppFonts.style10lightGrey,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                       ],
                     ),
                   ],
@@ -964,8 +966,6 @@ class TaskCardGrid extends StatelessWidget {
             ),
           ),
         );
-
     }
-
   }
 }

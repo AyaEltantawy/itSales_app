@@ -44,6 +44,7 @@ EditUserRequestModel _$EditUserRequestModelFromJson(
       last_name: json['last_name'] as String?,
       role: json['role'] as String?,
       avatar: (json['avatar'] as num?)?.toInt(),
+      password: json['password'] as String?,
     );
 
 Map<String, dynamic> _$EditUserRequestModelToJson(
@@ -54,6 +55,7 @@ Map<String, dynamic> _$EditUserRequestModelToJson(
       'first_name': instance.first_name,
       'last_name': instance.last_name,
       'role': instance.role,
+      'password': instance.password,
       'avatar': instance.avatar,
     };
 

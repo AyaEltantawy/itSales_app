@@ -13,6 +13,7 @@ import '../../features/Tasks_Screens/data/cubit/cubit.dart';
 import '../../features/auth/data/cubit.dart';
 import '../../features/home/data/cubit.dart';
 import '../../generated/l10n.dart';
+import '../localization/app_localizations.dart';
 import 'app_colors.dart';
 import 'app_defaults.dart';
 
@@ -39,7 +40,7 @@ class _NoInternetState extends State<NoInternet> {
           SizedBox(height: 50.h,),
           Image.asset(AppImages.noInternet),
 
-          Text(S.of(context).no_internet_connection,style: GoogleFonts.cairo(fontSize: 20.sp,fontWeight: FontWeight.bold)),
+          Text(AppLocalizations.of(context)!.translate('no_internet_connection'),style: GoogleFonts.cairo(fontSize: 20.sp,fontWeight: FontWeight.bold)),
           SizedBox(height: 20.h,),
 
           InkWell(
@@ -73,7 +74,7 @@ class _NoInternetState extends State<NoInternet> {
                   children: [
                      Icon(Icons.refresh, color: AppColors.textWhite, size: 32,),
                     SizedBox(width: 10.w,),
-                    Text(S.of(context).try_again,style: GoogleFonts.cairo(fontSize: 18.sp,fontWeight: FontWeight.bold, color: AppColors.textWhite)),
+                    Text(AppLocalizations.of(context)!.translate("try_again"),style: GoogleFonts.cairo(fontSize: 18.sp,fontWeight: FontWeight.bold, color: AppColors.textWhite)),
                   ],
                 ),
               )),

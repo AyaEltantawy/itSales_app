@@ -13,7 +13,7 @@ Future notWork(context) => showDialog(context: context, builder: (context) => Di
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(S.of(context).feature_not_working, style: AppFonts.style16semiBold,),
+        Text("الخاصيه لا تعمل", style: AppFonts.style16semiBold,),
         SizedBox(height:  30.h,),
         Padding(
           padding: const EdgeInsets.all(30.0),

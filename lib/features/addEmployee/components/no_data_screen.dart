@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../generated/l10n.dart';
@@ -46,7 +47,7 @@ Widget nothing(context,
 
                color: AppColors.textWhite, size: 32,),
               SizedBox(width: 10.w,),
-              Text('${S.of(context).add_button}$button',style: GoogleFonts.cairo(fontSize: 18.sp,fontWeight: FontWeight.bold, color: AppColors.textWhite)),
+              Text('${AppLocalizations.of(context)!.translate("add_button")}$button',style: GoogleFonts.cairo(fontSize: 18.sp,fontWeight: FontWeight.bold, color: AppColors.textWhite)),
             ],
           ),
         )),

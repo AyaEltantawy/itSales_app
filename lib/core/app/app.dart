@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,11 +15,15 @@ import 'package:itsale/generated/l10n.dart';
 
 import '../../features/auth/data/cubit.dart';
 import '../../features/auth/data/states.dart';
+import '../../features/profile/widgets/language_show_dialog/language_show_dialog_cubit.dart';
+import '../../features/profile/widgets/language_show_dialog/language_show_dialog_state.dart'
+    show AppLanguageChangeState, LanguageShowDialogState;
+import '../../features/profile/widgets/language_show_dialog/language_show_dialog_view.dart';
 import '../injection/injection.dart';
+import '../localization/app_localizations.dart';
+import '../models/enums/language_event_type.dart';
 
 var globalDark = false;
-
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -30,10 +33,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late final LanguageShowDialogCubit languageCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    languageCubit = LanguageShowDialogCubit();
+    // No need to call appLanguageFunc here, Cubit's constructor already loads saved language
+  }
+
+  @override
+  void dispose() {
+    languageCubit.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarIconBrightness: Brightness.dark,
@@ -41,82 +57,76 @@ class _MyAppState extends State<MyApp> {
         statusBarColor: Colors.white,
       ),
     );
+
     return ScreenUtilInit(
-        designSize: const Size(360, 690),
-    minTextAdapt: true,
-    splitScreenMode: true,
-    ensureScreenSize: true,
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      ensureScreenSize: true,
+      builder: (context, child) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => getIt<AppCubit>()),
+            BlocProvider(create: (context) => getIt<EmployeeCubit>()),
+            BlocProvider(create: (context) => getIt<TasksCubit>()),
+            BlocProvider<LanguageShowDialogCubit>.value(value: languageCubit),
+          ],
+          child: BlocConsumer<AppCubit, AppStates>(
+            listener: (context, state) {
+              if (state is ThemeState) {
+                globalDark = state.isDarkMode;
+                setState(() {});
+              } else {
+                globalDark = context.read<AppCubit>().isDarkMode;
+              }
+            },
+            builder: (context, state) {
+              return BlocBuilder<LanguageShowDialogCubit, LanguageShowDialogState>(
+                builder: (context, state) {
+                  Locale locale = const Locale('en');
+                  if (state is AppLanguageChangeState) {
+                    locale = Locale(state.languageCode);
+                  }
 
-    builder: (context, child) {
-      return  MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: ( context) => getIt<AppCubit>(),
-          ),
-          BlocProvider(
-            create: ( context) => getIt<EmployeeCubit>(),
-          ),
-
-          BlocProvider(
-            create: ( context) => getIt<TasksCubit>(),
-          ),
-        ],
-        child: BlocConsumer<AppCubit,AppStates>  (
-          listener: (context , state) async {
-            if (state is ThemeState) {
-              globalDark = state.isDarkMode;
-              setState(() {
-
-              });
-            } else {
-              globalDark = context.read<AppCubit>().isDarkMode;
-
-            }
-// if(state is ThemeState)
-// {
-//   setState(() {
-//     globalDark = CacheHelper.getData(key: 'isDark') ?? false ;
-//
-//   });
-
-
- print('faaaaaaaaaaaaaaaaaaaaaaaaal$globalDark');
- print('faaaaaaaaaaaaaaaaaaaaaaaaal${AppCubit.get(context).isDarkMode}');
-//}
-
-          },
-          builder: ( context , state)  {
-
-
-            return
-
-              MaterialApp(
-                themeMode: ThemeMode.system,
-                theme: AppCubit.get(context).isDarkMode ? AppTheme.darkTheme : AppTheme.defaultTheme,
-                locale: const Locale('ar'),
-                localizationsDelegates: const [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: S.delegate.supportedLocales,
-                debugShowCheckedModeBanner: false,
-                title: 'itSales',
-                onGenerateRoute: RouteGenerator.onGenerate,
-                initialRoute: AppRoutes.splash,
-
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    themeMode: AppCubit.get(context).isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                    theme: AppTheme.defaultTheme,
+                    darkTheme: AppTheme.darkTheme,
+                    locale: locale,
+                    supportedLocales: const [
+                      Locale('ar'),
+                      Locale('en'),
+                    ],
+                    title: 'itSales',
+                    onGenerateRoute: RouteGenerator.onGenerate,
+                    initialRoute: AppRoutes.splash,
+                    localizationsDelegates:  [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    localeListResolutionCallback: (deviceLocales, supportedLocales) {
+                      if (deviceLocales == null || deviceLocales.isEmpty) {
+                        return supportedLocales.first;
+                      }
+                      for (var deviceLocale in deviceLocales) {
+                        for (var supportedLocale in supportedLocales) {
+                          if (deviceLocale.languageCode == supportedLocale.languageCode) {
+                            return supportedLocale;
+                          }
+                        }
+                      }
+                      return supportedLocales.first;
+                    },
+                  );
+                },
               );
-
-          }
-      ),
-      );
-    },
+            },
+          ),
+        );
+      },
     );
-
-  }
-
-  void restart() {
-    setState(() {});
   }
 }

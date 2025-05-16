@@ -112,11 +112,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
 
                     value: 'edit',
-                    child: Text(S.of(context).edit_task),
+                    child: Text("تفاصيل المهمة"),
                   ),
                    PopupMenuItem<String>(
                     value: 'delete',
-                    child: Text(S.of(context).delete_task),
+                    child: Text("تفاصيل المهمة",),
                   ),
                 ],
               ),
@@ -181,7 +181,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         }
                       });
                     },
-                    child: Text(S.of(context).add,style: AppFonts.style14normalWhite,),
+                    child: Text("اضافه",style: AppFonts.style14normalWhite,),
                   ),
                 ],
               ) : Container(),

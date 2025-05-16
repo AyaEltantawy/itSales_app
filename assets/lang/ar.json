@@ -1,0 +1,15 @@
+{
+
+  "hi": "اهلا",
+  "no_internet_connection": "لا يوجد اتصال بالانترنت",
+  "try_again": "حاول مرة اخري",
+  "add_button": "اضف زرار",
+  "employee": "موضف",
+  "active": "نشط",
+  "location_on_map": "الموقع علي الخريطة",
+  "welcome_back": "مرحبا بعودتك",
+  "write_your_data_for_login": "اكتب بياناتك لتسجيل الدخول",
+  "login_data": "بيانات تسجيل الدخول",
+  "employee_data": "بيانات الموضف",
+  "today_tasks": "المهام اليومية"
+}

@@ -52,7 +52,7 @@ class _ConfirmTaskListPageState extends State<ConfirmTaskListPage> {
               BlocConsumer<TasksCubit,TasksStates>(builder: (context, state) {
                 if(state is EditErrorUserTaskState)
                 {
-                  return  Text(S.of(context).sorry_error_occurred);
+                  return  Text("للاسف حدث خطأ");
                 }
                 if(state is EditLoadingUserTaskState)
                 {

@@ -107,13 +107,13 @@ class _FilterDialogState extends State<FilterDialog> {
                 children: [
                  const Icon(Icons.cancel_presentation_outlined, size: 20,),
                   SizedBox(width: 8.w,),
-                   Text(S.of(context).cancel_filter, style: TextStyle(
+                   Text("الغي الفلتر ", style: TextStyle(
                     decoration: TextDecoration.underline,
                   ),),
                 ],
               )),
             ),
-            Center(child: Text(S.of(context).filter_options,style: AppFonts.style20BoldColored,)),
+            Center(child: Text("خيارات الفلتر",style: AppFonts.style20BoldColored,)),
             SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -281,7 +281,7 @@ class _FilterDialogState extends State<FilterDialog> {
               isExpanded: true,
               underline: Container(),
               value: value,
-              hint: Text(S.of(context).choose_title),
+              hint: Text("اختار عنوان"),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
 
@@ -308,7 +308,7 @@ class _FilterDialogState extends State<FilterDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(S.of(context).date, style: TextStyle(fontSize: 16)),
+          Text("التاريخ", style: TextStyle(fontSize: 16)),
           SizedBox(height: 8.h),
           GestureDetector(
             onTap: () async {
@@ -390,14 +390,14 @@ class _RoleDialogState extends State<RoleDialog> {
                 children: [
                   const Icon(Icons.cancel_presentation_outlined, size: 20,),
                   SizedBox(width: 8.w,),
-                   Text(S.of(context).cancel_filter, style: TextStyle(
+                   Text("الغي الفلتر", style: TextStyle(
                     decoration: TextDecoration.underline,
                   ),),
                 ],
               )),
             ),
             SizedBox(height: 10.h),
-            Center(child: Text(S.of(context).choose_role,style: AppFonts.style20BoldColored,)),
+            Center(child: Text("اختار دور",style: AppFonts.style20BoldColored,)),
 
             _buildTabContent(),
             SizedBox(height: 20.h),
@@ -518,7 +518,7 @@ class _RoleDialogState extends State<RoleDialog> {
               isExpanded: true,
               underline: Container(),
               value: value,
-              hint: Text(S.of(context).choose_title),
+              hint: Text("اختار عنوان"),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
 
@@ -545,7 +545,7 @@ class _RoleDialogState extends State<RoleDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            Text(S.of(context).date, style: TextStyle(fontSize: 16)),
+            Text("التاريخ", style: TextStyle(fontSize: 16)),
           SizedBox(height: 8.h),
           GestureDetector(
             onTap: () async {

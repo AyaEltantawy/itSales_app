@@ -19,30 +19,32 @@ class ConfirmTaskCardList extends StatelessWidget {
   final int id;
   final int index;
 
-  const ConfirmTaskCardList({super.key,
+  const ConfirmTaskCardList({
+    super.key,
     required this.statusColor,
     required this.statusText,
     required this.taskName,
     required this.taskNotes,
     required this.date,
     required this.textDate,
-    required this.location, required this.id, required this.index,
+    required this.location,
+    required this.id,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
-    switch(statusText) {
-      case 'inbox' :
+    var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
+    switch (statusText) {
+      case 'inbox':
         return Container(
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:   EdgeInsets.only(left: 8.0.h,right: 8.w,top: 10.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -50,7 +52,6 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-
                       children: [
                         // Padding(
                         //   padding:  EdgeInsets.only(right: 8.0.w,left: 10.0.w),
@@ -64,21 +65,24 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                         //   ),
                         // ),
 
-                        Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',style: AppFonts.style12light,),
-
-
+                        Text(
+                          '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                          style: AppFonts.style12light,
+                        ),
                       ],
                     ),
                     const Spacer(),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.warning.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(50.r),
                       ),
                       child: Text(
                         'قيد الانتظار',
-                        style: AppFonts.style12bold.copyWith(color: AppColors.warning),
+                        style: AppFonts.style12bold
+                            .copyWith(color: AppColors.warning),
                       ),
                     ),
                     // const Icon(Icons.more_vert),
@@ -95,12 +99,12 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   style: AppFonts.style12light,
                 ),
                 SizedBox(height: 8.h),
-
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,),
-                   SizedBox(width: 4.h),
+                    Icon(
+                      Icons.location_on_outlined,
+                    ),
+                    SizedBox(width: 4.h),
                     Flexible(
                       child: Text(
                         maxLines: 2,
@@ -109,8 +113,7 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                         style: AppFonts.style12light,
                       ),
                     ),
-
-                   const Spacer(),
+                    const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -122,15 +125,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                           date,
                           style: AppFonts.style12lightGrey,
                         ),
-                        SizedBox(height: 10.h,),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                       ],
                     ),
                   ],
                 ),
-                  Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     // CustomButton(
                     //   color: AppColors.textWhite,
                     //   text: 'تأجيل الاستلام',
@@ -139,12 +143,11 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                     // ),
 
                     InkWell(
-                      onTap: ()
-                      {
+                      onTap: () {
                         TasksCubit.get(context).editTaskFun(
                           taskId: id.toString(),
                           task_status: 'progress',
-                        status: 'published',
+                          status: 'published',
                           title: cubit.title.toString(),
                           notes: cubit.notes.toString(),
                           assigned_to: cubit.assigned_to!.id.toString(),
@@ -153,38 +156,33 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                           client_phone: cubit.client_phone.toString(),
                           client_name: cubit.client_name.toString(),
                           due_date: cubit.due_date.toString(),
-                          start_date: cubit.start_date ?? cubit.due_date.toString(),
-
+                          start_date:
+                              cubit.start_date ?? cubit.due_date.toString(),
                         );
                       },
-                      child:  CustomButton(
+                      child: CustomButton(
                         color: AppColors.primary,
-                      
                         text: 'تأكيد الاستلام',
                         textColor: AppColors.textWhite,
                         borderColor: AppColors.primary,
                       ),
                     ),
-
                   ],
                 ),
-
-
                 SizedBox(height: 10.h),
               ],
             ),
           ),
         );
-      case 'progress' :
+      case 'progress':
         return Container(
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:   EdgeInsets.only(left: 8.0.h,right: 8.w,top: 10.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -192,10 +190,9 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-
                       children: [
                         Padding(
-                          padding:  EdgeInsets.only(right: 8.0.w,left: 10.0.w),
+                          padding: EdgeInsets.only(right: 8.0.w, left: 10.0.w),
                           child: Container(
                             height: 20.h,
                             width: 20.w,
@@ -205,15 +202,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                             ),
                           ),
                         ),
-
-                        Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',style: AppFonts.style12light,),
-
-
+                        Text(
+                          '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                          style: AppFonts.style12light,
+                        ),
                       ],
                     ),
                     const Spacer(),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.progress,
                         borderRadius: BorderRadius.circular(2),
@@ -237,17 +235,17 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   style: AppFonts.style12light,
                 ),
                 SizedBox(height: 8.h),
-
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color: AppColors.textBlack,),
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.textBlack,
+                    ),
                     SizedBox(width: 4.h),
                     Text(
                       location,
                       style: AppFonts.style12light,
                     ),
-
                     const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,15 +258,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                           date,
                           style: AppFonts.style12lightGrey,
                         ),
-                        SizedBox(height: 10.h,),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                       ],
                     ),
                   ],
                 ),
-                  Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     // CustomButton(
                     //   color: AppColors.textWhite,
                     //   text: 'تأجيل الاستلام',
@@ -278,31 +277,26 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
 
                     CustomButton(
                       color: AppColors.primary,
-
                       text: 'تأكيد الاستلام',
                       textColor: AppColors.textWhite,
                       borderColor: AppColors.primary,
                     ),
-
                   ],
                 ),
-
-
                 SizedBox(height: 10.h),
               ],
             ),
           ),
         );
-      case 'cancelled' :
+      case 'cancelled':
         return Container(
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:   EdgeInsets.only(left: 8.0.h,right: 8.w,top: 10.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -310,10 +304,9 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-
                       children: [
                         Padding(
-                          padding:  EdgeInsets.only(right: 8.0.w,left: 10.0.w),
+                          padding: EdgeInsets.only(right: 8.0.w, left: 10.0.w),
                           child: Container(
                             height: 20.h,
                             width: 20.w,
@@ -323,15 +316,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                             ),
                           ),
                         ),
-
-                        Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',style: AppFonts.style12light,),
-
-
+                        Text(
+                          '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                          style: AppFonts.style12light,
+                        ),
                       ],
                     ),
                     const Spacer(),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.canceled,
                         borderRadius: BorderRadius.circular(2),
@@ -355,17 +349,17 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   style: AppFonts.style12light,
                 ),
                 SizedBox(height: 8.h),
-
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color: AppColors.textBlack,),
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.textBlack,
+                    ),
                     SizedBox(width: 4.h),
                     Text(
                       location,
                       style: AppFonts.style12light,
                     ),
-
                     const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -378,15 +372,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                           date,
                           style: AppFonts.style12lightGrey,
                         ),
-                        SizedBox(height: 10.h,),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                       ],
                     ),
                   ],
                 ),
-                  Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     // CustomButton(
                     //   color: AppColors.textWhite,
                     //   text: 'تأجيل الاستلام',
@@ -400,26 +395,22 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                       textColor: AppColors.textWhite,
                       borderColor: AppColors.primary,
                     ),
-
                   ],
                 ),
-
-
                 SizedBox(height: 10.h),
               ],
             ),
           ),
         );
-      case 'completed' :
+      case 'completed':
         return Container(
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:   EdgeInsets.only(left: 8.0.h,right: 8.w,top: 10.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -427,10 +418,9 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-
                       children: [
                         Padding(
-                          padding:  EdgeInsets.only(right: 8.0.w,left: 10.0.w),
+                          padding: EdgeInsets.only(right: 8.0.w, left: 10.0.w),
                           child: Container(
                             height: 20.h,
                             width: 20.w,
@@ -440,15 +430,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                             ),
                           ),
                         ),
-
-                        Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',style: AppFonts.style12light,),
-
-
+                        Text(
+                          '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                          style: AppFonts.style12light,
+                        ),
                       ],
                     ),
                     const Spacer(),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.greenColor,
                         borderRadius: BorderRadius.circular(2),
@@ -472,17 +463,17 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   style: AppFonts.style12light,
                 ),
                 SizedBox(height: 8.h),
-
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color: AppColors.textBlack,),
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.textBlack,
+                    ),
                     SizedBox(width: 4.h),
                     Text(
                       location,
                       style: AppFonts.style12light,
                     ),
-
                     const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,15 +486,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                           date,
                           style: AppFonts.style12lightGrey,
                         ),
-                        SizedBox(height: 10.h,),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                       ],
                     ),
                   ],
                 ),
-                  Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     // CustomButton(
                     //   color: AppColors.textWhite,
                     //   text: 'تأجيل الاستلام',
@@ -513,31 +505,26 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
 
                     CustomButton(
                       color: AppColors.primary,
-
                       text: 'تأكيد الاستلام',
                       textColor: AppColors.textWhite,
                       borderColor: AppColors.primary,
                     ),
-
                   ],
                 ),
-
-
                 SizedBox(height: 10.h),
               ],
             ),
           ),
         );
-      default :
+      default:
         return Container(
-          margin:  EdgeInsets.symmetric(vertical: 8.h),
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.placeholder),
             borderRadius: BorderRadius.circular(5.r),
-
           ),
           child: Padding(
-            padding:   EdgeInsets.only(left: 8.0.h,right: 8.w,top: 10.h),
+            padding: EdgeInsets.only(left: 8.0.h, right: 8.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -545,10 +532,9 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-
                       children: [
                         Padding(
-                          padding:  EdgeInsets.only(right: 8.0.w,left: 10.0.w),
+                          padding: EdgeInsets.only(right: 8.0.w, left: 10.0.w),
                           child: Container(
                             height: 20.h,
                             width: 20.w,
@@ -558,15 +544,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                             ),
                           ),
                         ),
-
-                        Text('${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',style: AppFonts.style12light,),
-
-
+                        Text(
+                          '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
+                          style: AppFonts.style12light,
+                        ),
                       ],
                     ),
                     const Spacer(),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.inbox,
                         borderRadius: BorderRadius.circular(2),
@@ -590,17 +577,17 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                   style: AppFonts.style12light,
                 ),
                 SizedBox(height: 8.h),
-
-
                 Row(
                   children: [
-                     Icon(Icons.location_on_outlined,color: AppColors.textBlack,),
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.textBlack,
+                    ),
                     SizedBox(width: 4.h),
                     Text(
                       location,
                       style: AppFonts.style12light,
                     ),
-
                     const Spacer(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -613,15 +600,16 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
                           date,
                           style: AppFonts.style12lightGrey,
                         ),
-                        SizedBox(height: 10.h,),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                       ],
                     ),
                   ],
                 ),
-                  Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     // CustomButton(
                     //   color: AppColors.textWhite,
                     //   text: 'تأجيل الاستلام',
@@ -631,22 +619,17 @@ var cubit = TasksCubit.get(context).getUserTaskListWithStatus![index];
 
                     CustomButton(
                       color: AppColors.primary,
-
                       text: 'تأكيد الاستلام',
                       textColor: AppColors.textWhite,
                       borderColor: AppColors.primary,
                     ),
-
                   ],
                 ),
-
-
                 SizedBox(height: 10.h),
               ],
             ),
           ),
         );
-
     }
   }
 }

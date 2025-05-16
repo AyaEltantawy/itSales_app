@@ -1,23 +1,20 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../addEmployee/data/models/add_employee_model.dart';
 
 part 'login_model.g.dart';
 
-
 @JsonSerializable()
-
 class LoginModel {
   DataLoginModel? data;
   bool? public;
 
   LoginModel({this.data, this.public});
-  factory LoginModel.fromJson(Map<String, dynamic> json) => _$LoginModelFromJson(json);
+
+  factory LoginModel.fromJson(Map<String, dynamic> json) =>
+      _$LoginModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LoginModelToJson(this);
-
-
 }
 
 @JsonSerializable()
@@ -26,10 +23,11 @@ class DataLoginModel {
   User? user;
 
   DataLoginModel({this.token, this.user});
-  factory DataLoginModel.fromJson(Map<String, dynamic> json) => _$DataLoginModelFromJson(json);
+
+  factory DataLoginModel.fromJson(Map<String, dynamic> json) =>
+      _$DataLoginModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DataLoginModelToJson(this);
-
 }
 
 @JsonSerializable()
@@ -42,32 +40,32 @@ class User {
   String? email;
   String? time_zone;
   String? locale;
+
   // String? locale_options;
   // String? avatar;
   // String? company;
   // String? title;
   // String? externalId;
   String? theme;
+
   // String? n2fa_secret;
   String? password_reset_token;
 
-  User({this.id,
-    this.status,
-    this.role,
-    this.first_name,
-    this.last_name,
-    this.email,
-    this.time_zone,
-    this.locale,
-
-    this.theme,
-
-    this.password_reset_token});
+  User(
+      {this.id,
+      this.status,
+      this.role,
+      this.first_name,
+      this.last_name,
+      this.email,
+      this.time_zone,
+      this.locale,
+      this.theme,
+     required String password});
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
-
 }
 
 @JsonSerializable()
@@ -75,31 +73,31 @@ class SalesModel {
   String? email;
   String? password;
 
-  SalesModel({this.email, this.password});
+  SalesModel(
+      {this.email,
+      this.password,
+    });
 
-  factory SalesModel.fromJson(Map<String, dynamic> json) => _$SalesModelFromJson(json);
+  factory SalesModel.fromJson(Map<String, dynamic> json) =>
+      _$SalesModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SalesModelToJson(this);
-
 }
-
-
 
 @JsonSerializable()
 class GetUserInfo {
-  DataInfo? data;
+  DataInfoLogin? data;
 
   GetUserInfo({this.data});
-  factory GetUserInfo.fromJson(Map<String, dynamic> json) => _$GetUserInfoFromJson(json);
+
+  factory GetUserInfo.fromJson(Map<String, dynamic> json) =>
+      _$GetUserInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$GetUserInfoToJson(this);
-
 }
 
-
-
 @JsonSerializable()
-class DataInfo {
+class DataInfoLogin {
   int? id;
   String? status;
   Role? role;
@@ -121,30 +119,30 @@ class DataInfo {
   String? last_accessOn;
   String? last_page;
 
-  DataInfo(
+  DataInfoLogin(
       {this.id,
-        this.status,
-        this.role,
-        this.first_name,
-        this.last_name,
-        this.email,
-        this.token,
-        this.external_id,
-        this.theme,
-        this.n2fa_secret,
-        this.password_reset_token,
-        this.time_zone,
-        this.locale,
-        this.locale_options,
-        this.avatar,
-        this.company,
-        this.title,
-        this.email_notifications,
-        this.last_accessOn,
-        this.last_page});
+      this.status,
+      this.role,
+      this.first_name,
+      this.last_name,
+      this.email,
+      this.token,
+      this.external_id,
+      this.theme,
+      this.n2fa_secret,
+      this.password_reset_token,
+      this.time_zone,
+      this.locale,
+      this.locale_options,
+      this.avatar,
+      this.company,
+      this.title,
+      this.email_notifications,
+      this.last_accessOn,
+      this.last_page});
 
-  factory DataInfo.fromJson(Map<String, dynamic> json) => _$DataInfoFromJson(json);
+  factory DataInfoLogin.fromJson(Map<String, dynamic> json) =>
+      _$DataInfoLoginFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataInfoToJson(this);
-
-  }
+  Map<String, dynamic> toJson() => _$DataInfoLoginToJson(this);
+}

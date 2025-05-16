@@ -1,49 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/themes/styles.dart';
 
 class CustomCheckBoxAndText extends StatelessWidget {
-final String selectedLanguage;
+  final String selectedLanguage;
   final void Function(String) toggleLanguage;
 
-  const CustomCheckBoxAndText(
-      {super.key,
-      required this.selectedLanguage,
-      required this.toggleLanguage});
+  const CustomCheckBoxAndText({
+    Key? key,
+    required this.selectedLanguage,
+    required this.toggleLanguage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            Radio<String>(
-              value: 'arabic',
-              groupValue: selectedLanguage,
-              onChanged: (String? value) {
-                if (value != null) {
-                  toggleLanguage(value);
-                }
-              },
-            ),
-            Text("اللغة العربية", style: TextStyles.font16Weight300Black),
-          ],
+        _buildLanguageRow(
+          languageValue: 'arabic',
+          label: "اللغة العربية",
         ),
-        Row(
-          children: [
-            Radio<String>(
-              value: 'english',
-              groupValue: selectedLanguage,
-              onChanged: (String? value) {
-                if (value != null) {
-                  toggleLanguage(value);
-                }
-              },
-            ),
-            Text("English", style: TextStyles.font16Weight300Black),
-          ],
+        _buildLanguageRow(
+          languageValue: 'english',
+          label: "English",
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageRow({
+    required String languageValue,
+    required String label,
+  }) {
+    return Row(
+      children: [
+        Radio<String>(
+          value: languageValue,
+          groupValue: selectedLanguage,
+          onChanged: (String? value) {
+            if (value != null) {
+              toggleLanguage(value);
+            }
+          },
+        ),
+        SizedBox(width: 8.w), // spacing between radio and text
+        Text(
+          label,
+          style: TextStyles.font16Weight300Black,
         ),
       ],
     );

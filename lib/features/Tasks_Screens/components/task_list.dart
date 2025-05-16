@@ -92,7 +92,7 @@ class TaskCardList extends StatelessWidget {
 
                           Flexible(
                             child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name} ${AppCubit.get(context).getInfo!.last_name}',
+                            role == "3" ? Text('${AppCubit.get(context).getInfoLogin!.first_name} ${AppCubit.get(context).getInfoLogin!.last_name}',
                               style: AppFonts.style12light,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -231,7 +231,7 @@ class TaskCardList extends StatelessWidget {
 
                           Flexible(
                             child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name} ${AppCubit.get(context).getInfo!.last_name}',
+                            role == "3" ? Text('${AppCubit.get(context).getInfoLogin!.first_name} ${AppCubit.get(context).getInfoLogin!.last_name}',
                               style: AppFonts.style12light,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -369,7 +369,7 @@ class TaskCardList extends StatelessWidget {
 
                           Flexible(
                             child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name} ${AppCubit.get(context).getInfo!.last_name}',
+                            role == "3" ? Text('${AppCubit.get(context).getInfoLogin!.first_name} ${AppCubit.get(context).getInfoLogin!.last_name}',
                               style: AppFonts.style12light,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -511,7 +511,7 @@ class TaskCardList extends StatelessWidget {
                             child:
                             role == "3" ?
                             Text(
-                              '${AppCubit.get(context).getInfo!.first_name} ${AppCubit.get(context).getInfo!.last_name}',
+                              '${AppCubit.get(context).getInfoLogin!.first_name} ${AppCubit.get(context).getInfoLogin!.last_name}',
                               style: AppFonts.style12light,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -646,7 +646,7 @@ class TaskCardList extends StatelessWidget {
 
                           Flexible(
                             child:
-                            role == "3" ? Text('${AppCubit.get(context).getInfo!.first_name} ${AppCubit.get(context).getInfo!.last_name}',
+                            role == "3" ? Text('${AppCubit.get(context).getInfoLogin!.first_name} ${AppCubit.get(context).getInfoLogin!.last_name}',
                               style: AppFonts.style12light,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

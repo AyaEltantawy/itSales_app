@@ -236,7 +236,7 @@ class AllTasksModel {
 class DataAllTasks {
   int? id;
   String? status;
-  String? sort;
+  dynamic? sort;
   Owner? owner;
   String? created_on;
   Owner? modified_by;

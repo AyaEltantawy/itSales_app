@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:itsale/features/SplashScreen/splash_screen.dart';
+import 'package:itsale/features/auth/data/repo.dart';
 import 'package:itsale/features/auth/screens/otp/otp_view.dart';
 import 'package:itsale/features/auth/screens/register/register_view.dart';
 import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
@@ -36,6 +38,7 @@ import '../../features/entrypoint/components/select_any_button_bottom_sheet.dart
 import '../../features/home/screens/employee_screen.dart';
 import '../../features/profile/widgets/help/help_view.dart';
 import '../../features/profile/widgets/reports/reports_view.dart';
+import '../remote_data_source/web_services.dart';
 import '../utils/transition.dart';
 import 'app_routes.dart';
 import 'unknown_page.dart';
@@ -68,7 +71,8 @@ class RouteGenerator {
       case AppRoutes.otpPage:
         return animatedNavigation(screen: OtpPage());
       case AppRoutes.registerPage:
-        return animatedNavigation(screen: RegisterPage());
+
+        return animatedNavigation(screen: RegisterPage(repository: Repository(WebServices(Dio())),));
       case AppRoutes.passwordChangedSuccessPage:
         return animatedNavigation(screen: PasswordChangedSuccessPage());
 

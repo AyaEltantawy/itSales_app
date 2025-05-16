@@ -209,7 +209,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                   route: AppRoutes.addEmployee);
         }
         if (state is GetErrorAdminsState)
-          return Center(child: Text(S.of(context).sorry_error_occurred));
+          return Center(child: Text("للاسف حدث خطا"));
         if (state is GetLoadingAdminsState) return AppLottie.loader;
 
         return cubit.usersAdmin?.isNotEmpty ?? false
@@ -229,7 +229,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
         final cubit = EmployeeCubit.get(context);
 
         if (state is GetErrorSalesState)
-          return Center(child: Text(S.of(context).sorry_error));
+          return Center(child: Text("للاسف حدث خطأ"));
         if (state is GetLoadingSearchEmployeeFilterState)
           return const LinearProgressIndicator();
         if (state is GetSuccessSearchEmployeeFilterState) {

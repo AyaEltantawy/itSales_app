@@ -58,6 +58,43 @@ class _WebServices implements WebServices {
   }
 
   @override
+
+  @override
+
+  Future<RegisterModel> registerSales(String token,register_model.User user) async {
+    // build headers with token
+    final _headers = <String, dynamic>{
+      'Authorization': token.startsWith('Bearer ') ? token : 'Bearer $token',
+    };
+
+    // prepare data from user
+    final _data = user.toJson();
+
+    // build options and call dio...
+    final _options = _setStreamType<RegisterModel>(
+      Options(
+        method: 'POST',
+        headers: _headers,
+      ).compose(
+        _dio.options,
+        'users',
+        data: _data,
+      ).copyWith(
+        baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      ),
+    );
+
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+
+    try {
+      return RegisterModel.fromJson(_result.data!);
+    } catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+  }
+
+  @override
   Future<GetUserInfo> getDataUser(String token) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -763,4 +800,45 @@ class _WebServices implements WebServices {
 
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
   }
+
+  @override
+  Future<register_model.RegisterModel> registerPublicUser(register_model.User user) {
+    // TODO: implement registerPublicUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<GetCompanyModel> getCompany(String token) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<AllEmployeeModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+      _dio.options,
+      'items/company?fields=*.*.*',
+      queryParameters: queryParameters,
+      data: _data,
+    )
+        .copyWith(
+        baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late GetCompanyModel _value;
+    try {
+      _value = GetCompanyModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
 }

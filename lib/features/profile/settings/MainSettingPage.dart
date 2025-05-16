@@ -51,9 +51,9 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
     var email = TextEditingController();
     //  var phone = TextEditingController();
 
-    fName.text = cubit.getInfo!.first_name.toString() ?? '';
-    lName.text = cubit.getInfo!.last_name.toString() ?? '';
-    email.text = cubit.getInfo!.email.toString() ?? '';
+    fName.text = cubit.getInfoLogin?.first_name.toString() ?? '';
+    lName.text = cubit.getInfoLogin?.last_name.toString() ?? '';
+    email.text = cubit.getInfoLogin?.email.toString() ?? '';
     // phone.text  = '${cubit.getInfo!.first_name.toString()} ${cubit.getInfo!.last_name.toString()}' ?? '';
 
     return Scaffold(
@@ -102,7 +102,7 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                         isColor: true,
                         textSize: 18.sp,
                         toPage: () {
-                          if (cubit.getInfo!.avatar == null &&
+                          if (cubit.getInfoLogin?.avatar == null &&
                               selectedImageForSetting == null) {
                             EmployeeCubit.get(context)
                                 .editUserFun(
@@ -117,7 +117,7 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                                       .toString()
                                   : '',
                               employeeId: '0',
-                              role: cubit.getInfo!.role!.id.toString(),
+                              role: cubit.getInfoLogin?.role?.id.toString() ?? 'defaultRole',
                               email: email.text,
                               lastName: lName.text,
                               status: 'active',
@@ -143,8 +143,10 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                                             .toString()
                                         : '',
                                     employeeId: '0',
-                                    role: cubit.getInfo!.role!.id.toString(),
-                                    email: email.text,
+                              role: cubit.getInfoLogin?.role?.id?.toString()??'',
+
+
+                              email: email.text,
                                     lastName: lName.text,
                                     edit: true,
                                     status: 'active',
@@ -160,7 +162,7 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                                     password: passController.text,
                                     idUser: userId.toString(),
                                     firstName: fName.text,
-                                    avatar: cubit.getInfo!.avatar?.id,
+                                    avatar: cubit.getInfoLogin!.avatar?.id,
                                     phone1: role == '1'
                                         ? EmployeeCubit.get(context)
                                             .users![
@@ -170,7 +172,7 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                                             .toString()
                                         : '',
                                     employeeId: '0',
-                                    role: cubit.getInfo!.role!.id.toString(),
+                                    role: cubit.getInfoLogin!.role!.id.toString(),
                                     email: email.text,
                                     lastName: lName.text,
                                     status: 'active',
@@ -250,12 +252,12 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                   ),
                 ],
               )
-            : AppCubit.get(context).getInfo!.avatar != null
+            : AppCubit.get(context).getInfoLogin?.avatar != null
                 ? SizedBox(
                     height: 90.h,
                     width: 90.w,
                     child: NetworkImageWithLoader(AppCubit.get(context)
-                        .getInfo!
+                        .getInfoLogin!
                         .avatar!
                         .data!
                         .full_url

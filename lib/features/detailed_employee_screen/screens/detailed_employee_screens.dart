@@ -6,6 +6,7 @@ import 'package:itsale/core/components/default_app_bar.dart';
 import 'package:itsale/core/constants/app_colors.dart';
 import 'package:itsale/core/constants/app_defaults.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 
 import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/navigation.dart';
@@ -359,7 +360,7 @@ class _OverviewSectionState extends State<OverviewSection> {
           padding:
               EdgeInsets.symmetric(horizontal: AppDefaults.padding.w / 1.6),
           child: Text(
-            S.of(context).today_tasks,
+            AppLocalizations.of(context)!.translate("today_tasks"),
             style: AppFonts.style20Bold,
           ),
         ),
@@ -666,7 +667,7 @@ class EmployeeInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  S.of(context).login_data,
+                  AppLocalizations.of(context)!.translate("login_data"),
                   style: AppFonts.style16semiBold,
                 ),
                 SizedBox(height: 8.h),
@@ -689,7 +690,7 @@ class EmployeeInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  S.of(context).employee_data,
+                  AppLocalizations.of(context)!.translate("employee_data"),
                   style: AppFonts.style16semiBold,
                 ),
                 SizedBox(height: 8.h),

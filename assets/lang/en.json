@@ -1,0 +1,14 @@
+{
+  "hi": "Hi",
+  "no_internet_connection": "No Internet Connection",
+  "try_again": "Try Again",
+  "add_button": "Add Button",
+  "employee": "employee",
+  "active": "Active",
+  "location_on_map": "Location on map",
+  "welcome_back": "Welcome Back",
+  "write_your_data_for_login": "Write data for login",
+  "login_data": "Login data",
+  "employee_data": "Employee Data",
+  "today_tasks": "Today Tasks"
+}

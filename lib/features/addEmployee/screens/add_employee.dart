@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:itsale/core/components/network_image.dart';
 import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
 import 'package:itsale/features/home/data/cubit.dart';
@@ -331,7 +332,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                                               newValue ?? _selectedItemRole;
                                         });
                                       },
-                                      hint: Text(S.of(context).employee),
+                                      hint: Text(AppLocalizations.of(context)!.translate("employee")),
                                       isExpanded:
                                           true, // Makes the dropdown expand to fit the screen width
                                     ),
@@ -366,7 +367,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                                               newValue ?? _selectedItem2;
                                         });
                                       },
-                                      hint: Text(S.of(context).active),
+                                      hint: Text(AppLocalizations.of(context)!.translate("active")),
                                       isExpanded:
                                           true, // Makes the dropdown expand to fit the screen width
                                     ),

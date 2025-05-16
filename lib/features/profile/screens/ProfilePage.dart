@@ -82,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         horizontal: AppDefaults.padding,
                         vertical: AppDefaults.padding / 2),
                     child: Text(
-                      S.of(context).menu,
+                      "القائمه",
                       style: AppFonts.style20medium,
                     ),
                   ),
@@ -98,7 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     child: Row(
                       children: [
-                        AppCubit.get(context).getInfo!.avatar?.data == null
+                        AppCubit.get(context).getInfoLogin?.avatar?.data == null
                             ? Padding(
                                 padding:
                                     EdgeInsets.only(right: 8.0.w, left: 10.0.w),
@@ -123,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   child: NetworkImageWithLoader(
                                       AppCubit.get(context)
-                                          .getInfo!
+                                          .getInfoLogin!
                                           .avatar!
                                           .data!
                                           .full_url
@@ -136,7 +136,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',
+                              '${AppCubit.get(context).getInfoLogin?.first_name.toString()} ${AppCubit.get(context).getInfoLogin?.last_name.toString()}',
                               style: AppFonts.style16Normal,
                             ),
                             Text(

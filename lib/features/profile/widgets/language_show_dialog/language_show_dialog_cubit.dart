@@ -1,33 +1,37 @@
 import 'package:bloc/bloc.dart';
-
+import '../../../../main.dart' show sharedPreferences;
 import 'language_show_dialog_state.dart';
+import 'package:itsale/core/models/enums/language_event_type.dart';
 
 class LanguageShowDialogCubit extends Cubit<LanguageShowDialogState> {
-  LanguageShowDialogCubit() : super(LanguageShowDialogStateInit());
-  String selectedLanguage = 'arabic'; // Default language is Arabic
 
-  // Function to change the selected language
-  void toggleLanguage(String language) {
-    selectedLanguage = language;
-    emit(ToggleLanguage());
+   LanguageShowDialogCubit() : super(LanguageShowDialogStateInit(selectedLanguage: 'arabic')) {
+    _loadSavedLanguage();
   }
-  // appLanguageFunc(LanguageEventEnums eventType) {
-  //   switch (eventType) {
-  //     case LanguageEventEnums.InitialLanguage:
-  //       if (sharedPreferences!.getString("lang") != null) {
-  //         if (sharedPreferences!.getString("lang") == "ar") {
-  //           emit(AppLanguageChangeState(languageCode: "ar"));
-  //         }
-  //         if (sharedPreferences!.getString("lang") == "en") {
-  //           emit(AppLanguageChangeState(languageCode: "en"));
-  //         }
-  //       }
-  //       break;
-  //     case LanguageEventEnums.ArabicLanguage:
-  //       sharedPreferences!.setString('lang', 'ar');
-  //       emit(AppLanguageChangeState(languageCode: "ar"));
-  //     case LanguageEventEnums.EnglishLanguage:
-  //       sharedPreferences!.setString('lang', 'en');
-  //       emit(AppLanguageChangeState(languageCode: "en"));
-  //   }
+
+  void _loadSavedLanguage() {
+    final lang = sharedPreferences?.getString("lang") ?? "ar";
+    if (lang == "ar") {
+      emit(AppLanguageChangeState(languageCode: "ar", selectedLanguage: 'arabic'));
+    } else if (lang == "en") {
+      emit(AppLanguageChangeState(languageCode: "en", selectedLanguage: 'english'));
+    } else {
+      emit(AppLanguageChangeState(languageCode: "ar", selectedLanguage: 'arabic'));
+    }
+  }
+
+  void toggleLanguage(String language) {
+    final currentState = state;
+    if (currentState is AppLanguageChangeState && currentState.selectedLanguage == language) {
+      return; // no change
+    }
+
+    if (language == 'arabic') {
+      sharedPreferences?.setString('lang', 'ar');
+      emit(AppLanguageChangeState(languageCode: "ar", selectedLanguage: 'arabic'));
+    } else if (language == 'english') {
+      sharedPreferences?.setString('lang', 'en');
+      emit(AppLanguageChangeState(languageCode: "en", selectedLanguage: 'english'));
+    }
+  }
 }

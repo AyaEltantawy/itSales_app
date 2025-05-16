@@ -228,7 +228,7 @@ Map<String, dynamic> _$AllTasksModelToJson(AllTasksModel instance) =>
 DataAllTasks _$DataAllTasksFromJson(Map<String, dynamic> json) => DataAllTasks(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
-      sort: json['sort'] as String?,
+      sort: json['sort'] as dynamic?,
       owner: json['owner'] == null
           ? null
           : Owner.fromJson(json['owner'] as Map<String, dynamic>),

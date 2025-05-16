@@ -44,6 +44,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
     role == '1'
         ? TasksCubit.get(context).getAllTasksFun()
         : TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
+    AppCubit.get(context).getCompanyFun();
     // TODO: implement initState
     super.initState();
   }
@@ -78,11 +79,11 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                 }
               }, builder: (context, state) {
                 if (state is NoInternetState ||
-                    AppCubit.get(context).getInfo == null) {
+                    AppCubit.get(context).getInfoLogin == null) {
                   return const NoInternet();
                 }
                 if (state is GetLoadingInfoState ||
-                    AppCubit.get(context).getInfo == null) {
+                    AppCubit.get(context).getInfoLogin == null) {
                   return AppLottie.loader;
                 }
 
@@ -124,15 +125,16 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                           children: [
                             const GreetingSection(),
                             SizedBox(height: 16.h),
-                            const CompanyDetails(),
+                             CompanyDetails(  companyName: AppCubit.get(context).companyData != null &&
+                                 AppCubit.get(context).companyData!.length > 1 &&
+                                 AppCubit.get(context).companyData![1].name != null
+                                 ? "Company Name: ${AppCubit.get(context).companyData![1].name}"
+                                 : "Company Name: N/A",),
                           ]),
                       SizedBox(
                         height: 20.h,
                       ),
-                      // Text(
-                      //   'مهمات اليوم',
-                      //   style: AppFonts.style20Bold,
-                      // ),
+
                       SizedBox(height: 8.h),
                       BlocConsumer<TasksCubit, TasksStates>(
                         listener: (context, state) {},
@@ -175,7 +177,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                                   uncompletedTasksForUser:
                                       uncompletedTasksForUser,
                                 )
-                              : Center(child: Text(S.of(context).no_tasks));
+                              : Center(child: Text("لا يوجد مهمة"));
                         },
                       ),
                       SizedBox(height: 20.h),
@@ -185,8 +187,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                         listener: (context, state) {},
                         builder: (context, state) {
                           if (state is GetErrorAllTaskState) {
-                            return Center(
-                                child: Text(S.of(context).sorry_error));
+                            return Center(child: Text("مع الاسف حدث خطأ"));
                           }
 
                           return CompletedTasksSection(
@@ -218,11 +219,11 @@ class GreetingSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            S.of(context).welcome,
+            "مرحبا",
             style: AppFonts.style20Bold,
           ),
           Text(
-            '${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',
+            '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
             style: AppFonts.style20Light,
           ),
         ],
@@ -503,7 +504,7 @@ class CompletedTasksSection extends StatelessWidget {
                       height: 20.h,
                     ),
                     Center(
-                        child: Text(S.of(context).no_data,
+                        child: Text("لا يوجد بيانات",
                             style: AppFonts.style12light)),
                     SizedBox(
                       height: 20.h,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:svg_flutter/svg.dart';
 
 import '../../../core/constants/constants.dart';
@@ -22,11 +23,11 @@ class LoginPageHeader extends StatelessWidget {
           height: 80.h,
         ),
         Text(
-          S.of(context).welcome_back,
+          AppLocalizations.of(context)!.translate("welcome_back"),
           style: AppFonts.style36medium,
         ),
         Text(
-          S.of(context).write_your_data_for_login,
+          AppLocalizations.of(context)!.translate("write_your_data_for_login"),
           style: AppFonts.style20Light,
         ),
       ],

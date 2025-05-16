@@ -5,7 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/themes/styles.dart';
 
 class CompanyDetails extends StatelessWidget {
-  const CompanyDetails({super.key});
+  final String companyName;
+  const CompanyDetails({super.key, required this.companyName});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class CompanyDetails extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-            Text("شركة السيارات",
+            Text(companyName,
             style: TextStyles.font20Weight500Primary,),
           SizedBox(height: 10.h,),
           Text("013456678989", style: TextStyles.font16Weight300EmeraldWithoutLine,),

@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
+import 'package:itsale/features/entrypoint/entrypoint_ui.dart';
 import 'package:path/path.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -25,7 +28,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
   List<DataAllEmployee>? employee = [];
 
-  getAllEmployee() async {
+    getAllEmployee() async {
     if (await InternetConnectionChecker().hasConnection == false) {
       Utils.showSnackBar(
         MagicRouter.currentContext,
@@ -206,7 +209,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     required String email,
     required String role,
     required String password,
-    required String phone1,
+    String? phone1,
     String? emailEmp,
     String? address,
     String? phone2,
@@ -229,15 +232,19 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       avatar: avatar,
     ))
         .then((value) {
+
       emit(AddSuccessUserState());
+      navigateTo(MagicRouter.currentContext,AppRoutes.entryPoint);
+     // MagicRouter.navigateTo(EntryPointUI());
       addEmployeeFun(
+
           employeeId: value.data!.id.toString(),
           status: 'published',
           email: emailEmp,
           address: address,
-          phone1: phone1,
+
           phone2: phone2,
-          whatsapp: whatsapp);
+          whatsapp: whatsapp, phone1: '');
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(MagicRouter.currentContext,'أنت غير متصل بالانترنت');

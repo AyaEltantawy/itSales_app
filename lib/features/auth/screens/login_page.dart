@@ -6,6 +6,7 @@ import 'package:itsale/core/constants/navigation.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/states.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/themes/styles.dart';
 import '../components/checkbox_and_text.dart';
 import '../../../core/constants/app_animation.dart';
@@ -61,7 +62,7 @@ class LoginPage extends StatelessWidget {
                   children: [
             Text(
               textAlign: TextAlign.start,
-              'تسجيل الدخول',
+              AppLocalizations.of(context)!.translate('hi'),
               style: TextStyles.font20Weight500BaseBlack,
             ),
             const Column(

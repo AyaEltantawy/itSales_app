@@ -19,7 +19,6 @@ class AllEmployeeModel {
 class DataAllEmployee {
   int? id;
   String? status;
-  //Null? sort;
   int? owner;
   String? created_on;
   int? modified_by;
@@ -33,7 +32,6 @@ class DataAllEmployee {
 
   DataAllEmployee({this.id,
     this.status,
-   // this.sort,
     this.owner,
     this.created_on,
     this.modified_by,

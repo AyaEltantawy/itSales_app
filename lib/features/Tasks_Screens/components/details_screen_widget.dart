@@ -32,7 +32,7 @@ class TaskDetailsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(S.of(context).basic_data,style: AppFonts.style16semiBold,),
+          Text("البيانات الاساسيه",style: AppFonts.style16semiBold,),
           SizedBox(height: 20.h),
           _buildRow(label: 'الموظف المكلّف', value: nameEmployee),
           Divider(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor),
@@ -149,7 +149,7 @@ class LocationSection extends StatelessWidget {
                           borderRadius: AppDefaults.borderRadius,
                           color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
                           border: Border.all(color: AppColors.primary)),
-                      child:  Text(S.of(context).go_to_location,
+                      child:  Text("اذهب للموقع",
                         style: TextStyle(color:globalDark ?   AppColors.textWhite : AppColors.textBlack ,fontSize: 14.sp),)),
 
                 ],

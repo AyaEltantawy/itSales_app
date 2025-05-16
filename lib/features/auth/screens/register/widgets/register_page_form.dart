@@ -11,67 +11,74 @@ import '../../../../../core/utils/validators.dart';
 import '../../../data/cubit.dart' show AppCubit;
 
 class RegisterPageForm extends StatelessWidget {
-  void Function() onPassShowClicked;
+  final void Function() onPassShowClicked;
   final bool isPasswordShown;
+  final GlobalKey<FormState> formKey;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController timezoneController;
+  final VoidCallback onSubmit;
 
-  RegisterPageForm(
-      {super.key,
-      required this.onPassShowClicked,
-      required this.isPasswordShown});
-
-  final _key = GlobalKey<FormState>();
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
+  const RegisterPageForm({
+    super.key,
+    required this.onPassShowClicked,
+    required this.isPasswordShown,
+    required this.formKey,
+    required this.emailController,
+    required this.passwordController,
+    required this.confirmPasswordController,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.timezoneController,
+    required this.onSubmit,
+  });
 
   @override
   Widget build(BuildContext context) {
-    onRegister() {
-      final bool isFormOkay = _key.currentState?.validate() ?? false;
-      //errorMotionToast(context,text: 'البيانات غير صحيحه');
-
-      if (isFormOkay) {
-        AppCubit.get(context).postLoginSales(context,
-            email: emailController.text, password: passController.text);
-      } else {
-        Utils.showSnackBar(context,  'يرجى الالتزام بالتعليمات');
-      }
-    }
-
     return Form(
-      key: _key,
+      key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 15.h),
           defaultTextFormFeild(
             context,
-            keyboardType: TextInputType.emailAddress,
-            controller: emailController,
-            validate:
-            Validators.requiredWithFieldName('الإسم').call,
-            prefix:  Icon(AppIcons.person_2_outlined),
-            label: "الإسم",
+            controller: firstNameController,
+            validate: Validators.requiredWithFieldName('الاسم الأول'),
+            prefix: Icon(AppIcons.person_2_outlined),
+            label: "الاسم الأول", keyboardType:TextInputType.name ,
+          ),
+          SizedBox(height: 15.h),
+          defaultTextFormFeild(
+            keyboardType:TextInputType.name ,
+            context,
+            controller: lastNameController,
+            validate: Validators.requiredWithFieldName('الاسم الأخير'),
+            prefix: Icon(AppIcons.person_2_outlined),
+            label: "الاسم الأخير",
           ),
           SizedBox(height: 15.h),
           defaultTextFormFeild(
             context,
             keyboardType: TextInputType.emailAddress,
             controller: emailController,
-            validate:
-                Validators.requiredWithFieldName('البريد الالكتروني').call,
+            validate: Validators.requiredWithFieldName('البريد الالكتروني'),
             prefix: const Icon(AppIcons.email),
-            label: 'اكتب البريد الالكتروني',
+            label: 'البريد الالكتروني',
           ),
           SizedBox(height: 15.h),
           defaultTextFormFeild(
+            keyboardType: TextInputType.multiline,
             context,
-            keyboardType: TextInputType.text,
-            controller: passController,
-            validate: Validators.password.call,
-            onSubmit: (v) => onRegister(),
+            controller: passwordController,
+            validate: Validators.password,
+            onSubmit: (_) => onSubmit(),
             secure: !isPasswordShown,
             prefix: const Icon(AppIcons.lock),
-            label: 'اكتب كلمة المرور',
+            label: 'كلمة المرور',
             suffix: IconButton(
               onPressed: onPassShowClicked,
               icon: Icon(
@@ -82,11 +89,16 @@ class RegisterPageForm extends StatelessWidget {
           ),
           SizedBox(height: 15.h),
           defaultTextFormFeild(
+            keyboardType: TextInputType.multiline,
             context,
-            keyboardType: TextInputType.text,
-            controller: passController,
-            validate: Validators.password.call,
-            onSubmit: (v) => onRegister(),
+            controller: confirmPasswordController,
+            validate: (value) {
+              if (value != passwordController.text) {
+                return 'كلمة المرور غير متطابقة';
+              }
+              return Validators.password(value);
+            },
+            onSubmit: (_) => onSubmit(),
             secure: !isPasswordShown,
             prefix: const Icon(AppIcons.lock),
             label: 'تأكيد كلمة المرور',
@@ -98,27 +110,26 @@ class RegisterPageForm extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 30.h,)
-          ,     defaultButton(
-              isColor: true,
-              height: 56.h,
-              width: double.infinity,
-              text: 'إنشاء حساب جديد',
-              context: context,
-              textSize: 17.sp,
-              toPage: (){navigateTo(context, AppRoutes.homeEmployee);}),
-
-          SizedBox(
-            height: 20.h,
-          ),
+          SizedBox(height: 30.h),
           defaultButton(
-              context: context,
-              text: "رجوع",
-              width: double.infinity,
-              height: 56.h,
-              isColor: false,
-              textSize: 17.sp,
-              toPage: () {navigateTo(context,AppRoutes.chooseLoginOrSignUpPage);})
+            context: context,
+            isColor: true,
+            height: 56.h,
+            width: double.infinity,
+            text: 'إنشاء حساب جديد',
+            textSize: 17.sp,
+            toPage: onSubmit,
+          ),
+          SizedBox(height: 20.h),
+          defaultButton(
+            context: context,
+            text: "رجوع",
+            width: double.infinity,
+            height: 56.h,
+            isColor: false,
+            textSize: 17.sp,
+            toPage: () => navigateTo(context, AppRoutes.chooseLoginOrSignUpPage),
+          )
         ],
       ),
     );

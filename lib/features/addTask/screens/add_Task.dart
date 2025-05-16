@@ -7,6 +7,7 @@ import 'package:itsale/core/app/app.dart';
 import 'package:itsale/core/constants/app_defaults.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/utils/snack_bar.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
@@ -384,7 +385,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                         width: 24.w,
                                       ),
                                       Text(
-                                        '${AppCubit.get(context).getInfo!.first_name.toString()} ${AppCubit.get(context).getInfo!.last_name.toString()}',
+                                        '${AppCubit.get(context).getInfoLogin!.first_name.toString()} ${AppCubit.get(context).getInfoLogin!.last_name.toString()}',
                                         style: AppFonts.style16semiBold,
                                       ),
                                     ],
@@ -555,7 +556,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                         border: Border.all(
                                             color: AppColors.primary)),
                                     child: Text(
-                                      S.of(context).location_on_map,
+                                      AppLocalizations.of(context)!.translate("location_on_map"),
                                       style: TextStyle(
                                           color: globalDark
                                               ? AppColors.textWhite
