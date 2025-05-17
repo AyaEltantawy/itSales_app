@@ -20,7 +20,7 @@ class ProfileHeader extends StatelessWidget {
       padding: const EdgeInsets.all(16.0), // Adds padding around the header
       child: Row(
         children: [
-        avatar == 'لا يوجد' ?   Container(
+          avatar == 'لا يوجد' ?   Container(
             height: 40.h, // Avatar height
             width: 40.h, // Avatar width
             decoration: BoxDecoration(
@@ -28,14 +28,14 @@ class ProfileHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r), // Rounded corners for avatar
             ),
           ) : Container(
-          height: 42.h,
-          width: 42.w,
-          decoration: BoxDecoration(
-            //  color: AppColors.lightGreenColor,
-            borderRadius: BorderRadius.circular(5.r),
+            height: 42.h,
+            width: 42.w,
+            decoration: BoxDecoration(
+              //  color: AppColors.lightGreenColor,
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: NetworkImageWithLoader(avatar),
           ),
-          child: NetworkImageWithLoader(avatar),
-        ),
           SizedBox(width: 16.w), // Adds space between avatar and text
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +54,7 @@ class ProfileHeader extends StatelessWidget {
               icon: const Icon(Icons.edit, color: AppColors.greenColor), // Edit button
               onPressed: ()
               {
-              Navigator.push(context,  animatedNavigation(screen:  AddNewEmployee(isEdit: true, empId: id,)));
+               // Navigator.push(context,  animatedNavigation(screen:  AddNewEmployee(isEdit: true, empId: id,)));
 
               },
             ),

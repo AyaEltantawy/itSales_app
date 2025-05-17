@@ -1,5 +1,5 @@
 {
-  "hi": "Hi",
+  "login": "Login",
   "no_internet_connection": "No Internet Connection",
   "try_again": "Try Again",
   "add_button": "Add Button",
@@ -10,5 +10,32 @@
   "write_your_data_for_login": "Write data for login",
   "login_data": "Login data",
   "employee_data": "Employee Data",
-  "today_tasks": "Today Tasks"
+  "today_tasks": "Today Tasks",
+  "main_page": "Main Page",
+  "hello": "Hello",
+  "all": "All",
+  "completed": "Completed",
+  "unCompleted": "UnCompleted",
+  "weekly_statistics": "Weekly Statistics",
+  "completed_tasks": "Completed Tasks",
+  "managers": "Managers",
+  "users": "Users",
+  "search_here": "Search Here",
+  "tasks": "Tasks",
+  "main_data": "Main Data",
+  "menu": "Menu",
+  "manager":"Manager",
+  "reports": "Reports",
+  "notifications": "Notifications",
+  "settings": "Settings",
+  "change_password": "Change Password",
+  "help": "Help",
+  "language": "Language",
+  "sign_out": "Sign Out",
+  "sorry data is in correct": "Sorry, Data is in correct",
+  "User registered successfully": "User registered successfully",
+  "register": "Register",
+  "write_your_data_to_register": "Write your data to register"
+
+
 }

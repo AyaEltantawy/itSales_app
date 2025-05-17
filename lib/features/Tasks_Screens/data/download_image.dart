@@ -18,9 +18,9 @@ Future<void> downloadImage(String url, String fileName) async {
     Dio dio = Dio();
     await dio.download(url, savePath);
 
-    Utils.showSnackBar(MagicRouter.currentContext, 'تم الحفظ في المعرض', );
+    Utils.showSnackBar(MagicRouter.currentContext!, 'تم الحفظ في المعرض', );
   } catch (e) {
-    Utils.showSnackBar(MagicRouter.currentContext ,'عفوا حاول مرة اخرى',);
+    Utils.showSnackBar(MagicRouter.currentContext! ,'عفوا حاول مرة اخرى',);
 
 
   }

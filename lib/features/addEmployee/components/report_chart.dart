@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../HomeEmployee/screens/home_employee.dart'
@@ -40,7 +41,7 @@ class ReportChart extends StatelessWidget {
       width: 300,
       height: 250,
       child: SfCartesianChart(
-title: ChartTitle(alignment:ChartAlignment.far,text: "إحصائيات الاسبوع",),
+title: ChartTitle(alignment:ChartAlignment.far,text: AppLocalizations.of(context)!.translate("weekly_statistics"),),
         primaryXAxis: CategoryAxis(),
         primaryYAxis: NumericAxis(
             minimum: 0,

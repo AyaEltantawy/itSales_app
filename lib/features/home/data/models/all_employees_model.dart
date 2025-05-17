@@ -47,5 +47,3 @@ class DataAllEmployee {
 
   Map<String, dynamic> toJson() => _$DataAllEmployeeToJson(this);
 }
-
-

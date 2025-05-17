@@ -36,10 +36,11 @@ abstract class WebServices {
   Future<GetUserInfo> editDataUser (@Header('Authorization') String token, @Path('id') String id,  @Body() EditUserRequestModel add) ;
 
 
-  @POST('users')
-  Future<AddUserModel> addUser (@Header('Authorization') String token, @Body() AddUserRequestModel add) ;
+  @POST('custom/signup')
+  Future<AddUserModel> addUser (@Body() AddUserRequestModel add) ;
 
-  @GET('users?fields=*.*')
+  //?
+  @GET('users')
   Future<AllUsersModel> allUsers (@Header('Authorization') String token ,  @Queries() Map<String, dynamic>? queryParams ) ;
 
 
@@ -68,7 +69,7 @@ abstract class WebServices {
 
   @GET('items/locations?filter[task]={id}')
   Future<GetLocationModel> getOneLocation (@Header('Authorization') String token, @Path('id') String id) ;
-  @GET('items/company?fields=*.*.*')
+  @GET('items/company?fields=*.*')
   Future<GetCompanyModel> getCompany(@Header('Authorization') String token, ) ;
 
 
@@ -76,7 +77,7 @@ abstract class WebServices {
   @POST('items/employees')
   Future<AddEmployeeModel> addEmployee (@Header('Authorization') String token, @Body() AddEmployeeRequestModel add) ;
 
-  @GET('items/employees?fields=*.*.*')
+  @GET('items/employees?filter[company.id]=1&fields=*.*.*')
   Future<AllEmployeeModel> getAllEmployee (@Header('Authorization') String token) ;
 
   @GET('items/employees?filter[user]={id}')

@@ -166,7 +166,7 @@ class AppCubit extends Cubit<AppStates> {
 
   Future<void> getCompanyFun() async {
     if (!await InternetConnectionChecker().hasConnection) {
-      Utils.showSnackBar(MagicRouter.currentContext, 'أنت غير متصل بالانترنت');
+      Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
       emit(NoInternetConnectionState());
       return;
     }
@@ -182,7 +182,7 @@ class AppCubit extends Cubit<AppStates> {
     } catch (onError) {
       if (!await InternetConnectionChecker().hasConnection) {
         Utils.showSnackBar(
-            MagicRouter.currentContext, 'أنت غير متصل بالانترنت');
+            MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
         emit(NoInternetConnectionState());
       } else {
         emit(GetErrorCompanyState());

@@ -77,11 +77,11 @@ class RouteGenerator {
         return animatedNavigation(screen: PasswordChangedSuccessPage());
 
       case AppRoutes.addEmployee:
-        return animatedNavigation(
-            screen: const AddNewEmployee(
-          isEdit: false,
-          empId: 0,
-        ));
+        // return animatedNavigation(
+        //     screen: const (
+        //   isEdit: false,
+        //   empId: 0,
+        // ));
 
       case AppRoutes.allEmployees:
         return animatedNavigation(

@@ -1,9 +1,9 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/addEmployee/components/no_data_screen.dart';
 import 'package:itsale/features/home/data/cubit.dart';
@@ -42,30 +42,35 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
     theRole = 0;
   }
 
-  void _showFilterDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => widget.task ? const FilterDialog() : RoleDialog(),
-    );
-  }
-
   void toggleViewMode() {
     setState(() {
       showSearch = !showSearch;
     });
   }
 
+  void _handleSearch(String value) {
+    if (widget.task) {
+      role == '1'
+          ? TasksCubit.get(context).getAllTasksFunWithFilter(text: value)
+          : TasksCubit.get(context).getAllTasksFunWithFilter(
+              textEmp: value,
+              employee: userId,
+            );
+    } else {
+      EmployeeCubit.get(context).getAdmins(search: value);
+    }
+  }
+
+  Future<void> _refreshData() async {
+    if (widget.admin) {
+      await EmployeeCubit.get(context).getAdmins();
+    } else {
+      await EmployeeCubit.get(context).getAllSales();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<void> _refreshData() async {
-      if (role == '1') {
-        await TasksCubit.get(context).getAllTasksFun();
-      } else {
-        await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
-      }
-      // Optional: call setState if needed
-    }
-
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -99,7 +104,10 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                         ),
                       if (widget.admin) SizedBox(width: 10.w),
                       Text(
-                        widget.admin ? 'المسؤولين' : 'المستخدمين',
+                        widget.admin
+                            ? AppLocalizations.of(context)!
+                                .translate("managers")
+                            : AppLocalizations.of(context)!.translate("users"),
                         style: AppFonts.style18medium,
                       ),
                     ],
@@ -163,7 +171,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                         child: SvgPicture.asset(AppIcons.searchIcon),
                       ),
                       contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                      labelText: 'ابحث هنا',
+                      labelText: AppLocalizations.of(context)!.translate("search_here"),
                       labelStyle: AppFonts.style14normal,
                     ),
                   ),
@@ -180,17 +188,6 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
     );
   }
 
-  void _handleSearch(String value) {
-    if (widget.task) {
-      role == '1'
-          ? TasksCubit.get(context).getAllTasksFunWithFilter(text: value)
-          : TasksCubit.get(context)
-              .getAllTasksFunWithFilter(textEmp: value, employee: userId);
-    } else {
-      EmployeeCubit.get(context).getAdmins(search: value);
-    }
-  }
-
   Widget _buildAdminBloc() {
     return BlocConsumer<EmployeeCubit, EmployeeStates>(
       listener: (context, state) {},
@@ -201,23 +198,41 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
         if (state is GetLoadingSearchEmployeeFilterState)
           return const LinearProgressIndicator();
         if (state is GetSuccessSearchEmployeeFilterState) {
-          return cubit.searchUser?.isNotEmpty ?? false
-              ? buildEmployeeList(4)
-              : nothing(context,
-                  button: 'مسؤولين',
-                  text: 'لا يوجد',
-                  route: AppRoutes.addEmployee);
+          return RefreshIndicator(
+            onRefresh: _refreshData,
+            child: (cubit.searchUser?.isNotEmpty ?? false)
+                ? buildEmployeeList(4)
+                : SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: nothing(context,
+                          button: 'مسؤولين',
+                          text: 'لا يوجد',
+                          route: AppRoutes.addEmployee),
+                    ),
+                  ),
+          );
         }
         if (state is GetErrorAdminsState)
           return Center(child: Text("للاسف حدث خطا"));
         if (state is GetLoadingAdminsState) return AppLottie.loader;
 
-        return cubit.usersAdmin?.isNotEmpty ?? false
-            ? buildEmployeeList(1)
-            : nothing(context,
-                button: 'مسؤولين',
-                text: 'لا يوجد مسؤولين',
-                route: AppRoutes.addEmployee);
+        return RefreshIndicator(
+          onRefresh: _refreshData,
+          child: (cubit.usersAdmin?.isNotEmpty ?? false)
+              ? buildEmployeeList(1)
+              : SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: nothing(context,
+                        button: 'مسؤولين',
+                        text: 'لا يوجد مسؤولين',
+                        route: AppRoutes.addEmployee),
+                  ),
+                ),
+        );
       },
     );
   }
@@ -233,21 +248,39 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
         if (state is GetLoadingSearchEmployeeFilterState)
           return const LinearProgressIndicator();
         if (state is GetSuccessSearchEmployeeFilterState) {
-          return cubit.searchUser?.isNotEmpty ?? false
-              ? buildEmployeeList(4)
-              : nothing(context,
-                  button: 'مستخدمين',
-                  text: 'لا يوجد',
-                  route: AppRoutes.addEmployee);
+          return RefreshIndicator(
+            onRefresh: _refreshData,
+            child: (cubit.searchUser?.isNotEmpty ?? false)
+                ? buildEmployeeList(4)
+                : SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: nothing(context,
+                          button: 'مستخدمين',
+                          text: 'لا يوجد',
+                          route: AppRoutes.addEmployee),
+                    ),
+                  ),
+          );
         }
         if (state is GetLoadingSalesState) return AppLottie.loader;
 
-        return cubit.users?.isNotEmpty ?? false
-            ? buildEmployeeList(theRole)
-            : nothing(context,
-                button: 'مستخدمين',
-                text: 'لا يوجد مستخدمين',
-                route: AppRoutes.addEmployee);
+        return RefreshIndicator(
+          onRefresh: _refreshData,
+          child: (cubit.users?.isNotEmpty ?? false)
+              ? buildEmployeeList(theRole)
+              : SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: nothing(context,
+                        button: 'مستخدمين',
+                        text: 'لا يوجد مستخدمين',
+                        route: AppRoutes.addEmployee),
+                  ),
+                ),
+        );
       },
     );
   }
@@ -273,7 +306,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
     }
 
     return ListView.separated(
-      physics: const BouncingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: usersList.length,
       separatorBuilder: (_, __) => SizedBox(height: 8.h),
       itemBuilder: (context, index) => InkWell(

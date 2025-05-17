@@ -1,11 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/dio_helper.dart';
+import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
-import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/repo.dart';
 import 'package:itsale/features/entrypoint/entrypoint_ui.dart';
-import '../../../../core/remote_data_source/web_services.dart';
+import '../../../../core/app_storage/app_storage.dart';
+import '../../../../core/cache_helper/cache_helper.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/snack_bar.dart';
+import '../../../../core/utils/token.dart';
 import '../../../addEmployee/data/models/add_employee_model.dart';
 import 'register_state.dart';
 
@@ -25,7 +30,7 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   String status = 'active';
   String theme = 'auto';
-  String role = '3'; // Sales
+  String role = '1'; //admin
   String locale = 'ar-SA';
 
   final List<String> themes = ['auto', 'dark', 'light'];
@@ -50,26 +55,61 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(RegisterLoadingState());
 
     final addUserRequest = AddUserRequestModel(
-      first_name: firstNameController.text,
-      last_name: lastNameController.text,
       email: emailController.text,
       password: passwordController.text,
-      status: status,
-      theme: theme,
-      role: role,
-      // timezone: timezoneController.text,
-      locale: locale,
-      avatar: null,
+      first_name: firstNameController.text,
+      last_name: lastNameController.text,
     );
 
     try {
       final result = await repo.addUser(addUserRequest);
-      Utils.showSnackBar(context, 'تمت إضافة المستخدم بنجاح');
+      await CacheHelper.saveData(key: 'token', value: token);
       emit(RegisterSuccessState(result));
+      Utils.showSnackBar(context, 'تمت إضافة المستخدم بنجاح');
       MagicRouter.navigateTo(EntryPointUI());
     } catch (error) {
       Utils.showSnackBar(context, 'فشل في إضافة المستخدم');
       emit(RegisterErrorState(error.toString()));
+    }
+  }
+
+  Future<void> register(BuildContext context) async {
+    if (!formKey.currentState!.validate()) return;
+    // print("TOKEN: ${CacheHelper.getData(key: "token")}");
+    final body = {
+      'email': emailController.text.toString(),
+      'password': passwordController.text.toString(),
+      'first_name': firstNameController.text.toString(),
+      'last_name': lastNameController.text.toString(),
+      'role': '1',
+      'companies': 1
+    };
+
+    print('body $body');
+    emit(LoadingRegister());
+
+    try {
+      print("TOKEN: ${CacheHelper.getData(key: "token")}");
+      final response = await DioHelper.post("custom/signup", false, body: body);
+      final data = response.data as Map<String, dynamic>;
+      print("dataaa $data");
+
+      final message = data['message'] ??"";
+
+      if (data['code'] == 'created') {
+        Utils.showSnackBar(context, data["message"]);
+navigateTo(context, AppRoutes.homeEmployee);
+        AppStorage.cacheUserInfo(UserModel.fromJson(data));
+
+        emit(LoadingSuccess());
+      } else {
+        emit(LoadingFailed());
+        Utils.showSnackBar(context, message);
+      }
+    } catch (e) {
+      emit(LoadingFailed());
+      Utils.showSnackBar(context, "حدث خطأ أثناء التسجيل");
+      print("Register error: $e");
     }
   }
 

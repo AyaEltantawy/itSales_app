@@ -62,7 +62,7 @@ class LoginPage extends StatelessWidget {
                   children: [
             Text(
               textAlign: TextAlign.start,
-              AppLocalizations.of(context)!.translate('hi'),
+              AppLocalizations.of(context)!.translate('login'),
               style: TextStyles.font20Weight500BaseBlack,
             ),
             const Column(

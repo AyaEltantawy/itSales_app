@@ -35,30 +35,27 @@ Map<String, dynamic> _$DataRegisterModelToJson(DataRegisterModel instance) =>
     };
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-
-    id: json['id'] as String?,
+      password: json['password'] as String?,
+      id: json['id'] as String?,
       status: json['status'] as String?,
       role: json['role'] as String?,
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
       email: json['email'] as String?,
-      //time_zone: json['time_zone'] as String?,
       locale: json['locale'] as String?,
       theme: json['theme'] as String?,
-
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+      'password': instance.password,
       'id': instance.id,
       'status': instance.status,
       'role': instance.role,
       'first_name': instance.first_name,
       'last_name': instance.last_name,
       'email': instance.email,
-      //'time_zone': instance.time_zone,
       'locale': instance.locale,
       'theme': instance.theme,
-
     };
 
 GetUserRegisterInfo _$GetUserRegisterInfoFromJson(Map<String, dynamic> json) =>
@@ -87,8 +84,6 @@ DataInfo _$DataInfoFromJson(Map<String, dynamic> json) => DataInfo(
       external_id: json['external_id'] as String?,
       theme: json['theme'] as String?,
       n2fa_secret: json['n2fa_secret'] as String?,
-
-      // time_zone: json['time_zone'] as String?,
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
       avatar: json['avatar'] == null
@@ -112,8 +107,6 @@ Map<String, dynamic> _$DataInfoToJson(DataInfo instance) => <String, dynamic>{
       'external_id': instance.external_id,
       'theme': instance.theme,
       'n2fa_secret': instance.n2fa_secret,
-
-     // 'time_zone': instance.time_zone,
       'locale': instance.locale,
       'locale_options': instance.locale_options,
       'avatar': instance.avatar,

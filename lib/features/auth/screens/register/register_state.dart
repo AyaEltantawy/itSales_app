@@ -15,3 +15,6 @@ class RegisterErrorState extends RegisterState {
 
   RegisterErrorState(this.message);
 }
+class LoadingRegister extends RegisterState{}
+class LoadingSuccess extends RegisterState{}
+class LoadingFailed extends RegisterState{}

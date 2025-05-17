@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/app/app.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/features/Tasks_Screens/data/models/get_task_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -32,7 +33,7 @@ class TaskDetailsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("البيانات الاساسيه",style: AppFonts.style16semiBold,),
+          Text(AppLocalizations.of(context)!.translate("main_data"),style: AppFonts.style16semiBold,),
           SizedBox(height: 20.h),
           _buildRow(label: 'الموظف المكلّف', value: nameEmployee),
           Divider(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor),

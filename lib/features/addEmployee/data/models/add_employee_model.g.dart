@@ -10,14 +10,13 @@ AddUserRequestModel _$AddUserRequestModelFromJson(Map<String, dynamic> json) =>
     AddUserRequestModel(
       email: json['email'] as String?,
       password: json['password'] as String?,
-      status: json['status'] as String?,
+
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
-      theme: json['theme'] as String?,
+
       role: json['role'] as String?,
-      timezone: json['timezone'] as String?,
-      locale: json['locale'] as String?,
-      avatar: (json['avatar'] as num?)?.toInt(),
+          companies: json['role'] as int?
+
     );
 
 Map<String, dynamic> _$AddUserRequestModelToJson(
@@ -25,14 +24,13 @@ Map<String, dynamic> _$AddUserRequestModelToJson(
     <String, dynamic>{
       'email': instance.email,
       'password': instance.password,
-      'status': instance.status,
+
       'first_name': instance.first_name,
       'last_name': instance.last_name,
-      'theme': instance.theme,
+
       'role': instance.role,
-      'timezone': instance.timezone,
-      'locale': instance.locale,
-      'avatar': instance.avatar,
+
+      'companies':1
     };
 
 EditUserRequestModel _$EditUserRequestModelFromJson(
@@ -102,7 +100,9 @@ DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       avatar: json['avatar'] == null
           ? null
           : Avatar.fromJson(json['avatar'] as Map<String, dynamic>),
-      company: json['company'] as String?,
+      companies: json['companies'] == null
+          ? null
+          : Company.fromJson(json['companies'] as Map<String, dynamic>),
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,
@@ -128,12 +128,42 @@ Map<String, dynamic> _$DataUserToJson(DataUser instance) => <String, dynamic>{
       'locale': instance.locale,
       'locale_options': instance.locale_options,
       'avatar': instance.avatar,
-      'company': instance.company,
+      'companies': instance.companies,
       'title': instance.title,
       'email_notifications': instance.email_notifications,
       'last_accessOn': instance.last_accessOn,
       'last_page': instance.last_page,
       'employee_info': instance.employee_info,
+    };
+
+Company _$CompanyFromJson(Map<String, dynamic> json) => Company(
+      id: (json['id'] as num?)?.toInt(),
+      status: json['status'] as String?,
+      sort: json['sort'] as String?,
+      owner: (json['owner'] as num?)?.toInt(),
+      created_on: json['created_on'] as String?,
+      modified_by: (json['modified_by'] as num?)?.toInt(),
+      modified_on: json['modified_on'] as String?,
+      name: json['name'] as String?,
+      logo: (json['logo'] as num?)?.toInt(),
+      email: json['email'] as String?,
+      whatsapp: json['whatsapp'] as String?,
+      website: json['website'] as String?,
+    );
+
+Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
+      'id': instance.id,
+      'status': instance.status,
+      'sort': instance.sort,
+      'owner': instance.owner,
+      'created_on': instance.created_on,
+      'modified_by': instance.modified_by,
+      'modified_on': instance.modified_on,
+      'name': instance.name,
+      'logo': instance.logo,
+      'email': instance.email,
+      'whatsapp': instance.whatsapp,
+      'website': instance.website,
     };
 
 EmployeeInfo _$EmployeeInfoFromJson(Map<String, dynamic> json) => EmployeeInfo(
@@ -186,7 +216,7 @@ DataUserResponse _$DataUserResponseFromJson(Map<String, dynamic> json) =>
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
       avatar: (json['avatar'] as num?)?.toInt(),
-      company: json['company'] as String?,
+      companies: json['companies'] as String?,
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,
@@ -210,7 +240,7 @@ Map<String, dynamic> _$DataUserResponseToJson(DataUserResponse instance) =>
       'locale': instance.locale,
       'locale_options': instance.locale_options,
       'avatar': instance.avatar,
-      'company': instance.company,
+      'companies': instance.companies,
       'title': instance.title,
       'email_notifications': instance.email_notifications,
       'last_accessOn': instance.last_accessOn,
@@ -443,7 +473,7 @@ DataGetUser _$DataGetUserFromJson(Map<String, dynamic> json) => DataGetUser(
       avatar: json['avatar'] == null
           ? null
           : Avatar.fromJson(json['avatar'] as Map<String, dynamic>),
-      company: json['company'] as String?,
+      companies: json['companies'] as String?,
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,
@@ -467,7 +497,7 @@ Map<String, dynamic> _$DataGetUserToJson(DataGetUser instance) =>
       'locale': instance.locale,
       'locale_options': instance.locale_options,
       'avatar': instance.avatar,
-      'company': instance.company,
+      'companies': instance.companies,
       'title': instance.title,
       'email_notifications': instance.email_notifications,
       'last_accessOn': instance.last_accessOn,

@@ -32,7 +32,7 @@ IconData? icon,
             child: Row(mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon),
-                Text(
+                Text(textAlign: TextAlign.center,
                   text,
                   style: TextStyle(
                       fontSize:  textSize

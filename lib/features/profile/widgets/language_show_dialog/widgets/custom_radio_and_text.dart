@@ -1,38 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../core/themes/styles.dart';
 
 class CustomCheckBoxAndText extends StatelessWidget {
   final String selectedLanguage;
-  final void Function(String) toggleLanguage;
+  final String languageValue;
+  final String? label;
+  final void Function(String) onLanguageChanged;
 
   const CustomCheckBoxAndText({
     Key? key,
     required this.selectedLanguage,
-    required this.toggleLanguage,
+    required this.onLanguageChanged,
+
+    required this.languageValue, required this.label,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildLanguageRow(
-          languageValue: 'arabic',
-          label: "اللغة العربية",
-        ),
-        _buildLanguageRow(
-          languageValue: 'english',
-          label: "English",
-        ),
-      ],
-    );
-  }
 
-  Widget _buildLanguageRow({
-    required String languageValue,
-    required String label,
-  }) {
+
+
     return Row(
       children: [
         Radio<String>(
@@ -40,13 +28,13 @@ class CustomCheckBoxAndText extends StatelessWidget {
           groupValue: selectedLanguage,
           onChanged: (String? value) {
             if (value != null) {
-              toggleLanguage(value);
+              onLanguageChanged(value);
             }
           },
         ),
-        SizedBox(width: 8.w), // spacing between radio and text
+        SizedBox(width: 8.w),
         Text(
-          label,
+          label??'',
           style: TextStyles.font16Weight300Black,
         ),
       ],

@@ -22,13 +22,13 @@ class Repository {
   }
 
   Future<AddUserModel> addUser(AddUserRequestModel add) async {
-    await CacheHelper.getData(key: 'token', );
+   // await CacheHelper.getData(key: 'token', );
 
     if (token == null) {
       throw Exception('Authentication token not found.');
     }
 
-    return webServices.addUser('Bearer $token', add);
+    return webServices.addUser( add);
   }
 
   // REGISTER

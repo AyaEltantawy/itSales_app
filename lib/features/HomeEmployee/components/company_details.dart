@@ -6,53 +6,71 @@ import '../../../core/themes/styles.dart';
 
 class CompanyDetails extends StatelessWidget {
   final String companyName;
-  const CompanyDetails({super.key, required this.companyName});
+  final String number;
+  final String email;
+  final String link;
+
+  const CompanyDetails({
+    super.key,
+    required this.companyName,
+    required this.number,
+    required this.email,
+    required this.link,
+  });
 
   @override
   Widget build(BuildContext context) {
     Future<void> launchURL() async {
-      const url = 'https://flutter.dev'; // Replace with your desired URL
-      if (await canLaunch(url)) {
-        await launch(url);
+      final Uri uri = Uri.parse(link);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
       } else {
-        throw 'Could not launch $url';
+        throw 'Could not launch $link';
       }
     }
+
     return Container(
-
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.sp),
-          border: Border.all(width: 1, color: Colors.black)
-
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.sp),
+        border: Border.all(width: 1, color: Colors.black),
       ),
       child: Padding(
-          padding: EdgeInsets.only(
-              top: 20.h, bottom: 20.h, right: 20.w, left: 150.w),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-            Text(companyName,
-            style: TextStyles.font20Weight500Primary,),
-          SizedBox(height: 10.h,),
-          Text("013456678989", style: TextStyles.font16Weight300EmeraldWithoutLine,),
-          SizedBox(height: 10.h,),
-          Text("car@gmail.com", style: TextStyles.font16Weight300EmeraldWithoutLine,),
-              SizedBox(height: 10.h,),
-          GestureDetector(
-            onTap: launchURL, // Opens the URL when tapped
-            child: Text(
-              'https://flutter.dev',
-              style:  TextStyles.font16Weight300EmeraldWithoutLine.copyWith(
-                decoration: TextDecoration.underline,),
-
-              // Optional: Adds an underline
+        padding: EdgeInsets.only(
+          top: 20.h,
+          bottom: 20.h,
+          right: 20.w,
+          left: 150.w,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              companyName,
+              style: TextStyles.font20Weight500Primary,
             ),
-
-          )],
-
-
-    ),)
-    ,
-
+            SizedBox(height: 10.h),
+            Text(
+              number,
+              style: TextStyles.font16Weight300EmeraldWithoutLine,
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              email,
+              style: TextStyles.font16Weight300EmeraldWithoutLine,
+            ),
+            SizedBox(height: 10.h),
+            GestureDetector(
+              onTap: launchURL,
+              child: Text(
+                link,
+                style: TextStyles.font16Weight300EmeraldWithoutLine.copyWith(
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

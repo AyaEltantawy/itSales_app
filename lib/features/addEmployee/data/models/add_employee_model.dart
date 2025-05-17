@@ -1,41 +1,33 @@
-
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'add_employee_model.g.dart';
 
-
 @JsonSerializable()
-
-
 class AddUserRequestModel {
   String? email;
   String? password;
-  String? status;
+
   String? first_name;
   String? last_name;
-  String? theme;
-  String? role;
-  String? timezone;
-  String? locale;
-  int? avatar;
 
-  AddUserRequestModel({this.email,
+  String? role;
+
+int? companies;
+  AddUserRequestModel({
+    this.email,
     this.password,
-    this.status,
+
     this.first_name,
     this.last_name,
-    this.theme,
+
     this.role,
-    this.timezone,
-    this.locale,
-    this.avatar,
+this.companies
 
   });
-  factory AddUserRequestModel.fromJson(Map<String, dynamic> json) => _$AddUserRequestModelFromJson(json);
 
+  factory AddUserRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$AddUserRequestModelFromJson(json);
   Map<String, dynamic> toJson() => _$AddUserRequestModelToJson(this);
-
 }
 
 @JsonSerializable()
@@ -55,43 +47,36 @@ class EditUserRequestModel {
     this.last_name,
     this.role,
     this.avatar,
-    this.password
-
-
+    this.password,
   });
-  factory EditUserRequestModel.fromJson(Map<String, dynamic> json) => _$EditUserRequestModelFromJson(json);
 
+  factory EditUserRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$EditUserRequestModelFromJson(json);
   Map<String, dynamic> toJson() => _$EditUserRequestModelToJson(this);
-
 }
-
 
 @JsonSerializable()
 class AddUserModel {
   DataUserResponse? data;
 
   AddUserModel({this.data});
-  factory AddUserModel.fromJson(Map<String, dynamic> json) => _$AddUserModelFromJson(json);
-
+  factory AddUserModel.fromJson(Map<String, dynamic> json) =>
+      _$AddUserModelFromJson(json);
   Map<String, dynamic> toJson() => _$AddUserModelToJson(this);
-
 }
-
 
 @JsonSerializable()
 class AllUsersModel {
   List<DataUser>? data;
 
   AllUsersModel({this.data});
-  factory AllUsersModel.fromJson(Map<String, dynamic> json) => _$AllUsersModelFromJson(json);
-
+  factory AllUsersModel.fromJson(Map<String, dynamic> json) =>
+      _$AllUsersModelFromJson(json);
   Map<String, dynamic> toJson() => _$AllUsersModelToJson(this);
-
 }
 
 @JsonSerializable()
 class DataUser {
-
   int? id;
   String? status;
   Role? role;
@@ -107,41 +92,75 @@ class DataUser {
   String? locale;
   String? locale_options;
   Avatar? avatar;
-  String? company;
+  Company? companies; // <-- Added
   String? title;
   bool? email_notifications;
   String? last_accessOn;
   String? last_page;
   List<EmployeeInfo>? employee_info;
 
-  DataUser(
-  {this.id,
-  this.status,
-  this.role,
-  this.first_name,
-  this.last_name,
-  this.email,
-  this.token,
-  this.external_id,
-  this.theme,
-  this.n2faSecret,
-  this.passwordResetToken,
-  this.timezone,
-  this.locale,
-  this.locale_options,
-  this.avatar,
-  this.company,
-  this.title,
-  this.email_notifications,
-  this.last_accessOn,
-  this.last_page,
-  this.employee_info,
+  DataUser({
+    this.id,
+    this.status,
+    this.role,
+    this.first_name,
+    this.last_name,
+    this.email,
+    this.token,
+    this.external_id,
+    this.theme,
+    this.n2faSecret,
+    this.passwordResetToken,
+    this.timezone,
+    this.locale,
+    this.locale_options,
+    this.avatar,
+    this.companies, // <-- Added
+    this.title,
+    this.email_notifications,
+    this.last_accessOn,
+    this.last_page,
+    this.employee_info,
   });
 
-  factory DataUser.fromJson(Map<String, dynamic> json) => _$DataUserFromJson(json);
-
+  factory DataUser.fromJson(Map<String, dynamic> json) =>
+      _$DataUserFromJson(json);
   Map<String, dynamic> toJson() => _$DataUserToJson(this);
+}
 
+@JsonSerializable()
+class Company {
+  int? id;
+  String? status;
+  String? sort;
+  int? owner;
+  String? created_on;
+  int? modified_by;
+  String? modified_on;
+  String? name;
+  int? logo;
+  String? email;
+  String? whatsapp;
+  String? website;
+
+  Company({
+    this.id,
+    this.status,
+    this.sort,
+    this.owner,
+    this.created_on,
+    this.modified_by,
+    this.modified_on,
+    this.name,
+    this.logo,
+    this.email,
+    this.whatsapp,
+    this.website,
+  });
+
+  factory Company.fromJson(Map<String, dynamic> json) =>
+      _$CompanyFromJson(json);
+  Map<String, dynamic> toJson() => _$CompanyToJson(this);
 }
 
 @JsonSerializable()
@@ -160,7 +179,8 @@ class EmployeeInfo {
   String? address;
   int? user;
 
-  EmployeeInfo({this.id,
+  EmployeeInfo({
+    this.id,
     this.status,
     this.sort,
     this.owner,
@@ -172,16 +192,16 @@ class EmployeeInfo {
     this.whatsapp,
     this.email,
     this.address,
-    this.user});
+    this.user,
+  });
 
-  factory EmployeeInfo.fromJson(Map<String, dynamic> json) => _$EmployeeInfoFromJson(json);
-
+  factory EmployeeInfo.fromJson(Map<String, dynamic> json) =>
+      _$EmployeeInfoFromJson(json);
   Map<String, dynamic> toJson() => _$EmployeeInfoToJson(this);
 }
 
 @JsonSerializable()
 class DataUserResponse {
-
   int? id;
   String? status;
   int? role;
@@ -197,38 +217,38 @@ class DataUserResponse {
   String? locale;
   String? locale_options;
   int? avatar;
-  String? company;
+  String? companies;
   String? title;
   bool? email_notifications;
   String? last_accessOn;
   String? last_page;
 
-  DataUserResponse(
-      {this.id,
-        this.status,
-        this.role,
-        this.first_name,
-        this.last_name,
-        this.email,
-        this.token,
-        this.external_id,
-        this.theme,
-        this.n2faSecret,
-        this.passwordResetToken,
-        this.timezone,
-        this.locale,
-        this.locale_options,
-        this.avatar,
-        this.company,
-        this.title,
-        this.email_notifications,
-        this.last_accessOn,
-        this.last_page});
+  DataUserResponse({
+    this.id,
+    this.status,
+    this.role,
+    this.first_name,
+    this.last_name,
+    this.email,
+    this.token,
+    this.external_id,
+    this.theme,
+    this.n2faSecret,
+    this.passwordResetToken,
+    this.timezone,
+    this.locale,
+    this.locale_options,
+    this.avatar,
+    this.companies,
+    this.title,
+    this.email_notifications,
+    this.last_accessOn,
+    this.last_page,
+  });
 
-  factory DataUserResponse.fromJson(Map<String, dynamic> json) => _$DataUserResponseFromJson(json);
-
+  factory DataUserResponse.fromJson(Map<String, dynamic> json) =>
+      _$DataUserResponseFromJson(json);
   Map<String, dynamic> toJson() => _$DataUserResponseToJson(this);
-
 }
 
 @JsonSerializable()
@@ -242,18 +262,19 @@ class Role {
   String? collection_listing;
   bool? enforce2fa;
 
-  Role({this.id,
+  Role({
+    this.id,
     this.name,
     this.description,
     this.ipWhitelist,
     this.external_id,
     this.module_listing,
     this.collection_listing,
-    this.enforce2fa});
+    this.enforce2fa,
+  });
+
   factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
-
   Map<String, dynamic> toJson() => _$RoleToJson(this);
-
 }
 
 @JsonSerializable()
@@ -281,7 +302,8 @@ class Avatar {
   String? metadata;
   Data? data;
 
-  Avatar({this.id,
+  Avatar({
+    this.id,
     this.storage,
     this.private_hash,
     this.filename_disk,
@@ -302,12 +324,11 @@ class Avatar {
     this.tags,
     this.checksum,
     this.metadata,
-    this.data});
+    this.data,
+  });
 
   factory Avatar.fromJson(Map<String, dynamic> json) => _$AvatarFromJson(json);
-
   Map<String, dynamic> toJson() => _$AvatarToJson(this);
-
 }
 
 @JsonSerializable()
@@ -318,13 +339,16 @@ class Data {
   List<Thumbnails>? thumbnails;
   String? embed;
 
-  Data({this.full_url, this.url, this.asset_url, this.thumbnails, this.embed});
-
+  Data({
+    this.full_url,
+    this.url,
+    this.asset_url,
+    this.thumbnails,
+    this.embed,
+  });
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
-
   Map<String, dynamic> toJson() => _$DataToJson(this);
-
 }
 
 @JsonSerializable()
@@ -336,20 +360,19 @@ class Thumbnails {
   int? width;
   int? height;
 
-  Thumbnails({this.key,
+  Thumbnails({
+    this.key,
     this.url,
     this.relative_url,
     this.dimension,
     this.width,
-    this.height});
+    this.height,
+  });
 
-  factory Thumbnails.fromJson(Map<String, dynamic> json) => _$ThumbnailsFromJson(json);
-
+  factory Thumbnails.fromJson(Map<String, dynamic> json) =>
+      _$ThumbnailsFromJson(json);
   Map<String, dynamic> toJson() => _$ThumbnailsToJson(this);
-
-
 }
-
 
 @JsonSerializable()
 class AddEmployeeRequestModel {
@@ -361,31 +384,30 @@ class AddEmployeeRequestModel {
   String? address;
   String? user;
 
-  AddEmployeeRequestModel({this.status,
+  AddEmployeeRequestModel({
+    this.status,
     this.phone_1,
     this.phone_2,
     this.whatsapp,
     this.email,
     this.address,
-    this.user});
-  factory AddEmployeeRequestModel.fromJson(Map<String, dynamic> json) => _$AddEmployeeRequestModelFromJson(json);
+    this.user,
+  });
 
+  factory AddEmployeeRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$AddEmployeeRequestModelFromJson(json);
   Map<String, dynamic> toJson() => _$AddEmployeeRequestModelToJson(this);
-
 }
-
 
 @JsonSerializable()
 class AddEmployeeModel {
   DataEmployee? data;
 
   AddEmployeeModel({this.data});
-  factory AddEmployeeModel.fromJson(Map<String, dynamic> json) => _$AddEmployeeModelFromJson(json);
-
+  factory AddEmployeeModel.fromJson(Map<String, dynamic> json) =>
+      _$AddEmployeeModelFromJson(json);
   Map<String, dynamic> toJson() => _$AddEmployeeModelToJson(this);
-
 }
-
 
 @JsonSerializable()
 class DataEmployee {
@@ -403,7 +425,8 @@ class DataEmployee {
   String? address;
   int? user;
 
-  DataEmployee({this.id,
+  DataEmployee({
+    this.id,
     this.status,
     this.sort,
     this.owner,
@@ -415,12 +438,12 @@ class DataEmployee {
     this.whatsapp,
     this.email,
     this.address,
-    this.user});
+    this.user,
+  });
 
-  factory DataEmployee.fromJson(Map<String, dynamic> json) => _$DataEmployeeFromJson(json);
-
+  factory DataEmployee.fromJson(Map<String, dynamic> json) =>
+      _$DataEmployeeFromJson(json);
   Map<String, dynamic> toJson() => _$DataEmployeeToJson(this);
-
 }
 
 @JsonSerializable()
@@ -428,10 +451,9 @@ class GetEmployeeModel {
   List<DataEmployee>? data;
 
   GetEmployeeModel({this.data});
-  factory GetEmployeeModel.fromJson(Map<String, dynamic> json) => _$GetEmployeeModelFromJson(json);
-
+  factory GetEmployeeModel.fromJson(Map<String, dynamic> json) =>
+      _$GetEmployeeModelFromJson(json);
   Map<String, dynamic> toJson() => _$GetEmployeeModelToJson(this);
-
 }
 
 @JsonSerializable()
@@ -439,10 +461,9 @@ class GetOneUserModel {
   DataGetUser? data;
 
   GetOneUserModel({this.data});
-  factory GetOneUserModel.fromJson(Map<String, dynamic> json) => _$GetOneUserModelFromJson(json);
-
+  factory GetOneUserModel.fromJson(Map<String, dynamic> json) =>
+      _$GetOneUserModelFromJson(json);
   Map<String, dynamic> toJson() => _$GetOneUserModelToJson(this);
-
 }
 
 @JsonSerializable()
@@ -462,13 +483,14 @@ class DataGetUser {
   String? locale;
   String? locale_options;
   Avatar? avatar;
-  String? company;
+  String? companies;
   String? title;
   bool? email_notifications;
   String? last_accessOn;
   String? last_page;
 
-  DataGetUser({this.id,
+  DataGetUser({
+    this.id,
     this.status,
     this.role,
     this.first_name,
@@ -483,19 +505,14 @@ class DataGetUser {
     this.locale,
     this.locale_options,
     this.avatar,
-    this.company,
+    this.companies,
     this.title,
     this.email_notifications,
     this.last_accessOn,
-    this.last_page});
-  factory DataGetUser.fromJson(Map<String, dynamic> json) => _$DataGetUserFromJson(json);
+    this.last_page,
+  });
 
+  factory DataGetUser.fromJson(Map<String, dynamic> json) =>
+      _$DataGetUserFromJson(json);
   Map<String, dynamic> toJson() => _$DataGetUserToJson(this);
-
 }
-
-
-
-
-
-

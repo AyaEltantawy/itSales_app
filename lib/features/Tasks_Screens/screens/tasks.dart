@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/components/default_app_bar.dart';
 import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/utils/transition.dart';
 import 'package:itsale/features/Tasks_Screens/components/task_list.dart';
@@ -66,7 +67,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                   child: Column(
                     children: [
                       SizedBox(height: 10.h),
-                      CustomAppBar(back: widget.back, title: 'المهمات'),
+                      CustomAppBar(back: widget.back, title: AppLocalizations.of(context)!.translate("tasks")),
                       BuildSearchFilter(
                           task: true,
                           admin: false,

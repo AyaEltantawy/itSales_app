@@ -63,7 +63,7 @@ Widget buildEmployeeListItem(DataUser user) {
                   textAlign: TextAlign.right,
                 ),
                 Text(
-                  user.role!.id == 3 ? 'موظف' : 'مدير',
+                  user.role?.id == 3 ? 'موظف' : 'مدير',
                   style: AppFonts.style12light,
                   textAlign: TextAlign.right,
                 ),

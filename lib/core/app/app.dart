@@ -26,26 +26,30 @@ import '../models/enums/language_event_type.dart';
 var globalDark = false;
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final String defaultLocale;
+
+  const MyApp({super.key, required this.defaultLocale});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  late Locale _locale;
   late final LanguageShowDialogCubit languageCubit;
 
   @override
   void initState() {
     super.initState();
-    languageCubit = LanguageShowDialogCubit();
-    // No need to call appLanguageFunc here, Cubit's constructor already loads saved language
+    _locale = Locale(widget.defaultLocale);
+    languageCubit = LanguageShowDialogCubit()
+      ..appLanguageFunc(LanguageEventEnums.InitialLanguage);
   }
 
-  @override
-  void dispose() {
-    languageCubit.close();
-    super.dispose();
+  void _updateLocale(Locale newLocale) {
+    setState(() {
+      _locale = newLocale;
+    });
   }
 
   @override
@@ -62,68 +66,60 @@ class _MyAppState extends State<MyApp> {
       designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
-      ensureScreenSize: true,
       builder: (context, child) {
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => getIt<AppCubit>()),
             BlocProvider(create: (context) => getIt<EmployeeCubit>()),
             BlocProvider(create: (context) => getIt<TasksCubit>()),
-            BlocProvider<LanguageShowDialogCubit>.value(value: languageCubit),
+            BlocProvider.value(value: languageCubit),
           ],
-          child: BlocConsumer<AppCubit, AppStates>(
+          child: BlocListener<LanguageShowDialogCubit, LanguageShowDialogState>(
             listener: (context, state) {
-              if (state is ThemeState) {
-                globalDark = state.isDarkMode;
-                setState(() {});
-              } else {
-                globalDark = context.read<AppCubit>().isDarkMode;
+              if (state is AppLanguageChangeState) {
+                _updateLocale(Locale(state.languageCode));
               }
             },
-            builder: (context, state) {
-              return BlocBuilder<LanguageShowDialogCubit, LanguageShowDialogState>(
-                builder: (context, state) {
-                  Locale locale = const Locale('en');
-                  if (state is AppLanguageChangeState) {
-                    locale = Locale(state.languageCode);
-                  }
-
-                  return MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    themeMode: AppCubit.get(context).isDarkMode ? ThemeMode.dark : ThemeMode.light,
-                    theme: AppTheme.defaultTheme,
-                    darkTheme: AppTheme.darkTheme,
-                    locale: locale,
-                    supportedLocales: const [
-                      Locale('ar'),
-                      Locale('en'),
-                    ],
-                    title: 'itSales',
-                    onGenerateRoute: RouteGenerator.onGenerate,
-                    initialRoute: AppRoutes.splash,
-                    localizationsDelegates:  [
-                      AppLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    localeListResolutionCallback: (deviceLocales, supportedLocales) {
-                      if (deviceLocales == null || deviceLocales.isEmpty) {
-                        return supportedLocales.first;
+            child: BlocConsumer<AppCubit, AppStates>(
+              listener: (context, state) {
+                if (state is ThemeState) {
+                  globalDark = state.isDarkMode;
+                  setState(() {});
+                }
+              },
+              builder: (context, state) {
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  locale: _locale,
+                  themeMode: AppCubit.get(context).isDarkMode
+                      ? ThemeMode.dark
+                      : ThemeMode.light,
+                  theme: AppTheme.defaultTheme,
+                  darkTheme: AppTheme.darkTheme,
+                  supportedLocales: const [
+                    Locale('ar'),
+                    Locale('en'),
+                  ],
+                  title: 'itSales',
+                  onGenerateRoute: RouteGenerator.onGenerate,
+                  initialRoute: AppRoutes.splash,
+                  localizationsDelegates:  [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  localeResolutionCallback: (locale, supportedLocales) {
+                    for (var supportedLocale in supportedLocales) {
+                      if (supportedLocale.languageCode == locale?.languageCode) {
+                        return supportedLocale;
                       }
-                      for (var deviceLocale in deviceLocales) {
-                        for (var supportedLocale in supportedLocales) {
-                          if (deviceLocale.languageCode == supportedLocale.languageCode) {
-                            return supportedLocale;
-                          }
-                        }
-                      }
-                      return supportedLocales.first;
-                    },
-                  );
-                },
-              );
-            },
+                    }
+                    return supportedLocales.first;
+                  },
+                );
+              },
+            ),
           ),
         );
       },

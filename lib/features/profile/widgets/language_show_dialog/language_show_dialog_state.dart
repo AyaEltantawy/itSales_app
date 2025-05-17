@@ -9,5 +9,9 @@ class AppLanguageChangeState extends LanguageShowDialogState {
   final String languageCode;
   final String selectedLanguage;
 
-  AppLanguageChangeState({required this.languageCode, required this.selectedLanguage});
+  AppLanguageChangeState({
+    required this.languageCode,
+    required this.selectedLanguage,
+  });
 }
+class ToggleLanguage extends LanguageShowDialogState {}

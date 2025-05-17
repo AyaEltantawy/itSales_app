@@ -19,7 +19,7 @@ class RegisterPageForm extends StatelessWidget {
   final TextEditingController confirmPasswordController;
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
-  final TextEditingController timezoneController;
+
   final VoidCallback onSubmit;
 
   const RegisterPageForm({
@@ -32,7 +32,7 @@ class RegisterPageForm extends StatelessWidget {
     required this.confirmPasswordController,
     required this.firstNameController,
     required this.lastNameController,
-    required this.timezoneController,
+
     required this.onSubmit,
   });
 

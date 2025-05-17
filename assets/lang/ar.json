@@ -1,6 +1,6 @@
 {
-
-  "hi": "اهلا",
+"hello": "مرحبا",
+ "login": "تسجيل الدخول",
   "no_internet_connection": "لا يوجد اتصال بالانترنت",
   "try_again": "حاول مرة اخري",
   "add_button": "اضف زرار",
@@ -11,5 +11,32 @@
   "write_your_data_for_login": "اكتب بياناتك لتسجيل الدخول",
   "login_data": "بيانات تسجيل الدخول",
   "employee_data": "بيانات الموضف",
-  "today_tasks": "المهام اليومية"
+  "today_tasks": "المهام اليومية",
+  "main_page": "الصفحة الرئيسية",
+ "all": "الكل",
+ "completed": "مكتمل",
+ "unCompleted":"غير مكتمل",
+ "weekly_statistics": "الاحصائيات الاسبوعيه",
+ "completed_tasks": "المهام المكتملة",
+ "managers": "مسؤولين",
+ "users": "مستخدمين",
+ "search_here": "ابحث هنا",
+ "tasks": "المهمات",
+ "main_data": "البيانات الاساسيه",
+ "menu": "القائمة",
+ "manager": "مدير",
+ "reports": "التقارير",
+ "notifications": "الإشعارات",
+ "settings": "الاعدادات",
+ "change_password": "تغيير كلمة المرور",
+ "help": "مساعدة",
+ "language": "اللغة",
+ "dark_mode": "الوضع الليلي",
+ "sign_out": "تسجيل الخروج",
+ "sorry data is in correct": "عفوا البيانات غير صحيحة",
+ "User registered successfully": "تم تسجيل المستخدم بنجاح",
+ "register": "إنشاء حساب جديد",
+ "write_your_data_to_register": "اكتب بياناتك لانشاء حساب جديد"
+
+
 }

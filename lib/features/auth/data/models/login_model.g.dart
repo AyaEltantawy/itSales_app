@@ -11,26 +11,26 @@ LoginModel _$LoginModelFromJson(Map<String, dynamic> json) => LoginModel(
           ? null
           : DataLoginModel.fromJson(json['data'] as Map<String, dynamic>),
       public: json['public'] as bool?,
-);
+    );
 
 Map<String, dynamic> _$LoginModelToJson(LoginModel instance) =>
     <String, dynamic>{
-          'data': instance.data,
-          'public': instance.public,
+      'data': instance.data,
+      'public': instance.public,
     };
 
 DataLoginModel _$DataLoginModelFromJson(Map<String, dynamic> json) =>
     DataLoginModel(
-          token: json['token'] as String?,
-          user: json['user'] == null
-              ? null
-              : User.fromJson(json['user'] as Map<String, dynamic>),
+      token: json['token'] as String?,
+      user: json['user'] == null
+          ? null
+          : User.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DataLoginModelToJson(DataLoginModel instance) =>
     <String, dynamic>{
-          'token': instance.token,
-          'user': instance.user,
+      'token': instance.token,
+      'user': instance.user,
     };
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
@@ -42,9 +42,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'] as String?,
       time_zone: json['time_zone'] as String?,
       locale: json['locale'] as String?,
-      theme: json['theme'] as String?, password: '',
-
-);
+      theme: json['theme'] as String?,
+      password: json['password'] as String,
+    )..password_reset_token = json['password_reset_token'] as String?;
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
@@ -57,31 +57,33 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'locale': instance.locale,
       'theme': instance.theme,
       'password_reset_token': instance.password_reset_token,
-};
+      'password': instance.password,
+    };
 
 SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
       email: json['email'] as String?,
       password: json['password'] as String?,
-);
+    );
 
 Map<String, dynamic> _$SalesModelToJson(SalesModel instance) =>
     <String, dynamic>{
-          'email': instance.email,
-          'password': instance.password,
+      'email': instance.email,
+      'password': instance.password,
     };
 
 GetUserInfo _$GetUserInfoFromJson(Map<String, dynamic> json) => GetUserInfo(
       data: json['data'] == null
           ? null
           : DataInfoLogin.fromJson(json['data'] as Map<String, dynamic>),
-);
+    );
 
 Map<String, dynamic> _$GetUserInfoToJson(GetUserInfo instance) =>
     <String, dynamic>{
-          'data': instance.data,
+      'data': instance.data,
     };
 
-DataInfoLogin _$DataInfoLoginFromJson(Map<String, dynamic> json) => DataInfoLogin(
+DataInfoLogin _$DataInfoLoginFromJson(Map<String, dynamic> json) =>
+    DataInfoLogin(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
       role: json['role'] == null
@@ -106,9 +108,13 @@ DataInfoLogin _$DataInfoLoginFromJson(Map<String, dynamic> json) => DataInfoLogi
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,
       last_page: json['last_page'] as String?,
-);
+      companies: json['companies'] == null
+          ? null
+          : Company.fromJson(json['companies'] as Map<String, dynamic>),
+    );
 
-Map<String, dynamic> _$DataInfoLoginToJson(DataInfoLogin instance) => <String, dynamic>{
+Map<String, dynamic> _$DataInfoLoginToJson(DataInfoLogin instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'status': instance.status,
       'role': instance.role,
@@ -129,4 +135,35 @@ Map<String, dynamic> _$DataInfoLoginToJson(DataInfoLogin instance) => <String, d
       'email_notifications': instance.email_notifications,
       'last_accessOn': instance.last_accessOn,
       'last_page': instance.last_page,
-};
+      'companies': instance.companies,
+    };
+
+Company _$CompanyFromJson(Map<String, dynamic> json) => Company(
+      id: (json['id'] as num?)?.toInt(),
+      status: json['status'] as String?,
+      sort: json['sort'],
+      owner: (json['owner'] as num?)?.toInt(),
+      created_on: json['created_on'] as String?,
+      modified_by: (json['modified_by'] as num?)?.toInt(),
+      modified_on: json['modified_on'] as String?,
+      name: json['name'] as String?,
+      logo: (json['logo'] as num?)?.toInt(),
+      email: json['email'] as String?,
+      whatsapp: json['whatsapp'] as String?,
+      website: json['website'] as String?,
+    );
+
+Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
+      'id': instance.id,
+      'status': instance.status,
+      'sort': instance.sort,
+      'owner': instance.owner,
+      'created_on': instance.created_on,
+      'modified_by': instance.modified_by,
+      'modified_on': instance.modified_on,
+      'name': instance.name,
+      'logo': instance.logo,
+      'email': instance.email,
+      'whatsapp': instance.whatsapp,
+      'website': instance.website,
+    };

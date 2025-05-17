@@ -40,31 +40,25 @@ class User {
   String? email;
   String? time_zone;
   String? locale;
-
-  // String? locale_options;
-  // String? avatar;
-  // String? company;
-  // String? title;
-  // String? externalId;
   String? theme;
-
-  // String? n2fa_secret;
   String? password_reset_token;
+  String password;
 
-  User(
-      {this.id,
-      this.status,
-      this.role,
-      this.first_name,
-      this.last_name,
-      this.email,
-      this.time_zone,
-      this.locale,
-      this.theme,
-     required String password});
+  User({
+    this.id,
+    this.status,
+    this.role,
+    this.first_name,
+    this.last_name,
+    this.email,
+    this.time_zone,
+    this.locale,
+    this.theme,
+    // required String password,
+    required this.password,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
@@ -73,10 +67,7 @@ class SalesModel {
   String? email;
   String? password;
 
-  SalesModel(
-      {this.email,
-      this.password,
-    });
+  SalesModel({this.email, this.password});
 
   factory SalesModel.fromJson(Map<String, dynamic> json) =>
       _$SalesModelFromJson(json);
@@ -118,31 +109,69 @@ class DataInfoLogin {
   bool? email_notifications;
   String? last_accessOn;
   String? last_page;
+  Company? companies;
 
-  DataInfoLogin(
-      {this.id,
-      this.status,
-      this.role,
-      this.first_name,
-      this.last_name,
-      this.email,
-      this.token,
-      this.external_id,
-      this.theme,
-      this.n2fa_secret,
-      this.password_reset_token,
-      this.time_zone,
-      this.locale,
-      this.locale_options,
-      this.avatar,
-      this.company,
-      this.title,
-      this.email_notifications,
-      this.last_accessOn,
-      this.last_page});
+  DataInfoLogin({
+    this.id,
+    this.status,
+    this.role,
+    this.first_name,
+    this.last_name,
+    this.email,
+    this.token,
+    this.external_id,
+    this.theme,
+    this.n2fa_secret,
+    this.password_reset_token,
+    this.time_zone,
+    this.locale,
+    this.locale_options,
+    this.avatar,
+    this.company,
+    this.title,
+    this.email_notifications,
+    this.last_accessOn,
+    this.last_page,
+    this.companies,
+  });
 
   factory DataInfoLogin.fromJson(Map<String, dynamic> json) =>
       _$DataInfoLoginFromJson(json);
 
   Map<String, dynamic> toJson() => _$DataInfoLoginToJson(this);
+}
+
+@JsonSerializable()
+class Company {
+  int? id;
+  String? status;
+  dynamic sort;
+  int? owner;
+  String? created_on;
+  int? modified_by;
+  String? modified_on;
+  String? name;
+  int? logo;
+  String? email;
+  String? whatsapp;
+  String? website;
+
+  Company({
+    this.id,
+    this.status,
+    this.sort,
+    this.owner,
+    this.created_on,
+    this.modified_by,
+    this.modified_on,
+    this.name,
+    this.logo,
+    this.email,
+    this.whatsapp,
+    this.website,
+  });
+
+  factory Company.fromJson(Map<String, dynamic> json) => _$CompanyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CompanyToJson(this);
 }
