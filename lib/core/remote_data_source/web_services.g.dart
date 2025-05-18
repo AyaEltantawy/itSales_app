@@ -131,14 +131,10 @@ class _WebServices implements WebServices {
   }
 
   @override
-  Future<AddUserModel> addUser(
-
-    AddUserRequestModel add,
-  ) async {
+  Future<AddUserModel> addUser(AddUserRequestModel add) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(add.toJson());
     final _options = _setStreamType<AddUserModel>(Options(
@@ -148,7 +144,7 @@ class _WebServices implements WebServices {
     )
         .compose(
           _dio.options,
-          'users',
+          'custom/signup',
           queryParameters: queryParameters,
           data: _data,
         )

@@ -18,9 +18,7 @@ import 'checkbox_and_text.dart' show CheckBoxAndText;
 import 'login_header.dart';
 
 class LoginPageForm extends StatefulWidget {
-  const LoginPageForm({
-    super.key,
-  });
+  const LoginPageForm({super.key});
 
   @override
   State<LoginPageForm> createState() => _LoginPageFormState();
@@ -28,29 +26,35 @@ class LoginPageForm extends StatefulWidget {
 
 class _LoginPageFormState extends State<LoginPageForm> {
   final _key = GlobalKey<FormState>();
-
   bool isPasswordShown = false;
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
 
-  onPassShowClicked() {
+  void onPassShowClicked() {
     setState(() {
       isPasswordShown = !isPasswordShown;
     });
   }
 
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
-
-  onLogin() {
+  void onLogin(BuildContext context) {
     final bool isFormOkay = _key.currentState?.validate() ?? false;
-    //errorMotionToast(context,text: 'البيانات غير صحيحه');
 
     if (isFormOkay) {
-      AppCubit.get(context).postLoginSales(context,
-          email: emailController.text, password: passController.text);
+      AppCubit.get(context).postLoginSales(
+        context,
+        email: emailController.text.trim(),
+        password: passController.text.trim(),
+      );
     } else {
-      Utils.showSnackBar(context, 'يرجى الالتزام بالتعليمات');
+
+      Future.delayed(Duration.zero, () {
+        if (context.mounted) {
+          Utils.showSnackBar(context, 'يرجى الالتزام بالتعليمات');
+        }
+      });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,24 +68,21 @@ class _LoginPageFormState extends State<LoginPageForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 15.h),
-
               defaultTextFormFeild(
                 context,
                 keyboardType: TextInputType.emailAddress,
                 controller: emailController,
-                validate:
-                    Validators.requiredWithFieldName('البريد الالكتروني').call,
+                validate: Validators.requiredWithFieldName('البريد الالكتروني').call,
                 prefix: const Icon(AppIcons.email),
                 label: 'اكتب البريد الالكتروني',
               ),
-
               SizedBox(height: 15.h),
               defaultTextFormFeild(
                 context,
                 keyboardType: TextInputType.text,
                 controller: passController,
                 validate: Validators.password.call,
-                onSubmit: (v) => onLogin(),
+                onSubmit: (v) => onLogin(context),
                 secure: !isPasswordShown,
                 prefix: const Icon(AppIcons.lock),
                 label: 'اكتب كلمة المرور',
@@ -93,62 +94,36 @@ class _LoginPageFormState extends State<LoginPageForm> {
                   ),
                 ),
               ),
-
-              // Forget Password labelLarge
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     // Checkbox(value: true, onChanged: (value) {},
-              //     //   visualDensity: const VisualDensity(
-              //     //       horizontal: -4.0, vertical: -4.0),
-              //     // ),
-              //     // Text(
-              //     //   ' تذكرنى المرة القادمة',
-              //     //   style: AppFonts.style16Light,
-              //     // ),
-              //     // const Spacer(),
-              //     // TextButton(
-              //     //   style: TextButton.styleFrom(
-              //     //     padding: const EdgeInsets.all(0.0),
-              //     //   ),
-              //     //   onPressed: () {
-              //     //  //   Navigator.pushNamed(context, AppRoutes.forgotPassword);
-              //     //   },
-              //     //   child: Text(
-              //     //     ' نسيت كلمة السر؟',
-              //     //     style: AppFonts.style16LightPrimary,
-              //     //   ),
-              //     // ),
-              //   ],
-              // ),
               CheckBoxAndText(
                 isChecked: cubit.isChecked,
                 toggleCheckbox: cubit.toggleCheckbox,
               ),
-              SizedBox(
-                height: 40.h,
-              ),
-
+              SizedBox(height: 40.h),
               defaultButton(
-                  isColor: true,
-                  height: 56.h,
-                  width: double.infinity,
-                  text: 'تسجيل الدخول',
-                  context: context,
-                  textSize: 17.sp,
-                  toPage: onLogin),
-
-              SizedBox(
-                height: 20.h,
+                isColor: true,
+                height: 56.h,
+                width: double.infinity,
+                text: 'تسجيل الدخول',
+                context: context,
+                textSize: 17.sp,
+                toPage: () {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    onLogin(context);
+                  });
+                },
               ),
+              SizedBox(height: 20.h),
               defaultButton(
-                  context: context,
-                  text: "رجوع",
-                  width: double.infinity,
-                  height: 56.h,
-                  isColor: false,
-                  textSize: 17.sp,
-                  toPage: () {navigateTo(context,AppRoutes.chooseLoginOrSignUpPage);})
+                context: context,
+                text: "رجوع",
+                width: double.infinity,
+                height: 56.h,
+                isColor: false,
+                textSize: 17.sp,
+                toPage: () {
+                  navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);
+                },
+              ),
             ],
           ),
         );

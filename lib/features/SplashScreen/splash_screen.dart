@@ -12,7 +12,8 @@ import '../auth/data/cubit.dart';
 
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final String? selectedLanguage;
+   const SplashScreen({super.key, this.selectedLanguage});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -35,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
           loginTransition(const OnBoardingPage()), (route) => false,);
       }
     });
+
 
     super.initState();
   }

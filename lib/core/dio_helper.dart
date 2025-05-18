@@ -33,7 +33,7 @@ class DioHelper {
           MagicRouter.currentContext!, 'You are disconnected from the internet');
     }
     dioSingleton.options.headers =
-    isAuh ? {'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNzQ4MDE4MjcwLCJ0dGwiOjEwMDgwLCJ0eXBlIjoiYXV0aCIsImtleSI6IjliNmY0YWM0LTIxODgtNGQ4ZS04YjdmLTYxNjQ1MjQ2N2E5NiIsInByb2plY3QiOiJpdHNhbGVzIn0.GSrkmY28kOWH6q-rDAW3jMllEffZRu7A0Mpt52s9pDk'} : null;
+    isAuh ? {'Authorization':"Token$token"} : null;
     print('pathhh $path');
     final response = dioSingleton.post(path,
         data: formData ?? (body == null ? null : FormData.fromMap(body)),
@@ -42,7 +42,7 @@ class DioHelper {
             headers: {
               'Authorization': 'Bearer ${AppStorage.getToken}',
               'Accept': 'application/json',
-              'Accept-Language': 'en',
+              'Accept-Language': 'en/ar',
             },
             followRedirects: false,
             contentType: Headers.formUrlEncodedContentType,

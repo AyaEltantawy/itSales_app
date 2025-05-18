@@ -46,10 +46,10 @@ DataUserTask _$DataUserTaskFromJson(Map<String, dynamic> json) => DataUserTask(
           ? null
           : Location.fromJson(json['location'] as Map<String, dynamic>),
       complete_date: json['complete_date'] as String?,
+      cancelled_date: json['cancelled_date'] as String?,
       files: (json['files'] as List<dynamic>?)
           ?.map((e) => FilesResponseModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      cancelled_date: json['cancelled_date'] as String?,
     );
 
 Map<String, dynamic> _$DataUserTaskToJson(DataUserTask instance) =>

@@ -38,7 +38,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   Future<void> _refreshData() async {
-    AppCubit.get(context).getInfoLogin!.avatar!.data!.full_url.toString();
+    AppCubit.get(context).getInfoLogin?.avatar?.data?.full_url.toString();
     setState(() {});
   }
 

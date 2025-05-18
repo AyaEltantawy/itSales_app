@@ -12,6 +12,8 @@ import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/snack_bar.dart';
 import '../../../../core/utils/token.dart';
 import '../../../addEmployee/data/models/add_employee_model.dart';
+import '../../data/cubit.dart';
+import '../../data/models/login_model.dart' as login_model;
 import 'register_state.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
@@ -75,41 +77,98 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   Future<void> register(BuildContext context) async {
     if (!formKey.currentState!.validate()) return;
-    // print("TOKEN: ${CacheHelper.getData(key: "token")}");
+
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
     final body = {
-      'email': emailController.text.toString(),
-      'password': passwordController.text.toString(),
-      'first_name': firstNameController.text.toString(),
-      'last_name': lastNameController.text.toString(),
+      'email': email,
+      'password': password,
+      'first_name': firstNameController.text.trim(),
+      'last_name': lastNameController.text.trim(),
       'role': '1',
-      'companies': 1
+      'companies': 1,
     };
 
-    print('body $body');
+    print('Register body: $body');
     emit(LoadingRegister());
 
     try {
-      print("TOKEN: ${CacheHelper.getData(key: "token")}");
       final response = await DioHelper.post("custom/signup", false, body: body);
-      final data = response.data as Map<String, dynamic>;
-      print("dataaa $data");
+      print("Signup response: ${response.data}");
 
-      final message = data['message'] ??"";
+      final data = response.data;
 
-      if (data['code'] == 'created') {
-        Utils.showSnackBar(context, data["message"]);
-navigateTo(context, AppRoutes.homeEmployee);
-        AppStorage.cacheUserInfo(UserModel.fromJson(data));
+      if (data is! Map<String, dynamic>) {
+        emit(LoadingFailed());
+        if (context.mounted) {
+          Utils.showSnackBar(context, "الاستجابة غير صالحة من الخادم");
+        }
+        return;
+      }
 
-        emit(LoadingSuccess());
+      final responseData = data['data'];
+      final responseError = data['error'];
+
+      if (responseData != null && responseData['code'] == 'created') {
+
+        final loginResponse = await repo.loginSales(
+          login_model.SalesModel(email: email, password: password),
+        );
+
+        final loginData = loginResponse.data;
+        final user = loginData?.user;
+        final tokenValue = loginData?.token;
+
+        if (tokenValue != null && user != null) {
+          await CacheHelper.saveData(key: 'token', value: tokenValue);
+          await CacheHelper.saveData(key: 'role', value: user.role ?? '');
+          await CacheHelper.saveData(
+              key: 'fName', value: user.first_name ?? '');
+          await CacheHelper.saveData(key: 'lName', value: user.last_name ?? '');
+          await CacheHelper.saveData(key: 'email', value: user.email ?? '');
+          await CacheHelper.saveData(key: 'userId', value: user.id ?? '');
+
+          // Also set your global vars if used
+          token = tokenValue;
+          role = user.role ?? '';
+          userId = user.id ?? '';
+
+          emit(LoadingSuccess());
+
+          if (context.mounted) {
+            Utils.showSnackBar(
+                context, responseData['message'] ?? 'تم التسجيل بنجاح');
+            navigateTo(context, AppRoutes.entryPoint);
+          }
+        } else {
+          emit(LoadingFailed());
+          if (context.mounted) {
+            Utils.showSnackBar(
+                context, "لم يتم تسجيل الدخول تلقائيًا بعد التسجيل");
+          }
+        }
+      } else if (responseError != null) {
+        final errorMessage = responseError['message'] ?? "حدث خطأ غير معروف";
+        emit(LoadingFailed());
+
+        if (context.mounted) {
+          Utils.showSnackBar(context, errorMessage);
+        }
       } else {
         emit(LoadingFailed());
-        Utils.showSnackBar(context, message);
+        if (context.mounted) {
+          Utils.showSnackBar(context, "صيغة الاستجابة غير متوقعة");
+        }
       }
-    } catch (e) {
+    } catch (e, stack) {
       emit(LoadingFailed());
-      Utils.showSnackBar(context, "حدث خطأ أثناء التسجيل");
+
+      if (context.mounted) {
+        Utils.showSnackBar(context, "حدث خطأ أثناء التسجيل");
+      }
+
       print("Register error: $e");
+      print("Stack trace: $stack");
     }
   }
 

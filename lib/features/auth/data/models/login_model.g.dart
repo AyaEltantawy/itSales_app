@@ -43,8 +43,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       time_zone: json['time_zone'] as String?,
       locale: json['locale'] as String?,
       theme: json['theme'] as String?,
-      password: json['password'] as String,
-    )..password_reset_token = json['password_reset_token'] as String?;
+      password_reset_token: json['password_reset_token'] as String?,
+      password: json['password'] as String?,
+    );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,

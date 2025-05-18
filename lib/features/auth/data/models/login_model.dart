@@ -42,7 +42,7 @@ class User {
   String? locale;
   String? theme;
   String? password_reset_token;
-  String password;
+  String? password;
 
   User({
     this.id,
@@ -54,8 +54,8 @@ class User {
     this.time_zone,
     this.locale,
     this.theme,
-    // required String password,
-    required this.password,
+    this.password_reset_token,
+     this.password,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

@@ -25,7 +25,7 @@ class TasksCubit extends Cubit<TasksStates> {
 
   List<DataUserTask>? getUserTaskList = [];
   List<DataUserTask>? getUserTaskListWithStatus = [];
-
+  List<DataUserTask>? data;
   getUserTaskFun({
     required String userId,
     String? status,
@@ -41,9 +41,10 @@ class TasksCubit extends Cubit<TasksStates> {
       emit(GetLoadingUserTaskState());
       Map<String, String> queryParams = {};
       if (status != null) {
+        // 'filter[companies.id]':getUserTaskList?[1].companies?.,
         queryParams['filter[task_status][eq]'] = status;
       }
-      await repo.getUserTask(userId, queryParams).then((value) {
+      await repo.getUserTask(userId,  {'fields': '*.*.*', },).then((value) {
         if (status != null) {
           emit(GetLoadingUserTaskStateForEmpScreens());
 

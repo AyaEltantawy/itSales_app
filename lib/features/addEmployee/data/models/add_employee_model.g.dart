@@ -10,13 +10,10 @@ AddUserRequestModel _$AddUserRequestModelFromJson(Map<String, dynamic> json) =>
     AddUserRequestModel(
       email: json['email'] as String?,
       password: json['password'] as String?,
-
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
-
       role: json['role'] as String?,
-          companies: json['role'] as int?
-
+      companies: (json['companies'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$AddUserRequestModelToJson(
@@ -24,13 +21,10 @@ Map<String, dynamic> _$AddUserRequestModelToJson(
     <String, dynamic>{
       'email': instance.email,
       'password': instance.password,
-
       'first_name': instance.first_name,
       'last_name': instance.last_name,
-
       'role': instance.role,
-
-      'companies':1
+      'companies': instance.companies,
     };
 
 EditUserRequestModel _$EditUserRequestModelFromJson(

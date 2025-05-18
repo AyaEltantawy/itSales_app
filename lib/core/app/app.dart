@@ -8,7 +8,9 @@ import 'package:itsale/core/cache_helper/cache_helper.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/on_generate_route.dart';
 import 'package:itsale/core/themes/app_themes.dart';
+import 'package:itsale/features/HomeEmployee/screens/home_employee.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
+import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
 
 import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/generated/l10n.dart';
@@ -22,6 +24,9 @@ import '../../features/profile/widgets/language_show_dialog/language_show_dialog
 import '../injection/injection.dart';
 import '../localization/app_localizations.dart';
 import '../models/enums/language_event_type.dart';
+// import 'package:uni_links/uni_links.dart';
+
+import 'dart:async';
 
 var globalDark = false;
 
@@ -35,20 +40,57 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Locale _locale;
+  late Locale locale;
   late final LanguageShowDialogCubit languageCubit;
+  StreamSubscription? _sub;
 
   @override
   void initState() {
     super.initState();
-    _locale = Locale(widget.defaultLocale);
+    _handleInitialLink();
+    // _handleIncomingLinks();
+    locale = Locale(widget.defaultLocale);
     languageCubit = LanguageShowDialogCubit()
       ..appLanguageFunc(LanguageEventEnums.InitialLanguage);
   }
 
+  // void _handleIncomingLinks() {
+  //   _sub = uriLinkStream.listen((Uri? uri) {
+  //     _processUri(uri);
+  //   }, onError: (err) {
+  //     print('Error in deep link: $err');
+  //   });
+  // }
+
+  Future<void> _handleInitialLink() async {
+    try {
+      // final uri = await getInitialUri();
+      // _processUri(uri);
+    } catch (e) {
+      print('Error getting initial URI: $e');
+    }
+  }
+
+  void _processUri(Uri? uri) {
+    if (uri == null) return;
+
+    if (uri.scheme == 'geotask' && uri.host == 'reset-password') {
+      final token = uri.queryParameters['token'];
+      if (token != null) {
+        Future.microtask(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ResetPasswordPage(),
+            ),
+          );
+        });
+      }
+    }
+  }
   void _updateLocale(Locale newLocale) {
     setState(() {
-      _locale = newLocale;
+      locale = newLocale;
     });
   }
 
@@ -90,7 +132,7 @@ class _MyAppState extends State<MyApp> {
               builder: (context, state) {
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
-                  locale: _locale,
+                  locale: locale,
                   themeMode: AppCubit.get(context).isDarkMode
                       ? ThemeMode.dark
                       : ThemeMode.light,

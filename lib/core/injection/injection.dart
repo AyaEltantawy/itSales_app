@@ -12,7 +12,7 @@ import '../remote_data_source/web_services.dart';
 
 final getIt = GetIt.instance;
 
-void getInit() {
+getInit() {
   getIt.registerLazySingleton<WebServices> (() => WebServices(createSetupDio()));
   getIt.registerLazySingleton<AppCubit> (() => AppCubit(getIt()));
   getIt.registerLazySingleton<Repository> (() => Repository(getIt()));

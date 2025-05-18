@@ -1,27 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:itsale/core/app/app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'core/cache_helper/cache_helper.dart';
-import 'core/injection/injection.dart';
-import 'core/utils/check_internet.dart';
-import 'core/utils/token.dart';
-import 'core/constants/storage_constants.dart';
+
+import 'package:itsale/core/app/app.dart';
+import 'package:itsale/core/cache_helper/cache_helper.dart';
+import 'package:itsale/core/constants/storage_constants.dart';
+import 'package:itsale/core/injection/injection.dart';
+import 'package:itsale/core/utils/check_internet.dart';
+import 'package:itsale/core/utils/token.dart';
+
+import 'features/profile/widgets/language_show_dialog/widgets/restart_widget.dart';
 SharedPreferences? sharedPreferences;
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  sharedPreferences = await SharedPreferences.getInstance();
-  getInit();
-  await NetworkInfoImpl().checkInternet();
-  await CacheHelper.init();
+  try {
+    // Initialize dependencies
+    await getInit();
 
-  token = CacheHelper.getData(key: 'token');
-  role = CacheHelper.getData(key: 'role');
-  userId = CacheHelper.getData(key: 'userId');
-  globalDark = CacheHelper.getData(key: 'isDark') ?? false;
+    // Initialize SharedPreferences and Cache
+    sharedPreferences = await SharedPreferences.getInstance();
+    await CacheHelper.init();
 
-  // Initialize default locale from shared preferences
-  final defaultLocale = sharedPreferences?.getString('lang') ?? 'ar';
+    // Check internet connectivity (optional - non-blocking preferred)
+    await NetworkInfoImpl().checkInternet();
 
-  runApp(MyApp(defaultLocale: defaultLocale));
+    // Load cached values
+    token = CacheHelper.getData(key: 'token');
+    role = CacheHelper.getData(key: 'role');
+    userId = CacheHelper.getData(key: 'userId');
+    globalDark = CacheHelper.getData(key: 'isDark') ?? false;
+
+    // Load language preference
+    final defaultLocale = sharedPreferences?.getString('lang') ?? 'ar';
+
+    // Run app
+    runApp(
+      RestartWidget(
+
+        child: MyApp(defaultLocale: defaultLocale),
+      ),
+    );
+  } catch (e, stackTrace) {
+    // Catch any initialization errors
+    debugPrint('Error during main() init: $e');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 }

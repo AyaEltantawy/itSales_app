@@ -1,9 +1,5 @@
-class ForgetPasswordState {
-  ForgetPasswordState init() {
-    return ForgetPasswordState();
-  }
-
-  ForgetPasswordState clone() {
-    return ForgetPasswordState();
-  }
-}
+abstract class ForgetPasswordState {}
+class ForgetPasswordStateInit extends ForgetPasswordState{}
+class LoadingError extends ForgetPasswordState{}
+class LoadingSuccess extends ForgetPasswordState{}
+class LoadingForgetPassword extends ForgetPasswordState{}

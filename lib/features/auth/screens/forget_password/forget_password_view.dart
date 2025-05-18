@@ -72,7 +72,8 @@ class ForgetPasswordPage extends StatelessWidget {
                   height: 56.h,
                   isColor: true,
                   textSize: 15.sp,
-                  toPage:(){navigateTo(context, AppRoutes.otpPage);} )
+                  toPage:(){controller.forgetPassword(context)
+                  ;} )
             ],
           );
         },

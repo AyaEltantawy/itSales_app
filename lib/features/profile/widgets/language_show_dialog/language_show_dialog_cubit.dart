@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import '../../../../core/constants/navigation.dart' as MagicRouter;
 import '../../../../main.dart' show sharedPreferences;
 import 'language_show_dialog_state.dart';
 import 'package:itsale/core/models/enums/language_event_type.dart';
@@ -29,6 +30,8 @@ class LanguageShowDialogCubit extends Cubit<LanguageShowDialogState> {
     switch (eventType) {
       case LanguageEventEnums.InitialLanguage:
         _loadSavedLanguage();
+
+
         break;
       case LanguageEventEnums.ArabicLanguage:
         changeLanguage('ar');

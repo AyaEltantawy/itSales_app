@@ -1,30 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/routes/magic_router.dart';
+import 'package:itsale/features/SplashScreen/splash_screen.dart';
 import 'package:itsale/features/profile/widgets/language_show_dialog/widgets/custom_radio_and_text.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/enums/language_event_type.dart';
 import 'language_show_dialog_cubit.dart';
 import 'language_show_dialog_state.dart';
 import '../../../../core/themes/styles.dart';
+import 'widgets/restart_widget.dart';
 
-class LanguageShowDialogPage extends StatelessWidget {
+class LanguageShowDialogPage extends StatefulWidget {
   const LanguageShowDialogPage({super.key});
 
   @override
+  State<LanguageShowDialogPage> createState() => _LanguageShowDialogPageState();
+}
+
+class _LanguageShowDialogPageState extends State<LanguageShowDialogPage> {
+  late final LanguageShowDialogCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = LanguageShowDialogCubit();
+    cubit.appLanguageFunc(LanguageEventEnums.InitialLanguage);
+  }
+
+  void _restartApp(BuildContext context) {
+    RestartWidget.restartApp(context);
+
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LanguageShowDialogCubit(),
+    return BlocProvider.value(
+      value: cubit,
       child: BlocBuilder<LanguageShowDialogCubit, LanguageShowDialogState>(
         builder: (context, state) {
-          final cubit = context.read<LanguageShowDialogCubit>();
-          final selectedLanguage = state is LanguageShowDialogStateInit
+          final selectedLanguage = (state is AppLanguageChangeState)
               ? state.selectedLanguage
-              : (state as AppLanguageChangeState).selectedLanguage;
+              : (state is LanguageShowDialogStateInit)
+              ? state.selectedLanguage
+              : 'arabic';
 
-          final List<String> labels = ["اللغة العربية", "English"];
-          final List<String> values = ["arabic", "english"];
+          final labels = ["اللغة العربية", "English"];
+          final values = ["arabic", "english"];
 
           return AlertDialog(
             backgroundColor: Colors.white,
@@ -63,14 +86,13 @@ class LanguageShowDialogPage extends StatelessWidget {
                       selectedLanguage: selectedLanguage,
                       languageValue: values[index],
                       label: labels[index],
-                      onLanguageChanged: (language) {
-                        cubit.changeLanguage(language);
-
+                      onLanguageChanged: (language) async {
                         if (language == "arabic") {
                           cubit.appLanguageFunc(LanguageEventEnums.ArabicLanguage);
-                        } else if (language == "english") {
+                        } else {
                           cubit.appLanguageFunc(LanguageEventEnums.EnglishLanguage);
                         }
+                        _restartApp(context,);
                       },
                     );
                   }),
@@ -81,5 +103,11 @@ class LanguageShowDialogPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    cubit.close();
+    super.dispose();
   }
 }

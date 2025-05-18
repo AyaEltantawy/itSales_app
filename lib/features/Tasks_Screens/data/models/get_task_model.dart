@@ -1,11 +1,8 @@
-
-
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../addEmployee/data/models/add_employee_model.dart';
 
 part 'get_task_model.g.dart';
-
 
 @JsonSerializable()
 class GetUserTaskModel {
@@ -14,13 +11,10 @@ class GetUserTaskModel {
   GetUserTaskModel({this.data});
 
   factory GetUserTaskModel.fromJson(Map<String, dynamic> json) => _$GetUserTaskModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$GetUserTaskModelToJson(this);
-
-
 }
-@JsonSerializable()
 
+@JsonSerializable()
 class DataUserTask {
   int? id;
   String? status;
@@ -44,7 +38,8 @@ class DataUserTask {
   String? cancelled_date;
   List<FilesResponseModel>? files;
 
-  DataUserTask({this.id,
+  DataUserTask({
+    this.id,
     this.status,
     this.sort,
     this.owner,
@@ -63,13 +58,12 @@ class DataUserTask {
     this.start_date,
     this.location,
     this.complete_date,
+    this.cancelled_date,
     this.files,
-    this.cancelled_date});
+  });
 
   factory DataUserTask.fromJson(Map<String, dynamic> json) => _$DataUserTaskFromJson(json);
-
   Map<String, dynamic> toJson() => _$DataUserTaskToJson(this);
-
 }
 
 @JsonSerializable()
@@ -90,7 +84,8 @@ class AddTaskRequestModel {
   List<Files>? files;
   int? location;
 
-  AddTaskRequestModel({this.status,
+  AddTaskRequestModel({
+    this.status,
     this.due_date,
     this.title,
     this.client_name,
@@ -104,14 +99,11 @@ class AddTaskRequestModel {
     this.notes,
     this.assigned_to,
     this.files,
-    this.location});
-
+    this.location,
+  });
 
   factory AddTaskRequestModel.fromJson(Map<String, dynamic> json) => _$AddTaskRequestModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$AddTaskRequestModelToJson(this);
-
-
 }
 
 @JsonSerializable()
@@ -121,25 +113,17 @@ class Files {
   Files({this.directus_files_id});
 
   factory Files.fromJson(Map<String, dynamic> json) => _$FilesFromJson(json);
-
   Map<String, dynamic> toJson() => _$FilesToJson(this);
-
-
 }
 
-
 @JsonSerializable()
-
 class FilesResponseModel {
   int? id;
   DirectusFilesId? directus_files_id;
 
-  FilesResponseModel({this.id,  this.directus_files_id});
+  FilesResponseModel({this.id, this.directus_files_id});
   factory FilesResponseModel.fromJson(Map<String, dynamic> json) => _$FilesResponseModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$FilesResponseModelToJson(this);
-
-
 }
 
 @JsonSerializable()
@@ -158,15 +142,13 @@ class DirectusFilesId {
   int? width;
   int? height;
   int? duration;
-
   String? description;
   String? location;
-
   String? checksum;
-
   Data? data;
 
-  DirectusFilesId({this.id,
+  DirectusFilesId({
+    this.id,
     this.storage,
     this.privateHash,
     this.filenameDisk,
@@ -180,56 +162,42 @@ class DirectusFilesId {
     this.width,
     this.height,
     this.duration,
-
     this.description,
     this.location,
-
     this.checksum,
+    this.data,
+  });
 
-    this.data});
   factory DirectusFilesId.fromJson(Map<String, dynamic> json) => _$DirectusFilesIdFromJson(json);
-
   Map<String, dynamic> toJson() => _$DirectusFilesIdToJson(this);
-
 }
 
-
-
 @JsonSerializable()
-
 class DirectusFilesIdRequest {
   int? id;
 
   DirectusFilesIdRequest({this.id});
 
   factory DirectusFilesIdRequest.fromJson(Map<String, dynamic> json) => _$DirectusFilesIdRequestFromJson(json);
-
   Map<String, dynamic> toJson() => _$DirectusFilesIdRequestToJson(this);
-
-
 }
+
 @JsonSerializable()
 class AddTaskModel {
   DataUserTask? data;
 
   AddTaskModel({this.data});
   factory AddTaskModel.fromJson(Map<String, dynamic> json) => _$AddTaskModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$AddTaskModelToJson(this);
-
 }
-
 
 @JsonSerializable()
 class AllTasksModel {
   List<DataAllTasks>? data;
 
   AllTasksModel({this.data});
-
   factory AllTasksModel.fromJson(Map<String, dynamic> json) => _$AllTasksModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$AllTasksModelToJson(this);
-
 }
 
 @JsonSerializable()
@@ -256,7 +224,8 @@ class DataAllTasks {
   String? cancelled_date;
   List<FilesResponseModel>? files;
 
- DataAllTasks({this.id,
+  DataAllTasks({
+    this.id,
     this.status,
     this.sort,
     this.owner,
@@ -276,13 +245,12 @@ class DataAllTasks {
     this.location,
     this.complete_date,
     this.cancelled_date,
-    this.files});
+    this.files,
+  });
+
   factory DataAllTasks.fromJson(Map<String, dynamic> json) => _$DataAllTasksFromJson(json);
-
   Map<String, dynamic> toJson() => _$DataAllTasksToJson(this);
-
 }
-
 
 @JsonSerializable()
 class Owner {
@@ -307,7 +275,8 @@ class Owner {
   String? last_access_on;
   String? last_page;
 
-  Owner({this.id,
+  Owner({
+    this.id,
     this.status,
     this.role,
     this.first_name,
@@ -326,12 +295,11 @@ class Owner {
     this.title,
     this.email_notifications,
     this.last_access_on,
-    this.last_page});
+    this.last_page,
+  });
 
   factory Owner.fromJson(Map<String, dynamic> json) => _$OwnerFromJson(json);
-
   Map<String, dynamic> toJson() => _$OwnerToJson(this);
-
 }
 
 @JsonSerializable()
@@ -357,7 +325,8 @@ class OwnerLocation {
   String? last_access_on;
   String? last_page;
 
-  OwnerLocation({this.id,
+  OwnerLocation({
+    this.id,
     this.status,
     this.role,
     this.first_name,
@@ -376,12 +345,11 @@ class OwnerLocation {
     this.title,
     this.email_notifications,
     this.last_access_on,
-    this.last_page});
+    this.last_page,
+  });
 
   factory OwnerLocation.fromJson(Map<String, dynamic> json) => _$OwnerLocationFromJson(json);
-
   Map<String, dynamic> toJson() => _$OwnerLocationToJson(this);
-
 }
 
 @JsonSerializable()
@@ -407,7 +375,8 @@ class AssignedTo {
   String? last_access_on;
   String? last_page;
 
-  AssignedTo({this.id,
+  AssignedTo({
+    this.id,
     this.status,
     this.role,
     this.first_name,
@@ -426,13 +395,12 @@ class AssignedTo {
     this.title,
     this.email_notifications,
     this.last_access_on,
-    this.last_page});
-  factory AssignedTo.fromJson(Map<String, dynamic> json) => _$AssignedToFromJson(json);
+    this.last_page,
+  });
 
+  factory AssignedTo.fromJson(Map<String, dynamic> json) => _$AssignedToFromJson(json);
   Map<String, dynamic> toJson() => _$AssignedToToJson(this);
 }
-
-
 
 @JsonSerializable()
 class Location {
@@ -447,9 +415,9 @@ class Location {
   String? longitude;
   String? address;
   String? map_url;
-  // DataUserTask? task;
 
-  Location({this.id,
+  Location({
+    this.id,
     this.status,
     this.sort,
     this.owner,
@@ -460,12 +428,8 @@ class Location {
     this.longitude,
     this.address,
     this.map_url,
-   // this.task
   });
 
   factory Location.fromJson(Map<String, dynamic> json) => _$LocationFromJson(json);
-
   Map<String, dynamic> toJson() => _$LocationToJson(this);
-
-
 }

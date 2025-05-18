@@ -15,7 +15,7 @@ IconData? icon,
       required Function() toPage}) =>
 
 
-      // color: secondaryColor3,
+
       InkWell(
         onTap: toPage,
         child: Container(
@@ -28,22 +28,18 @@ IconData? icon,
             border: Border.all(width: 1,color: AppColors.primary),
             borderRadius: BorderRadius.circular(30.r),
           ),
-          child: Center(
-            child: Row(mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon),
-                Text(textAlign: TextAlign.center,
-                  text,
-                  style: TextStyle(
-                      fontSize:  textSize
-                      ,fontWeight: FontWeight.w700
-                      ,color: isColor ? AppColors.textWhite : AppColors.primary),
-                ),
-              ],
-            ),
-
-
-        ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon)??Container(),
+              Text(textAlign: TextAlign.center,
+                text,
+                style: TextStyle(
+                    fontSize:  textSize
+                    ,fontWeight: FontWeight.w700
+                    ,color: isColor ? AppColors.textWhite : AppColors.primary),
+              ),
+            ],
+          ),
 
             ),
       );
