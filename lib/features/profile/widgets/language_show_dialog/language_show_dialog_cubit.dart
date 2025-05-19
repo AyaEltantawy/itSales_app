@@ -10,42 +10,49 @@ class LanguageShowDialogCubit extends Cubit<LanguageShowDialogState> {
     _loadSavedLanguage();
   }
 
-  void _loadSavedLanguage() {
+  /// Loads the saved language from shared preferences
+  Future<void> _loadSavedLanguage() async {
     final lang = sharedPreferences?.getString("lang") ?? "ar";
-    emit(AppLanguageChangeState(
-      languageCode: lang,
-      selectedLanguage: lang == "ar" ? 'arabic' : 'english',
-    ));
+    final selected = lang == "ar" ? 'arabic' : 'english';
+    if (!isClosed) {
+      emit(AppLanguageChangeState(
+        languageCode: lang,
+        selectedLanguage: selected,
+      ));
+    }
   }
 
-  void changeLanguage(String languageCode) {
-    sharedPreferences?.setString('lang', languageCode);
-    emit(AppLanguageChangeState(
-      languageCode: languageCode,
-      selectedLanguage: languageCode == "ar" ? 'arabic' : 'english',
-    ));
+  /// Changes language and emits the new state
+  Future<void> changeLanguage(String languageCode) async {
+    await sharedPreferences?.setString('lang', languageCode);
+    final selected = languageCode == "ar" ? 'arabic' : 'english';
+
+      emit(AppLanguageChangeState(
+        languageCode: languageCode,
+        selectedLanguage: selected,
+      ));
+
   }
 
-  void appLanguageFunc(LanguageEventEnums eventType) {
+  /// Public method to handle language events
+  Future<void> appLanguageFunc(LanguageEventEnums eventType) async {
     switch (eventType) {
       case LanguageEventEnums.InitialLanguage:
-        _loadSavedLanguage();
-
-
+        await _loadSavedLanguage();
         break;
       case LanguageEventEnums.ArabicLanguage:
-        changeLanguage('ar');
+        await changeLanguage('ar');
         break;
       case LanguageEventEnums.EnglishLanguage:
-        changeLanguage('en');
+        await changeLanguage('en');
         break;
     }
-
   }
-  String selectedLanguage ='arabic';
-  toggleLanguage(){
-    selectedLanguage != selectedLanguage;
-    _loadSavedLanguage();
-    emit(ToggleLanguage());
+
+  /// (Optional) Toggle language manually — not used in dialog but can help for tests
+  Future<void> toggleLanguage() async {
+    final currentLang = sharedPreferences?.getString("lang") ?? "ar";
+    final newLang = currentLang == "ar" ? "en" : "ar";
+    await changeLanguage(newLang);
   }
 }

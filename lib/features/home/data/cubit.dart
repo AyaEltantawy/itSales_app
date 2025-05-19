@@ -69,8 +69,8 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
       await repo.allUsers({
         'fields': '*.*',
-        'filter[companies.id]':  users?[1].companies?.id,// get fom user
-
+        'filter[companies.id]':
+        (users != null && users!.length > 1) ? users![1].companies?.id : null,
       }).then((value) {
         users = value.data;
         print("dfghjkl ${users?[1].companies?.id}");

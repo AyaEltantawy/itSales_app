@@ -26,6 +26,7 @@ class TasksCubit extends Cubit<TasksStates> {
   List<DataUserTask>? getUserTaskList = [];
   List<DataUserTask>? getUserTaskListWithStatus = [];
   List<DataUserTask>? data;
+
   getUserTaskFun({
     required String userId,
     String? status,
@@ -44,7 +45,7 @@ class TasksCubit extends Cubit<TasksStates> {
         // 'filter[companies.id]':getUserTaskList?[1].companies?.,
         queryParams['filter[task_status][eq]'] = status;
       }
-      await repo.getUserTask(userId,  {'fields': '*.*.*', },).then((value) {
+      await repo.getUserTask(userId, queryParams).then((value) {
         if (status != null) {
           emit(GetLoadingUserTaskStateForEmpScreens());
 
@@ -57,7 +58,10 @@ class TasksCubit extends Cubit<TasksStates> {
         }
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+          Utils.showSnackBar(
+            MagicRouter.currentContext!,
+            'أنت غير متصل بالانترنت',
+          );
 
           emit(NoInternetState());
         }
@@ -125,7 +129,10 @@ class TasksCubit extends Cubit<TasksStates> {
           user: value.data!.assigned_to!.id!.toInt());
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -195,7 +202,10 @@ class TasksCubit extends Cubit<TasksStates> {
       }
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar( MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -215,29 +225,51 @@ class TasksCubit extends Cubit<TasksStates> {
   List<DataAllTasks>? getAllTaskListFilter = [];
 
   getAllTasksFun() async {
-    if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
-
+    if (!await InternetConnectionChecker().hasConnection) {
+      Utils.showSnackBar(
+        MagicRouter.currentContext!,
+        'أنت غير متصل بالانترنت',
+      );
       emit(NoInternetState());
-    } else {
-      emit(GetLoadingAllTaskState());
+      return;
+    }
 
-      await repo.getAllTasks().then((value) {
-        getAllTaskList = value.data;
+    emit(GetLoadingAllTaskState());
 
-        emit(GetSuccessAllTaskState());
-      }).catchError((onError) async {
-        if (await InternetConnectionChecker().hasConnection == false) {
-         Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+    try {
+      // Determine company ID from first task
+      final int? companyId = (getAllTaskList?.isNotEmpty == true)
+          ? getAllTaskList!.first.companyId ??
+          getAllTaskList!.first.companies?.id
+          : null;
 
-          emit(NoInternetState());
-        }
+      // Prepare filters
+      final Map<String, dynamic> filters = {
+        'fields': '*.*',
+        if (companyId != null) 'filter[companies.id]': companyId,
+      };
 
-        emit(GetErrorAllTaskState());
-        debugPrint('errrrrror ${onError.toString()}');
-      });
+      // Fetch tasks
+      final value = await repo.getAllTasks(filters);
+
+      getAllTaskList = value.data;
+      emit(GetSuccessAllTaskState());
+    } catch (onError) {
+      if (!await InternetConnectionChecker().hasConnection) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
+        emit(NoInternetState());
+        return;
+      }
+
+      emit(GetErrorAllTaskState());
+      debugPrint('❌ Error getting tasks: ${onError.toString()}');
     }
   }
+
+
 
   getAllTasksFunWithFilter({
     String? status,
@@ -250,7 +282,10 @@ class TasksCubit extends Cubit<TasksStates> {
   }) async {
     getUserTaskList = [];
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+      Utils.showSnackBar(
+        MagicRouter.currentContext!,
+        'أنت غير متصل بالانترنت',
+      );
       emit(NoInternetState());
       return;
     } else {
@@ -302,8 +337,10 @@ class TasksCubit extends Cubit<TasksStates> {
         emit(GetSuccessAllTaskFilterState());
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(MagicRouter.currentContext!
-            ,'أنت غير متصل بالانترنت', );
+          Utils.showSnackBar(
+            MagicRouter.currentContext!,
+            'أنت غير متصل بالانترنت',
+          );
           emit(NoInternetState());
         } else {
           if (text != null) {
@@ -322,7 +359,10 @@ class TasksCubit extends Cubit<TasksStates> {
 
   getAllNotificationFun() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+      Utils.showSnackBar(
+        MagicRouter.currentContext!,
+        'أنت غير متصل بالانترنت',
+      );
 
       emit(NoInternetState());
     } else {
@@ -334,7 +374,10 @@ class TasksCubit extends Cubit<TasksStates> {
         emit(GetSuccessAllNotificationState());
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+          Utils.showSnackBar(
+            MagicRouter.currentContext!,
+            'أنت غير متصل بالانترنت',
+          );
 
           emit(NoInternetState());
         }
@@ -348,7 +391,10 @@ class TasksCubit extends Cubit<TasksStates> {
 
   getNotificationForOneUserFun() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+      Utils.showSnackBar(
+        MagicRouter.currentContext!,
+        'أنت غير متصل بالانترنت',
+      );
 
       emit(NoInternetState());
     } else {
@@ -361,7 +407,10 @@ class TasksCubit extends Cubit<TasksStates> {
         emit(GetSuccessUserNotificationState());
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+          Utils.showSnackBar(
+            MagicRouter.currentContext!,
+            'أنت غير متصل بالانترنت',
+          );
 
           emit(NoInternetState());
         }
@@ -392,7 +441,10 @@ class TasksCubit extends Cubit<TasksStates> {
       emit(PostSuccessAllNotificationState());
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -445,7 +497,10 @@ class TasksCubit extends Cubit<TasksStates> {
       );
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -506,7 +561,10 @@ class TasksCubit extends Cubit<TasksStates> {
       );
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -532,7 +590,10 @@ class TasksCubit extends Cubit<TasksStates> {
     required String task_status,
   }) async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+      Utils.showSnackBar(
+        MagicRouter.currentContext!,
+        'أنت غير متصل بالانترنت',
+      );
 
       emit(NoInternetState());
     } else {
@@ -561,7 +622,10 @@ class TasksCubit extends Cubit<TasksStates> {
         );
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+          Utils.showSnackBar(
+            MagicRouter.currentContext!,
+            'أنت غير متصل بالانترنت',
+          );
 
           emit(NoInternetState());
         }
@@ -612,7 +676,10 @@ class TasksCubit extends Cubit<TasksStates> {
       return idFiles;
     } catch (e) {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }

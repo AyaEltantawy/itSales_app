@@ -100,4 +100,6 @@ class AppIcons {
   static const IconData task_outlined = IconData(0xf429, fontFamily: 'MaterialIcons');
   static const IconData menu_outlined = IconData(0xf1c4, fontFamily: 'MaterialIcons');
   static const IconData person_2_outlined = IconData(0xf08ae, fontFamily: 'MaterialIcons');
+  static const IconData language = IconData(0xe366, fontFamily: 'MaterialIcons');
+  static const IconData password = IconData(0xe47a, fontFamily: 'MaterialIcons');
 }

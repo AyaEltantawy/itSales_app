@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:itsale/core/components/default_app_bar.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
@@ -13,16 +13,20 @@ import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/Tasks_Screens/screens/task_details.dart';
 import 'package:itsale/features/addEmployee/components/no_data_screen.dart';
-
+import '../../../core/app/app.dart';
 import '../../../core/constants/app_animation.dart';
+import '../../../core/constants/app_fonts.dart';
 import '../../../core/utils/token.dart';
+import '../../addEmployee/screens/add_employee.dart';
 import '../../home/components/widgets_for_tasks_screen.dart';
+import '../../home/data/cubit.dart';
 import '../components/widget_of_tasks_grid.dart';
 
 class TasksScreenForEmployee extends StatefulWidget {
-  const TasksScreenForEmployee({super.key, required this.back});
+  TasksScreenForEmployee({super.key, required this.back, this.task});
 
   final bool back;
+  final bool? task;
 
   @override
   State<TasksScreenForEmployee> createState() => _TasksScreenForEmployeeState();
@@ -30,6 +34,7 @@ class TasksScreenForEmployee extends StatefulWidget {
 
 class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
   bool isGrid = false;
+  bool showSearch = false;
 
   void toggleViewMode() {
     setState(() {
@@ -42,7 +47,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
     role == "3"
         ? TasksCubit.get(context).getUserTaskFun(userId: userId.toString())
         : TasksCubit.get(context).getAllTasksFun();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -66,14 +71,92 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
-                      SizedBox(height: 10.h),
-                      CustomAppBar(back: widget.back, title: AppLocalizations.of(context)!.translate("tasks")),
-                      BuildSearchFilter(
-                          task: true,
-                          admin: false,
-                          emp: false,
-                          isGrid: isGrid,
-                          toggleViewMode: toggleViewMode),
+                      SizedBox(height: 50.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.arrow_back),
+                              //CustomAppBar(back: widget.back, title: ),
+                              Text(AppLocalizations.of(context)!
+                                  .translate("tasks")),
+                            ],
+                          ),
+                          BuildSearchFilter(
+                            onTap: () {
+                              setState(() {
+                                showSearch = !showSearch;
+                              });
+                            },
+                            isGrid: false,
+                            emp: false,
+                            task: true,
+                            admin: false,
+                            toggleViewMode: toggleViewMode,
+                          )
+                        ],
+                      ),
+                      if (showSearch) ...[
+                        SizedBox(height: 30.h),
+                        Container(
+                            height: 40.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: globalDark
+                                  ? AppColors.cardColorDark
+                                  : AppColors.cardColor,
+                              border: Border.all(
+                                color: globalDark
+                                    ? AppColors.borderColorDark
+                                    : AppColors.borderColor,
+                                width: 0.5,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0.r),
+                            ),
+                            child: TextFormField(
+                                textDirection: TextDirection.rtl,
+                                onFieldSubmitted: (value) {
+                                  widget.task!
+                                      ? (role == '1'
+                                          ? TasksCubit.get(context)
+                                              .getAllTasksFunWithFilter(
+                                                  text: value)
+                                          : TasksCubit.get(context)
+                                              .getAllTasksFunWithFilter(
+                                                  textEmp: value,
+                                                  employee: userId))
+                                      : EmployeeCubit.get(context)
+                                          .getAdmins(search: value.toString());
+                                },
+                                onChanged: (value) {
+                                  widget.task!
+                                      ? (role == '1'
+                                          ? TasksCubit.get(context)
+                                              .getAllTasksFunWithFilter(
+                                                  text: value)
+                                          : TasksCubit.get(context)
+                                              .getAllTasksFunWithFilter(
+                                                  textEmp: value,
+                                                  employee: userId))
+                                      : EmployeeCubit.get(context)
+                                          .getAdmins(search: value.toString());
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child:
+                                        SvgPicture.asset(AppIcons.searchIcon),
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 20.w),
+                                  prefixIconConstraints: const BoxConstraints(
+                                      minWidth: 20, minHeight: 20),
+                                  labelText: 'ابحث هنا',
+                                  labelStyle: AppFonts.style14normal,
+                                )))
+                      ],
                       BlocConsumer<TasksCubit, TasksStates>(
                           listener: (context, state) {},
                           builder: (context, state) {

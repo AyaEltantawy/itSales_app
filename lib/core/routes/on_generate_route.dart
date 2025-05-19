@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:itsale/features/SplashScreen/splash_screen.dart';
+import 'package:itsale/features/addEmployee/data/models/add_employee_model.dart';
 import 'package:itsale/features/auth/data/repo.dart';
 import 'package:itsale/features/auth/screens/otp/otp_view.dart';
 import 'package:itsale/features/auth/screens/register/register_view.dart';
@@ -35,6 +36,7 @@ import '../../features/auth/screens/password_changed_success/password_changed_su
 import '../../features/auth/screens/password_reset_page.dart';
 import '../../features/detailed_employee_screen/screens/detailed_employee_screens.dart';
 import '../../features/entrypoint/components/select_any_button_bottom_sheet.dart';
+import '../../features/home/components/widgets_for_tasks_screen.dart';
 import '../../features/home/screens/employee_screen.dart';
 import '../../features/profile/widgets/help/help_view.dart';
 import '../../features/profile/widgets/reports/reports_view.dart';
@@ -71,22 +73,24 @@ class RouteGenerator {
       case AppRoutes.otpPage:
         return animatedNavigation(screen: OtpPage());
       case AppRoutes.registerPage:
-
-        return animatedNavigation(screen: RegisterPage(repository: Repository(WebServices(Dio())),));
+        return animatedNavigation(
+            screen: RegisterPage(
+          repository: Repository(WebServices(Dio())),
+        ));
       case AppRoutes.passwordChangedSuccessPage:
         return animatedNavigation(screen: PasswordChangedSuccessPage());
 
       case AppRoutes.addEmployee:
-        // return animatedNavigation(
-        //     screen: const (
-        //   isEdit: false,
-        //   empId: 0,
-        // ));
+        return animatedNavigation(
+            screen: const AddNewEmployee(
+          empId: 0,
+          isEdit: false,
+        ));
 
       case AppRoutes.allEmployees:
         return animatedNavigation(
             screen: const AllEmployeeScreen(
-              task: false,
+          task: false,
           admin: false,
         ));
 
@@ -97,7 +101,7 @@ class RouteGenerator {
 
       case AppRoutes.homeTasks:
         return animatedNavigation(
-            screen: const TasksScreenForEmployee(
+            screen: TasksScreenForEmployee(
           back: false,
         ));
 

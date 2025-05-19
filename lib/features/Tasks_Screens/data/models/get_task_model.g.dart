@@ -257,10 +257,57 @@ DataAllTasks _$DataAllTasksFromJson(Map<String, dynamic> json) => DataAllTasks(
       files: (json['files'] as List<dynamic>?)
           ?.map((e) => FilesResponseModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+      companies: json['companies'] is Map<String, dynamic>
+          ? Company.fromJson(json['companies'] as Map<String, dynamic>)
+          : null,
+      companyId: json['companies'] is int ? json['companies'] as int : null,
+);
 
 Map<String, dynamic> _$DataAllTasksToJson(DataAllTasks instance) =>
     <String, dynamic>{
+          'id': instance.id,
+          'status': instance.status,
+          'sort': instance.sort,
+          'owner': instance.owner?.toJson(),
+          'created_on': instance.created_on,
+          'modified_by': instance.modified_by?.toJson(),
+          'modified_on': instance.modified_on,
+          'assigned_to': instance.assigned_to?.toJson(),
+          'due_date': instance.due_date,
+          'title': instance.title,
+          'description': instance.description,
+          'client_name': instance.client_name,
+          'client_phone': instance.client_phone,
+          'notes': instance.notes,
+          'task_status': instance.task_status,
+          'priority': instance.priority,
+          'start_date': instance.start_date,
+          'location': instance.location?.toJson(),
+          'complete_date': instance.complete_date,
+          'cancelled_date': instance.cancelled_date,
+          'files': instance.files?.map((e) => e.toJson()).toList(),
+          'companies': instance.companies != null
+              ? instance.companies!.toJson()
+              : instance.companyId,
+
+    };
+
+Company _$CompanyFromJson(Map<String, dynamic> json) => Company(
+      id: (json['id'] as num?)?.toInt(),
+      status: json['status'] as String?,
+      sort: json['sort'],
+      owner: (json['owner'] as num?)?.toInt(),
+      created_on: json['created_on'] as String?,
+      modified_by: (json['modified_by'] as num?)?.toInt(),
+      modified_on: json['modified_on'] as String?,
+      name: json['name'] as String?,
+      logo: (json['logo'] as num?)?.toInt(),
+      email: json['email'] as String?,
+      whatsapp: json['whatsapp'] as String?,
+      website: json['website'] as String?,
+);
+
+Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
       'id': instance.id,
       'status': instance.status,
       'sort': instance.sort,
@@ -268,21 +315,12 @@ Map<String, dynamic> _$DataAllTasksToJson(DataAllTasks instance) =>
       'created_on': instance.created_on,
       'modified_by': instance.modified_by,
       'modified_on': instance.modified_on,
-      'assigned_to': instance.assigned_to,
-      'due_date': instance.due_date,
-      'title': instance.title,
-      'description': instance.description,
-      'client_name': instance.client_name,
-      'client_phone': instance.client_phone,
-      'notes': instance.notes,
-      'task_status': instance.task_status,
-      'priority': instance.priority,
-      'start_date': instance.start_date,
-      'location': instance.location,
-      'complete_date': instance.complete_date,
-      'cancelled_date': instance.cancelled_date,
-      'files': instance.files,
-    };
+      'name': instance.name,
+      'logo': instance.logo,
+      'email': instance.email,
+      'whatsapp': instance.whatsapp,
+      'website': instance.website,
+};
 
 Owner _$OwnerFromJson(Map<String, dynamic> json) => Owner(
       id: (json['id'] as num?)?.toInt(),

@@ -46,7 +46,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: globalDark ? AppColors.cardColorDark : AppColors.cardColor,
+        backgroundColor:
+            globalDark ? AppColors.cardColorDark : AppColors.cardColor,
         body: RefreshIndicator(
           onRefresh: _refreshData,
           child: SingleChildScrollView(
@@ -71,44 +72,51 @@ class _SettingsPageState extends State<SettingsPage> {
                     SizedBox(height: 20.h),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: AppDefaults.padding, vertical: AppDefaults.padding / 2),
-                      child: Text(AppLocalizations.of(context)!.translate("menu")
-                          , style: AppFonts.style20medium),
+                          horizontal: AppDefaults.padding,
+                          vertical: AppDefaults.padding / 2),
+                      child: Text(
+                          AppLocalizations.of(context)!.translate("menu"),
+                          style: AppFonts.style20medium),
                     ),
                     Container(
-                      margin: const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: AppDefaults.padding),
                       height: 80.h,
                       decoration: BoxDecoration(
-                        color: globalDark ? AppColors.cardColorDark : AppColors.cardColor,
+                        color: globalDark
+                            ? AppColors.cardColorDark
+                            : AppColors.cardColor,
                         borderRadius: AppDefaults.borderRadius,
                       ),
                       child: Row(
                         children: [
                           user?.avatar?.data == null
                               ? Padding(
-                            padding: EdgeInsets.only(right: 8.0.w, left: 10.0.w),
-                            child: Container(
-                              height: 40.h,
-                              width: 40.w,
-                              decoration: BoxDecoration(
-                                color: AppColors.gray,
-                                borderRadius: BorderRadius.circular(5.r),
-                              ),
-                            ),
-                          )
+                                  padding: EdgeInsets.only(
+                                      right: 8.0.w, left: 10.0.w),
+                                  child: Container(
+                                    height: 40.h,
+                                    width: 40.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.gray,
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                  ),
+                                )
                               : Padding(
-                            padding: EdgeInsets.only(right: 8.0.w, left: 10.0.w),
-                            child: Container(
-                              height: 40.h,
-                              width: 40.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.r),
-                              ),
-                              child: NetworkImageWithLoader(
-                                user!.avatar!.data!.full_url.toString(),
-                              ),
-                            ),
-                          ),
+                                  padding: EdgeInsets.only(
+                                      right: 8.0.w, left: 10.0.w),
+                                  child: Container(
+                                    height: 40.h,
+                                    width: 40.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                    child: NetworkImageWithLoader(
+                                      user!.avatar!.data!.full_url.toString(),
+                                    ),
+                                  ),
+                                ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +126,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 style: AppFonts.style16Normal,
                               ),
                               Text(
-                                role == "1" ? AppLocalizations.of(context)!.translate("manager") : AppLocalizations.of(context)!.translate("employee"),
+                                role == "1"
+                                    ? AppLocalizations.of(context)!
+                                        .translate("manager")
+                                    : AppLocalizations.of(context)!
+                                        .translate("employee"),
                                 style: AppFonts.style12light,
                               ),
                             ],
@@ -132,7 +144,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         vertical: AppDefaults.padding * 2,
                       ),
                       decoration: BoxDecoration(
-                        color: globalDark ? AppColors.cardColorDark : AppColors.cardColor,
+                        color: globalDark
+                            ? AppColors.cardColorDark
+                            : AppColors.cardColor,
                         borderRadius: AppDefaults.borderRadius,
                       ),
                       child: Column(
@@ -143,74 +157,125 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const AllEmployeeScreen(task: false, admin: true),
+                                    builder: (context) =>
+                                        const AllEmployeeScreen(
+                                            task: false, admin: true),
                                   ),
                                 );
                               },
                               child: AppSettingsListTile(
                                 style: AppFonts.style16semiBold,
-                                widget: Icon(AppIcons.persons, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                                label: AppLocalizations.of(context)!.translate("managers"),
+                                widget: Icon(AppIcons.persons,
+                                    color: globalDark
+                                        ? AppColors.textWhite
+                                        : AppColors.textBlack),
+                                label: AppLocalizations.of(context)!
+                                    .translate("managers"),
                               ),
                             ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.tasks, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!.translate("tasks"),
+                            widget: Icon(AppIcons.tasks,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label: AppLocalizations.of(context)!
+                                .translate("tasks"),
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const TasksScreenForEmployee(back: true),
+                                  builder: (context) =>
+                                      TasksScreenForEmployee(back: true),
                                 ),
                               );
                             },
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppLottie.report, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label:AppLocalizations.of(context)!.translate("reports") ,
-                            onTap: () => navigateTo(context, AppRoutes.reportsPge),
+                            widget: Icon(AppLottie.report,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label: AppLocalizations.of(context)!
+                                .translate("reports"),
+                            onTap: () =>
+                                navigateTo(context, AppRoutes.reportsPge),
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.notifications, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!.translate("notifications"),
-                            onTap: () => navigateTo(context, AppRoutes.notifications),
+                            widget: Icon(AppIcons.notifications,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label: AppLocalizations.of(context)!
+                                .translate("notifications"),
+                            onTap: () =>
+                                navigateTo(context, AppRoutes.notifications),
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.settings, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!.translate("settings"),
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainSettingsPage())),
+                            widget: Icon(AppIcons.settings,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label: AppLocalizations.of(context)!
+                                .translate("settings"),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MainSettingsPage())),
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.settings, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!.translate("change_password"),
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordPage())),
+                            widget: Icon(AppIcons.password,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label: AppLocalizations.of(context)!
+                                .translate("change_password"),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChangePasswordPage())),
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.help, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!.translate("help"),
+                            widget: Icon(AppIcons.help,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label:
+                                AppLocalizations.of(context)!.translate("help"),
                             onTap: () => navigateTo(context, AppRoutes.helpPge),
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.help, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
-                            label:AppLocalizations.of(context)!.translate("language") ,
-                            onTap: () => showDialog(context: context, builder: (context) => LanguageShowDialogPage()),
+                            widget: Icon(AppIcons.language,
+                                color: globalDark
+                                    ? AppColors.textWhite
+                                    : AppColors.textBlack),
+                            label: AppLocalizations.of(context)!
+                                .translate("language"),
+                            onTap: () => showDialog(
+                                context: context,
+                                builder: (context) => LanguageShowDialogPage()),
                           ),
                           BlocBuilder<AppCubit, AppStates>(
                             builder: (context, state) {
                               return Row(
                                 children: [
                                   SizedBox(width: 10.w),
-                                  Icon(Icons.dark_mode_outlined, color: globalDark ? AppColors.textWhite : AppColors.textBlack),
+                                  Icon(Icons.dark_mode_outlined,
+                                      color: globalDark
+                                          ? AppColors.textWhite
+                                          : AppColors.textBlack),
                                   SizedBox(width: 10.w),
-                                  Text(AppLocalizations.of(context)!.translate("dark_mode")
-                                      , style: AppFonts.style16semiBold),
+                                  Text(
+                                      AppLocalizations.of(context)!
+                                          .translate("dark_mode"),
+                                      style: AppFonts.style16semiBold),
                                   const Spacer(),
                                   Switch(
                                     value: AppCubit.get(context).isDarkMode,
@@ -226,8 +291,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           SizedBox(height: 20.h),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBoldError,
-                            widget: const Icon(AppIcons.logOut, color: AppColors.errorColor),
-                            label: AppLocalizations.of(context)!.translate("sign_out"),
+                            widget: const Icon(AppIcons.logOut,
+                                color: AppColors.errorColor),
+                            label: AppLocalizations.of(context)!
+                                .translate("sign_out"),
                             onTap: () async {
                               await CacheHelper.clearAll().then((value) {
                                 if (value) navigateTo(context, AppRoutes.login);

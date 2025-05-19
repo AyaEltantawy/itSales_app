@@ -177,7 +177,6 @@ class AppCubit extends Cubit<AppStates> {
       emit(NoInternetConnectionState());
       return;
     }
-
     emit(GetLoadingCompanyState());
 
     try {

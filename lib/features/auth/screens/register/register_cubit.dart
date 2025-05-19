@@ -128,7 +128,7 @@ class RegisterCubit extends Cubit<RegisterState> {
           await CacheHelper.saveData(key: 'email', value: user.email ?? '');
           await CacheHelper.saveData(key: 'userId', value: user.id ?? '');
 
-          // Also set your global vars if used
+
           token = tokenValue;
           role = user.role ?? '';
           userId = user.id ?? '';

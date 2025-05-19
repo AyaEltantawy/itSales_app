@@ -1,0 +1,2 @@
+C:/Users/NUMBER 1/Downloads/itsales_app-main/android/app/.cxx/Debug/454r271l/x86/CMakeFiles/edit_cache.dir
+C:/Users/NUMBER 1/Downloads/itsales_app-main/android/app/.cxx/Debug/454r271l/x86/CMakeFiles/rebuild_cache.dir

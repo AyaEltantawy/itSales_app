@@ -200,6 +200,7 @@ class AllTasksModel {
   Map<String, dynamic> toJson() => _$AllTasksModelToJson(this);
 }
 
+
 @JsonSerializable()
 class DataAllTasks {
   int? id;
@@ -223,6 +224,8 @@ class DataAllTasks {
   String? complete_date;
   String? cancelled_date;
   List<FilesResponseModel>? files;
+  Company? companies;
+  int? companyId;
 
   DataAllTasks({
     this.id,
@@ -246,10 +249,87 @@ class DataAllTasks {
     this.complete_date,
     this.cancelled_date,
     this.files,
+    this.companies,
+    this.companyId
   });
 
-  factory DataAllTasks.fromJson(Map<String, dynamic> json) => _$DataAllTasksFromJson(json);
+  factory DataAllTasks.fromJson(Map<String, dynamic> json) {
+    final companiesJson = json['companies'];
+
+    return DataAllTasks(
+      id: json['id'] as int?,
+      status: json['status'] as String?,
+      sort: json['sort'],
+      owner: json['owner'] is Map<String, dynamic> ? Owner.fromJson(json['owner']) : null,
+      created_on: json['created_on'] as String?,
+      modified_by: json['modified_by'] is Map<String, dynamic> ? Owner.fromJson(json['modified_by']) : null,
+      modified_on: json['modified_on'] as String?,
+      assigned_to: json['assigned_to'] is Map<String, dynamic> ? AssignedTo.fromJson(json['assigned_to']) : null,
+      due_date: json['due_date'] as String?,
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      client_name: json['client_name'] as String?,
+      client_phone: json['client_phone'] as String?,
+      notes: json['notes'] as String?,
+      task_status: json['task_status'] as String?,
+      priority: json['priority'] as String?,
+      start_date: json['start_date'] as String?,
+      location: json['location'] is Map<String, dynamic> ? Location.fromJson(json['location']) : null,
+      complete_date: json['complete_date'] as String?,
+      cancelled_date: json['cancelled_date'] as String?,
+      files: (json['files'] as List?)
+          ?.whereType<Map<String, dynamic>>()
+          .map((e) => FilesResponseModel.fromJson(e))
+          .toList(),
+      companies: companiesJson is Map<String, dynamic>
+          ? Company.fromJson(companiesJson)
+          : null,
+      companyId: companiesJson is int
+          ? companiesJson
+          : companiesJson is Map<String, dynamic> && companiesJson['id'] is int
+          ? companiesJson['id']
+          : null,
+    );
+  }
+
+
   Map<String, dynamic> toJson() => _$DataAllTasksToJson(this);
+}
+
+@JsonSerializable()
+class Company {
+  int? id;
+  String? status;
+  dynamic sort;
+  int? owner;
+  String? created_on;
+  int? modified_by;
+  String? modified_on;
+  String? name;
+  int? logo;
+  String? email;
+  String? whatsapp;
+  String? website;
+
+  Company({
+    this.id,
+    this.status,
+    this.sort,
+    this.owner,
+    this.created_on,
+    this.modified_by,
+    this.modified_on,
+    this.name,
+    this.logo,
+    this.email,
+    this.whatsapp,
+    this.website,
+  });
+
+  factory Company.fromJson(Map<String, dynamic> json) =>
+      _$CompanyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CompanyToJson(this);
 }
 
 @JsonSerializable()

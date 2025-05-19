@@ -115,9 +115,13 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                   Row(
                     children: [
                       SizedBox(
-                        height: 50.h,
-                        width: 100,
+                       
                         child: BuildSearchFilter(
+                          onTap: () {
+                            setState(() {
+                              showSearch = !showSearch;
+                            });
+                          },
                           emp: true,
                           isGrid: false,
                           toggleViewMode: toggleViewMode,
@@ -145,37 +149,64 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                 ],
               ),
               if (showSearch) ...[
-                SizedBox(height: 80.h),
+                SizedBox(height: 30.h),
                 Container(
-                  width: double.infinity,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: globalDark
-                        ? AppColors.cardColorDark
-                        : AppColors.cardColor,
-                    border: Border.all(
+                    height: 40.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
                       color: globalDark
-                          ? AppColors.borderColorDark
-                          : AppColors.borderColor,
-                      width: 0.5,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0.r),
-                  ),
-                  child: TextFormField(
-                    textDirection: TextDirection.rtl,
-                    onChanged: _handleSearch,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset(AppIcons.searchIcon),
+                          ? AppColors.cardColorDark
+                          : AppColors.cardColor,
+                      border: Border.all(
+                        color: globalDark
+                            ? AppColors.borderColorDark
+                            : AppColors.borderColor,
+                        width: 0.5,
                       ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                      labelText: AppLocalizations.of(context)!.translate("search_here"),
-                      labelStyle: AppFonts.style14normal,
+                      borderRadius: BorderRadius.circular(8.0.r),
                     ),
-                  ),
-                ),
+                    child: TextFormField(
+                        textDirection: TextDirection.rtl,
+                        onFieldSubmitted: (value) {
+                          widget.task!
+                              ? (role == '1'
+                              ? TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(
+                              text: value)
+                              : TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(
+                              textEmp: value,
+                              employee: userId))
+                              : EmployeeCubit.get(context)
+                              .getAdmins(search: value.toString());
+                        },
+                        onChanged: (value) {
+                          widget.task!
+                              ? (role == '1'
+                              ? TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(
+                              text: value)
+                              : TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(
+                              textEmp: value,
+                              employee: userId))
+                              : EmployeeCubit.get(context)
+                              .getAdmins(search: value.toString());
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                            SvgPicture.asset(AppIcons.searchIcon),
+                          ),
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20.w),
+                          prefixIconConstraints: const BoxConstraints(
+                              minWidth: 20, minHeight: 20),
+                          labelText: 'ابحث هنا',
+                          labelStyle: AppFonts.style14normal,
+                        )))
               ],
               SizedBox(height: 20.h),
               Expanded(

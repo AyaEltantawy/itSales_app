@@ -19,6 +19,7 @@ class BuildSearchFilter extends StatefulWidget {
   final bool admin;
   final VoidCallback? onSearchPressed;
   final VoidCallback toggleViewMode;
+  final VoidCallback? onTap;
 
   const BuildSearchFilter({
     super.key,
@@ -26,7 +27,7 @@ class BuildSearchFilter extends StatefulWidget {
     required this.emp,
     required this.task,
     required this.admin,
-    required this.toggleViewMode, this.onSearchPressed,
+    required this.toggleViewMode, this.onSearchPressed, this.onTap,
   });
 
   @override
@@ -54,11 +55,7 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
           Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {
-                  setState(() {
-                    showSearch = !showSearch;
-                  });
-                },
+                onTap: widget.onTap,
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.primary,
@@ -121,58 +118,7 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
           ),
 
 
-          if (showSearch) ...[
-            SizedBox(height: 20.h),
-            Container(
-                height: 40.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: globalDark
-                      ? AppColors.cardColorDark
-                      : AppColors.cardColor,
-                  border: Border.all(
-                    color: globalDark
-                        ? AppColors.borderColorDark
-                        : AppColors.borderColor,
-                    width: 0.5,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0.r),
-                ),
-                child: TextFormField(
-                    textDirection: TextDirection.rtl,
-                    onFieldSubmitted: (value) {
-                      widget.task
-                          ? (role == '1'
-                          ? TasksCubit.get(context).getAllTasksFunWithFilter(
-                          text: value)
-                          : TasksCubit.get(context).getAllTasksFunWithFilter(
-                          textEmp: value, employee: userId))
-                          : EmployeeCubit.get(context).getAdmins(
-                          search: value.toString());
-                    },
-                    onChanged: (value) {
-                      widget.task
-                          ? (role == '1'
-                          ? TasksCubit.get(context).getAllTasksFunWithFilter(
-                          text: value)
-                          : TasksCubit.get(context).getAllTasksFunWithFilter(
-                          textEmp: value, employee: userId))
-                          : EmployeeCubit.get(context).getAdmins(
-                          search: value.toString());
-                    },
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset(AppIcons.searchIcon),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                      prefixIconConstraints:
-                      const BoxConstraints(minWidth: 20, minHeight: 20),
-                      labelText: 'ابحث هنا',
-                      labelStyle: AppFonts.style14normal,
-                    )))
-          ]
+
         ]);
   }
 }

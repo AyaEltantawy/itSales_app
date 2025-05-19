@@ -71,10 +71,10 @@ class _EntryPointUIState extends State<EntryPointUI> {
     const HomeEmployeeScreen(
       back: false,
     ),
-    const TasksScreenForEmployee(
+     TasksScreenForEmployee(
       back: true,
     ),
-    const TasksScreenForEmployee(
+  TasksScreenForEmployee(
       back: true,
     ),
     //const AddTaskScreen(back: false, isEdit: false, taskId: 0,),
