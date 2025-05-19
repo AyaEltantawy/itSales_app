@@ -1,13 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'web_services.dart';
-
-// **************************************************************************
-// RetrofitGenerator
-// **************************************************************************
-
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
-
 class _WebServices implements WebServices {
   _WebServices(
     this._dio, {
@@ -205,41 +196,45 @@ class _WebServices implements WebServices {
 
   @override
   Future<AllTasksModel> getAllTasks(
-    String token,
-    Map<String, dynamic>? queryParams,
-  ) async {
+      String token,
+      Map<String, dynamic>? queryParams,
+      ) async {
     final _extra = <String, dynamic>{};
+
     final queryParameters = <String, dynamic>{};
-    queryParameters.addAll(queryParams ?? <String, dynamic>{});
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    if (queryParams != null) {
+      queryParameters.addAll(queryParams);
+    }
+
+    final _headers = <String, dynamic>{
+      'Authorization': token,
+    };
+
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<AllTasksModel>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          'items/tasks?fields=*.*.*',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
+
+    final _options = _setStreamType<AllTasksModel>(
+      Options(
+        method: 'GET',
+        headers: _headers,
+        extra: _extra,
+      ).compose(
+        _dio.options,
+        'items/tasks',
+        queryParameters: queryParameters,
+        data: _data,
+      ).copyWith(
+        baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      ),
+    );
+
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late AllTasksModel _value;
+
     try {
-      _value = AllTasksModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
+      return AllTasksModel.fromJson(_result.data!);
+    } catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
-    return _value;
   }
 
   @override

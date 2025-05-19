@@ -45,8 +45,8 @@ abstract class WebServices {
 
 
   /// tasks
-  @GET('items/tasks?fields=*.*.*')
-  Future<AllTasksModel> getAllTasks (@Header('Authorization') String token ,  @Queries() Map<String, dynamic>? queryParams) ;
+  @GET('items/tasks')
+  Future<AllTasksModel> getAllTasks (@Header('Authorization') String token ,  @Queries()  Map<String, dynamic>?  queryParams) ;
   // @Queries() Map<String, dynamic> queryParams
   @GET('items/tasks?fields=*.*.*&filter[assigned_to]={id}')
   Future<GetUserTaskModel> getUserTask (@Header('Authorization') String token, @Path('id') String id, @Queries() Map<String, dynamic>? queryParams) ;

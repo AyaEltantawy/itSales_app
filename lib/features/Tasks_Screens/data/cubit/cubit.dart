@@ -224,8 +224,9 @@ class TasksCubit extends Cubit<TasksStates> {
   List<DataAllTasks>? getTaskListForOneUserSearch = [];
   List<DataAllTasks>? getAllTaskListFilter = [];
 
-  getAllTasksFun() async {
-    if (!await InternetConnectionChecker().hasConnection) {
+  Future<void> getAllTasksFun() async {
+    final hasInternet = await InternetConnectionChecker().hasConnection;
+    if (!hasInternet) {
       Utils.showSnackBar(
         MagicRouter.currentContext!,
         'أنت غير متصل بالانترنت',
@@ -237,25 +238,23 @@ class TasksCubit extends Cubit<TasksStates> {
     emit(GetLoadingAllTaskState());
 
     try {
-      // Determine company ID from first task
-      final int? companyId = (getAllTaskList?.isNotEmpty == true)
-          ? getAllTaskList!.first.companyId ??
-          getAllTaskList!.first.companies?.id
-          : null;
+      int? companyId;
+      if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
+        companyId = getAllTaskList!.first.companies?.id;
+      }
 
-      // Prepare filters
-      final Map<String, dynamic> filters = {
+      final filters = <String, dynamic>{
         'fields': '*.*',
-        if (companyId != null) 'filter[companies.id]': companyId,
+        if (companyId != null) 'filter[companies.id]': getAllTaskList?.first.owner?.companies,
       };
 
-      // Fetch tasks
       final value = await repo.getAllTasks(filters);
 
       getAllTaskList = value.data;
       emit(GetSuccessAllTaskState());
-    } catch (onError) {
-      if (!await InternetConnectionChecker().hasConnection) {
+    } catch (error) {
+      final stillHasInternet = await InternetConnectionChecker().hasConnection;
+      if (!stillHasInternet) {
         Utils.showSnackBar(
           MagicRouter.currentContext!,
           'أنت غير متصل بالانترنت',
@@ -265,9 +264,12 @@ class TasksCubit extends Cubit<TasksStates> {
       }
 
       emit(GetErrorAllTaskState());
-      debugPrint('❌ Error getting tasks: ${onError.toString()}');
+      debugPrint('❌ Error getting tasks: $error');
     }
   }
+
+
+
 
 
 

@@ -340,6 +340,7 @@ class Owner {
   String? first_name;
   String? last_name;
   String? email;
+  int? companies;
   String? token;
   String? external_id;
   String? theme;
@@ -359,6 +360,7 @@ class Owner {
     this.id,
     this.status,
     this.role,
+    this.companies,
     this.first_name,
     this.last_name,
     this.email,

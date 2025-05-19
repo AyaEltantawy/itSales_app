@@ -60,9 +60,9 @@ class Repository {
   }
 
 
-  Future<AllTasksModel> getAllTasks([Map<String, dynamic>? queryParams]) async
+  Future<AllTasksModel> getAllTasks([Map<String,dynamic>? queryParams]) async
   {
-    return await webServices.getAllTasks('Bearer $token', queryParams);
+    return await webServices.getAllTasks('Bearer $token',queryParams);
   }
 
 
