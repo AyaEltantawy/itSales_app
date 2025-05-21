@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:badges/badges.dart' as badges;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/src/intl/date_format.dart';
@@ -190,7 +189,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                                         uncompletedTasksForUser:
                                             uncompletedTasksForUser,
                                       )
-                                    : Center(child: Text("لا يوجد مهمة"));
+                                    : const Center(child: Text("لا يوجد مهمة"));
                               },
                             ),
                             SizedBox(height: 20.h),

@@ -5,7 +5,8 @@ class AppRoutes {
   static const onBoarding = '/onboarding';
   static const choosePage = '/choose_page';
   static const  profilePage= '/profile_page';
-
+  static const successPage = '/successPage';
+  static const companyPage = '/companyPage';
   /* <---- Login, Signup -----> */
   static const login = '/login';
   static const signup = '/signup';

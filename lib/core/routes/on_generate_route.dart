@@ -25,6 +25,7 @@ import '../../features/Tasks_Screens/screens/task_details.dart';
 import '../../features/Tasks_Screens/screens/tasks.dart';
 import '../../features/addEmployee/screens/add_employee.dart';
 import '../../features/addTask/screens/add_Task.dart';
+import '../../features/auth/company/company_view.dart';
 import '../../features/auth/screens/choose_login_or_sign_up/choose_login_or_sign_up_view.dart';
 import '../../features/auth/screens/forget_password/forget_password_view.dart';
 
@@ -32,7 +33,7 @@ import '../../features/auth/screens/intro_login_page.dart';
 import '../../features/auth/screens/login_or_signup_page.dart';
 import '../../features/auth/screens/login_page.dart';
 import '../../features/auth/screens/number_verification_page.dart';
-import '../../features/auth/screens/password_changed_success/password_changed_success_view.dart';
+import '../../features/auth/screens/password_changed_success/success_view.dart';
 import '../../features/auth/screens/password_reset_page.dart';
 import '../../features/detailed_employee_screen/screens/detailed_employee_screens.dart';
 import '../../features/entrypoint/components/select_any_button_bottom_sheet.dart';
@@ -78,7 +79,7 @@ class RouteGenerator {
           repository: Repository(WebServices(Dio())),
         ));
       case AppRoutes.passwordChangedSuccessPage:
-        return animatedNavigation(screen: PasswordChangedSuccessPage());
+        return animatedNavigation(screen: SuccessPage());
 
       case AppRoutes.addEmployee:
         return animatedNavigation(
@@ -98,7 +99,8 @@ class RouteGenerator {
         return animatedNavigation(screen: const ConfirmTaskListPage());
       case AppRoutes.resetPasswordPage:
         return animatedNavigation(screen: ResetPasswordPage());
-
+      case AppRoutes.companyPage:
+        return animatedNavigation(screen: const CompanyPage());
       case AppRoutes.homeTasks:
         return animatedNavigation(
             screen: TasksScreenForEmployee(
@@ -111,6 +113,8 @@ class RouteGenerator {
 
       case AppRoutes.signup:
         return animatedNavigation(screen: const SignUpPage());
+      case AppRoutes.successPage:
+        return animatedNavigation(screen:  SuccessPage());
       case AppRoutes.profilePage:
         return animatedNavigation(screen: const SettingsPage());
 
@@ -121,7 +125,7 @@ class RouteGenerator {
         return animatedNavigation(screen: const NumberVerificationPage());
 
       case AppRoutes.forgotPassword:
-        return animatedNavigation(screen: const ForgetPasswordPage());
+        return animatedNavigation(screen:  ForgetPasswordPage());
 
       case AppRoutes.passwordReset:
         return animatedNavigation(screen: const PasswordResetPage());

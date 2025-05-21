@@ -257,10 +257,7 @@ DataAllTasks _$DataAllTasksFromJson(Map<String, dynamic> json) => DataAllTasks(
       files: (json['files'] as List<dynamic>?)
           ?.map((e) => FilesResponseModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      companies: json['companies'] is Map<String, dynamic>
-          ? Company.fromJson(json['companies'] as Map<String, dynamic>)
-          : null,
-      companyId: json['companies'] is int ? json['companies'] as int : null,
+
 );
 
 Map<String, dynamic> _$DataAllTasksToJson(DataAllTasks instance) =>
@@ -286,9 +283,6 @@ Map<String, dynamic> _$DataAllTasksToJson(DataAllTasks instance) =>
           'complete_date': instance.complete_date,
           'cancelled_date': instance.cancelled_date,
           'files': instance.files?.map((e) => e.toJson()).toList(),
-          'companies': instance.companies != null
-              ? instance.companies!.toJson()
-              : instance.companyId,
 
     };
 

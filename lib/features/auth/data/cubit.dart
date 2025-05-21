@@ -56,7 +56,7 @@ class AppCubit extends Cubit<AppStates> {
       if (tokenValue != null && user != null) {
 
         await CacheHelper.saveData(key: 'token', value: tokenValue);
-        await CacheHelper.getData(key: "role");
+
         await CacheHelper.saveData(key: 'role', value: user.role ?? '');
 
         await CacheHelper.saveData(key: 'fName', value: user.first_name ?? '');

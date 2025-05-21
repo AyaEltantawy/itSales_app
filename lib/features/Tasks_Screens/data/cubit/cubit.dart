@@ -218,12 +218,12 @@ class TasksCubit extends Cubit<TasksStates> {
     });
   }
 
-  List<DataAllTasks>? getAllTaskList = [];
+
   List<DataAllTasks>? getLastTaskList = [];
   List<DataAllTasks>? getLastTaskListForOneUser = [];
   List<DataAllTasks>? getTaskListForOneUserSearch = [];
   List<DataAllTasks>? getAllTaskListFilter = [];
-
+  List<DataAllTasks>? getAllTaskList = [];
   Future<void> getAllTasksFun() async {
     final hasInternet = await InternetConnectionChecker().hasConnection;
     if (!hasInternet) {
@@ -239,13 +239,15 @@ class TasksCubit extends Cubit<TasksStates> {
 
     try {
       int? companyId;
+
+      // Optional: Try to use previously loaded tasks to get the companyId
       if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
-        companyId = getAllTaskList!.first.companies?.id;
+        companyId = getAllTaskList!.first.owner?.companyId;
       }
 
       final filters = <String, dynamic>{
-        'fields': '*.*',
-        if (companyId != null) 'filter[companies.id]': getAllTaskList?.first.owner?.companies,
+        'fields': '*.*.*',
+        if (companyId != null) 'filter[companies.id]': companyId,
       };
 
       final value = await repo.getAllTasks(filters);
@@ -267,6 +269,7 @@ class TasksCubit extends Cubit<TasksStates> {
       debugPrint('❌ Error getting tasks: $error');
     }
   }
+
 
 
 

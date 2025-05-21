@@ -9,12 +9,14 @@ import 'package:itsale/core/utils/check_internet.dart';
 import 'package:itsale/core/utils/token.dart';
 
 import 'features/profile/widgets/language_show_dialog/widgets/restart_widget.dart';
+
 SharedPreferences? sharedPreferences;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Initialize dependencies
+    //Initialize dependencies
     await getInit();
 
     // Initialize SharedPreferences and Cache
@@ -22,7 +24,7 @@ Future<void> main() async {
     await CacheHelper.init();
 
     // Check internet connectivity (optional - non-blocking preferred)
-    await NetworkInfoImpl().checkInternet();
+    //await NetworkInfoImpl().checkInternet();
 
     // Load cached values
     token = CacheHelper.getData(key: 'token');
@@ -36,7 +38,6 @@ Future<void> main() async {
     // Run app
     runApp(
       RestartWidget(
-
         child: MyApp(defaultLocale: defaultLocale),
       ),
     );

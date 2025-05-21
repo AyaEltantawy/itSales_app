@@ -5,6 +5,7 @@ import 'package:itsale/core/components/app_buttons.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:svg_flutter/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/components/app_text_form_field.dart'
     show defaultTextFormFeild;
@@ -15,69 +16,96 @@ import 'forget_password_cubit.dart';
 import 'forget_password_state.dart';
 
 class ForgetPasswordPage extends StatelessWidget {
-  const ForgetPasswordPage({super.key});
+  ForgetPasswordPage({super.key});
+
+  final String resetUrl = "https://geotask.guessit.com/reset-password";
+
+  Future<void> _launchResetUrl(BuildContext context) async {
+    final Uri url = Uri.parse(resetUrl);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('لا يمكن فتح رابط إعادة تعيين كلمة المرور')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => ForgetPasswordCubit(),
-      child: Scaffold(body:
-      SafeArea(child: BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
-        builder: (context, state) {
-          final controller = BlocProvider.of<ForgetPasswordCubit>(context);
-          return ListView(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-            children: [
-              Row(
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
+            builder: (context, state) {
+              final controller = BlocProvider.of<ForgetPasswordCubit>(context);
+
+              return ListView(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                 children: [
-                  Image.asset("assets/images/xicon.png"),
-                  SizedBox(
-                    width: 10.w,
+                  Row(
+                    children: [
+                      Image.asset("assets/images/xicon.png"),
+                      SizedBox(width: 10.w),
+                      Text(
+                        "نسيت كلمة السر",
+                        style: TextStyles.font20Weight500BaseBlack,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.h),
+                  Text(
+                    "برجاء كتابة البريد الإلكتروني",
+                    style: TextStyles.font20Weight400Black,
                   ),
                   Text(
-                    "نسيت كلمة السر",
-                    style: TextStyles.font20Weight500BaseBlack,
-                  )
+                    "سيتم إرسال رمز للتحقق إلى بريدك الإلكتروني",
+                    style: TextStyles.font16Weight300Grey,
+                  ),
+                  SizedBox(height: 40.h),
+                  defaultTextFormFeild(
+                    context,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controller.emailController,
+                    validate:
+                        Validators.requiredWithFieldName('البريد الالكتروني')
+                            .call,
+                    prefix: const Icon(AppIcons.email),
+                    label: 'اكتب البريد الالكتروني',
+                  ),
+                  SizedBox(height: 35.h),
+                  defaultButton(
+                    context: context,
+                    text: "إرسال رمز التأكد",
+                    width: double.infinity,
+                    height: 56.h,
+                    isColor: true,
+                    textSize: 15.sp,
+                    toPage: () => controller.forgetPassword(context),
+                  ),
+                  SizedBox(height: 25.h),
+                  Center(
+                    child: InkWell(
+                      onTap: () => _launchResetUrl(context),
+                      child: Text(
+                        "أو اضغط هنا لإعادة تعيين كلمة المرور يدويًا",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 14.sp,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
-              ),
-              SizedBox(
-                height: 20.h,
-              ),
-              Text(
-                "برجاء كتابة البريد الإلكتروني",
-                style: TextStyles.font20Weight400Black,
-              ),
-              Text(
-                "سيتم إرسال رمز للتحقق إلى بريدك الإلكتروني",
-                style: TextStyles.font16Weight300Grey,
-              ),
-              SizedBox(
-                height: 40.h,
-              ),
-              defaultTextFormFeild(
-                context,
-                keyboardType: TextInputType.emailAddress,
-                controller: controller.emailController,
-                validate:
-                Validators
-                    .requiredWithFieldName('البريد الالكتروني')
-                    .call,
-                prefix: const Icon(AppIcons.email),
-                label: 'اكتب البريد الالكتروني',
-              ),
-              SizedBox(height: 35.h,),
-              defaultButton(context: context,
-                  text: "إرسال رمز التأكد",
-                  width: double.infinity,
-                  height: 56.h,
-                  isColor: true,
-                  textSize: 15.sp,
-                  toPage:(){controller.forgetPassword(context)
-                  ;} )
-            ],
-          );
-        },
-      ))),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }

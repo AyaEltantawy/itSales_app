@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "215422372299",
+    "project_id": "geotask-497f9",
+    "storage_bucket": "geotask-497f9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215422372299:android:4d36d1c588d3b2b52d4e4e",
+        "android_client_info": {
+          "package_name": "com.guessit.geotask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkUjkhW4d0RaDNdLqKDq-P0yAHKU8mpDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

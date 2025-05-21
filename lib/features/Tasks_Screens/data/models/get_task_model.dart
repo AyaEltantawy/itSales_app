@@ -203,7 +203,7 @@ class AllTasksModel {
 
 @JsonSerializable()
 class DataAllTasks {
-  int? id;
+  dynamic? id;
   String? status;
   dynamic? sort;
   Owner? owner;
@@ -257,7 +257,7 @@ class DataAllTasks {
     final companiesJson = json['companies'];
 
     return DataAllTasks(
-      id: json['id'] as int?,
+      id: json['id'] as dynamic?,
       status: json['status'] as String?,
       sort: json['sort'],
       owner: json['owner'] is Map<String, dynamic> ? Owner.fromJson(json['owner']) : null,
@@ -298,15 +298,15 @@ class DataAllTasks {
 
 @JsonSerializable()
 class Company {
-  int? id;
+  dynamic? id;
   String? status;
   dynamic sort;
-  int? owner;
+  dynamic? owner;
   String? created_on;
-  int? modified_by;
+  dynamic? modified_by;
   String? modified_on;
   String? name;
-  int? logo;
+  dynamic? logo;
   String? email;
   String? whatsapp;
   String? website;
@@ -334,13 +334,19 @@ class Company {
 
 @JsonSerializable()
 class Owner {
-  int? id;
+  dynamic id;
   String? status;
   Role? role;
   String? first_name;
   String? last_name;
   String? email;
-  int? companies;
+
+  /// Accepts either int or map from API
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int? companyId;
+
+  dynamic companies;
+
   String? token;
   String? external_id;
   String? theme;
@@ -360,7 +366,6 @@ class Owner {
     this.id,
     this.status,
     this.role,
-    this.companies,
     this.first_name,
     this.last_name,
     this.email,
@@ -378,17 +383,40 @@ class Owner {
     this.email_notifications,
     this.last_access_on,
     this.last_page,
-  });
+    this.companies,
+  }) {
+    // Initialize companyId based on companies
+    if (companies is int) {
+      companyId = companies as int;
+    } else if (companies is Map<String, dynamic> &&
+        companies.containsKey('id')) {
+      companyId = companies['id'];
+    }
+  }
 
-  factory Owner.fromJson(Map<String, dynamic> json) => _$OwnerFromJson(json);
-  Map<String, dynamic> toJson() => _$OwnerToJson(this);
+  factory Owner.fromJson(Map<String, dynamic> json) {
+    final instance = _$OwnerFromJson(json);
+    // Handle `companies` field manually
+    if (json['companies'] is int) {
+      instance.companyId = json['companies'];
+    } else if (json['companies'] is Map<String, dynamic>) {
+      instance.companyId = json['companies']['id'];
+    }
+    return instance;
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = _$OwnerToJson(this);
+    data['companies'] = companies;
+    return data;
+  }
 }
 
 @JsonSerializable()
 class OwnerLocation {
-  int? id;
+  dynamic? id;
   String? status;
-  int? role;
+  dynamic? role;
   String? first_name;
   String? last_name;
   String? email;
@@ -400,7 +428,7 @@ class OwnerLocation {
   String? timezone;
   String? locale;
   String? locale_options;
-  int? avatar;
+  dynamic? avatar;
   String? company;
   String? title;
   bool? email_notifications;
@@ -436,7 +464,7 @@ class OwnerLocation {
 
 @JsonSerializable()
 class AssignedTo {
-  int? id;
+  dynamic? id;
   String? status;
   Role? role;
   String? first_name;
@@ -486,7 +514,7 @@ class AssignedTo {
 
 @JsonSerializable()
 class Location {
-  int? id;
+  dynamic? id;
   String? status;
   String? sort;
   OwnerLocation? owner;

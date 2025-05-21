@@ -12,48 +12,48 @@ abstract class NetworkInfo {
 
 BuildContext? currentContext = navigatorKey.currentContext; // Make it nullable.
 
-class NetworkInfoImpl implements NetworkInfo {
-  final InternetConnectionChecker? connectionChecker;
+// class NetworkInfoImpl implements NetworkInfo {
+//   final InternetConnectionChecker? connectionChecker;
+//
+//   NetworkInfoImpl({this.connectionChecker});
+//
+//   @override
+//   Future<bool> get isConnected => connectionChecker!.hasConnection;
+//
+//   @override
+// Future<void> checkInternet() async {
+//   bool result = await InternetConnectionChecker().hasConnection;
+//   if (result == false) {
+//     // Check if context is available.
+//     if (currentContext != null) {
+//       Utils.showSnackBar(currentContext!, "لا يوجد اتصال بالانترنت");
+//     } else {
+//       // Fallback in case context is not available
+//       print('No context available to show the snackbar');
+//     }
+//   }
+// }
+//}
 
-  NetworkInfoImpl({this.connectionChecker});
+//class InternetConnectivityManager {
+  //final Function onConnectionRestored;
+  //final Function onConnectionLost;
 
-  @override
-  Future<bool> get isConnected => connectionChecker!.hasConnection;
+  // InternetConnectivityManager({
+  //   required this.onConnectionRestored,
+  //   required this.onConnectionLost,
+  // });
 
-  @override
-  Future<void> checkInternet() async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (result == false) {
-      // Check if context is available.
-      if (currentContext != null) {
-        Utils.showSnackBar(currentContext!, "لا يوجد اتصال بالانترنت");
-      } else {
-        // Fallback in case context is not available
-        print('No context available to show the snackbar');
-      }
-    }
-  }
-}
-
-class InternetConnectivityManager {
-  final Function onConnectionRestored;
-  final Function onConnectionLost;
-
-  InternetConnectivityManager({
-    required this.onConnectionRestored,
-    required this.onConnectionLost,
-  });
-
-  void startMonitoring() {
-    InternetConnectionChecker().onStatusChange.listen((status) {
-      switch (status) {
-        case InternetConnectionStatus.connected:
-          onConnectionRestored();
-          break;
-        case InternetConnectionStatus.disconnected:
-          onConnectionLost();
-          break;
-      }
-    });
-  }
-}
+//   void startMonitoring() {
+//     InternetConnectionChecker().onStatusChange.listen((status) {
+//       switch (status) {
+//         case InternetConnectionStatus.connected:
+//           onConnectionRestored();
+//           break;
+//         case InternetConnectionStatus.disconnected:
+//           onConnectionLost();
+//           break;
+//       }
+//     });
+//   }
+// }

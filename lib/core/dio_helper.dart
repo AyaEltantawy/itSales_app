@@ -14,7 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'app_storage/app_storage.dart';
 
-
 class DioHelper {
   static const _baseUrl = 'https://eby-itsales.guessitt.com/public/itsales/';
 
@@ -22,25 +21,26 @@ class DioHelper {
 
   static Future<Response<dynamic>> post(String path, bool isAuh,
       {FormData? formData,
-        encoding,
-        Map<String, dynamic>? body,
-        Function(int, int)? onSendProgress}) async {
+      encoding,
+      Map<String, dynamic>? body,
+      Function(int, int)? onSendProgress}) async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result == true) {
       print('YAY! Free cute dog pics!');
     } else {
-      Utils.showSnackBar(
-          MagicRouter.currentContext!, 'You are disconnected from the internet');
+      Utils.showSnackBar(MagicRouter.currentContext!,
+          'You are disconnected from the internet');
     }
     dioSingleton.options.headers =
-    isAuh ? {'Authorization':"Token$token"} : null;
+        isAuh ? {'Authorization': "Token$token"} : null;
     print('pathhh $path');
+    print("toooooooooookeeeeeeeeeeeeeeen$token");
     final response = dioSingleton.post(path,
         data: formData ?? (body == null ? null : FormData.fromMap(body)),
         options: Options(
             requestEncoder: encoding,
             headers: {
-              'Authorization': 'Bearer ${AppStorage.getToken}',
+              'Authorization': 'Bearer ${token}',
               'Accept': 'application/json',
               'Accept-Language': 'en/ar',
             },
@@ -60,17 +60,17 @@ class DioHelper {
 
   static Future<Response<dynamic>> put(String path, bool isAuh,
       {FormData? formData,
-        Map<String, dynamic>? body,
-        Function(int, int)? onSendProgress}) async {
+      Map<String, dynamic>? body,
+      Function(int, int)? onSendProgress}) async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (result == true) {
       print('YAY! Free cute dog pics!');
     } else {
-      Utils.showSnackBar(
-          MagicRouter.currentContext!, 'You are disconnected from the internet');
+      Utils.showSnackBar(MagicRouter.currentContext!,
+          'You are disconnected from the internet');
     }
     dioSingleton.options.headers =
-    isAuh ? {'Authorization': 'Bearer ${AppStorage.getToken}'} : null;
+        isAuh ? {'Authorization': 'Bearer ${AppStorage.getToken}'} : null;
     final response = dioSingleton.put(path,
         data: formData ?? FormData.fromMap(body!),
         options: Options(
@@ -93,9 +93,9 @@ class DioHelper {
   }
 
   static Future<Response<dynamic>> delete(
-      String path, {
-        Map<String, dynamic>? body,
-      }) {
+    String path, {
+    Map<String, dynamic>? body,
+  }) {
     try {
       dioSingleton.options.headers = {
         'Authorization': 'Bearer ${AppStorage.getToken}'
@@ -145,9 +145,9 @@ class DioHelper {
     final response = dioSingleton.get(path,
         queryParameters: body,
         options: Options(
-          //  sendTimeout: 10 * 1000, //60 seconds
-          //  receiveTimeout: 10 * 1000, // 60 seconds
-        ));
+            //  sendTimeout: 10 * 1000, //60 seconds
+            //  receiveTimeout: 10 * 1000, // 60 seconds
+            ));
     dioSingleton.options.headers = null;
     return response;
   }

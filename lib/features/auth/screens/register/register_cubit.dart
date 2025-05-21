@@ -5,6 +5,7 @@ import 'package:itsale/core/dio_helper.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
 import 'package:itsale/features/auth/data/repo.dart';
+import 'package:itsale/features/auth/screens/password_changed_success/success_view.dart';
 import 'package:itsale/features/entrypoint/entrypoint_ui.dart';
 import '../../../../core/app_storage/app_storage.dart';
 import '../../../../core/cache_helper/cache_helper.dart';
@@ -138,7 +139,8 @@ class RegisterCubit extends Cubit<RegisterState> {
           if (context.mounted) {
             Utils.showSnackBar(
                 context, responseData['message'] ?? 'تم التسجيل بنجاح');
-            navigateTo(context, AppRoutes.entryPoint);
+
+            navigateTo(context, AppRoutes.successPage);
           }
         } else {
           emit(LoadingFailed());

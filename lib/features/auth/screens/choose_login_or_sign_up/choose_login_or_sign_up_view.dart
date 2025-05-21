@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:itsale/core/components/app_buttons.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/auth/screens/choose_login_or_sign_up/widgets/choose_container.dart';
@@ -18,38 +19,60 @@ class ChooseLoginOrSignUpPage extends StatelessWidget {
         child: Scaffold(
           body: SafeArea(
               child: ListView(
-            padding: EdgeInsets.symmetric(vertical: 50.h),
             children: [
-              Image.asset(
-                AppCubit.get(context).isDarkMode
-                    ? AppImages.finalLogoDark
-                    : AppImages.finalLogo,
-                width: 150.w,
-                height: 100.h,
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                      width: double.infinity,
+                      child: Image.asset(
+                        "assets/images/workers.png",
+                        fit: BoxFit.fill,
+                      )),
+                  Image.asset(
+                    AppCubit.get(context).isDarkMode
+                        ? AppImages.finalLogoDark
+                        : AppImages.finalLogo,
+                    width: 150.w,
+                    height: 100.h,
+                  ),
+                ],
               ),
               SizedBox(
                 height: 70.h,
               ),
               Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ChooseContainer(
-                      text: "تسجيل الدخول",
-                      onTap: () {
-                        navigateTo(context, AppRoutes.login);
-                      },
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    ChooseContainer(
-                      text: "  إنشاء حساب \n        جديد  ",
-                      onTap: () {
-                        navigateTo(context, AppRoutes.registerPage);
-                      },
-                    ),
-                  ],
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      defaultButton(
+                        width: double.infinity,
+                        height: 56.h,
+                        text: "تسجيل الدخول",
+                        textSize: 15.sp,
+                        isColor: true,
+                        context: context,
+                        toPage: () {
+                          navigateTo(context, AppRoutes.login);
+                        },
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      defaultButton(
+                          context: context,
+                          text: "انشاء حساب جديد",
+                          width: double.infinity,
+                          height: 56.h,
+                          isColor: true,
+                          textSize: 15.sp,
+                          toPage: () {
+                            navigateTo(context, AppRoutes.registerPage);
+                          }),
+                    ],
+                  ),
                 ),
               ),
             ],

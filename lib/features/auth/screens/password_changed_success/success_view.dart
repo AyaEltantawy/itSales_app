@@ -6,10 +6,11 @@ import '../../../../core/components/app_buttons.dart';
 import '../../../../core/constants/navigation.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/themes/styles.dart';
-import 'password_changed_success_cubit.dart';
-import 'password_changed_success_state.dart';
+import '../../company/company_view.dart';
+import 'success_cubit.dart';
+import 'success_state.dart';
 
-class PasswordChangedSuccessPage extends StatelessWidget {
+class SuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -22,22 +23,26 @@ class PasswordChangedSuccessPage extends StatelessWidget {
             return ListView(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               children: [
-
-                    Text(
-                      "تم إعادة تعيين كلمة السر",
-                      style: TextStyles.font20Weight500BaseBlack,
-                    )
-              ,
+                Text(
+                  "تم التسجيل بنجاح",
+                  style: TextStyles.font20Weight500BaseBlack,
+                ),
                 SizedBox(
                   height: 20.h,
                 ),
-                Image.asset("assets/images/done.png",width: 172.w,height: 172.w,),
-                Text(textAlign: TextAlign.center,
-                  "تم تعيين كلمة المرور بنجاح",
+                Image.asset(
+                  "assets/images/done.png",
+                  width: 172.w,
+                  height: 172.w,
+                ),
+                Text(
+                  textAlign: TextAlign.center,
+                  "تم تسجيل الدخول بنجاح",
                   style: TextStyles.font20Weight400Black,
                 ),
-                Text(textAlign: TextAlign.center,
-                  "يمكنك الدخول إلى حسابك الآن ",
+                Text(
+                  textAlign: TextAlign.center,
+                  "يمكنك انشاء شركتك الان ",
                   style: TextStyles.font16Weight300Grey,
                 ),
                 SizedBox(
@@ -48,13 +53,13 @@ class PasswordChangedSuccessPage extends StatelessWidget {
                 ),
                 defaultButton(
                     context: context,
-                    text: "الإنتقال لصفحة الدخول",
+                    text: "انشئ شركتك الان اذا لم تملك",
                     width: double.infinity,
                     height: 56.h,
                     isColor: true,
                     textSize: 15.sp,
                     toPage: () {
-                      navigateTo(context, AppRoutes.homeEmployee);
+                      navigateTo(context, AppRoutes.companyPage);
                     })
               ],
             );
