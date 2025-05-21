@@ -250,21 +250,36 @@ class DataAllTasks {
     this.cancelled_date,
     this.files,
     this.companies,
-    this.companyId
+    this.companyId,
   });
 
   factory DataAllTasks.fromJson(Map<String, dynamic> json) {
     final companiesJson = json['companies'];
+    Company? company;
+    int? companyId;
+
+    if (companiesJson is Map<String, dynamic>) {
+      company = Company.fromJson(companiesJson);
+      companyId = companiesJson['id'] as int?;
+    } else if (companiesJson is int) {
+      companyId = companiesJson;
+    }
 
     return DataAllTasks(
-      id: json['id'] as dynamic?,
+      id: json['id'],
       status: json['status'] as String?,
       sort: json['sort'],
-      owner: json['owner'] is Map<String, dynamic> ? Owner.fromJson(json['owner']) : null,
+      owner: json['owner'] is Map<String, dynamic>
+          ? Owner.fromJson(json['owner'])
+          : null,
       created_on: json['created_on'] as String?,
-      modified_by: json['modified_by'] is Map<String, dynamic> ? Owner.fromJson(json['modified_by']) : null,
+      modified_by: json['modified_by'] is Map<String, dynamic>
+          ? Owner.fromJson(json['modified_by'])
+          : null,
       modified_on: json['modified_on'] as String?,
-      assigned_to: json['assigned_to'] is Map<String, dynamic> ? AssignedTo.fromJson(json['assigned_to']) : null,
+      assigned_to: json['assigned_to'] is Map<String, dynamic>
+          ? AssignedTo.fromJson(json['assigned_to'])
+          : null,
       due_date: json['due_date'] as String?,
       title: json['title'] as String?,
       description: json['description'] as String?,
@@ -274,24 +289,19 @@ class DataAllTasks {
       task_status: json['task_status'] as String?,
       priority: json['priority'] as String?,
       start_date: json['start_date'] as String?,
-      location: json['location'] is Map<String, dynamic> ? Location.fromJson(json['location']) : null,
+      location: json['location'] is Map<String, dynamic>
+          ? Location.fromJson(json['location'])
+          : null,
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
       files: (json['files'] as List?)
           ?.whereType<Map<String, dynamic>>()
           .map((e) => FilesResponseModel.fromJson(e))
           .toList(),
-      companies: companiesJson is Map<String, dynamic>
-          ? Company.fromJson(companiesJson)
-          : null,
-      companyId: companiesJson is int
-          ? companiesJson
-          : companiesJson is Map<String, dynamic> && companiesJson['id'] is int
-          ? companiesJson['id']
-          : null,
+      companies: company,
+      companyId: companyId,
     );
   }
-
 
   Map<String, dynamic> toJson() => _$DataAllTasksToJson(this);
 }

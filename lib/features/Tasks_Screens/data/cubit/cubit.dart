@@ -240,14 +240,14 @@ class TasksCubit extends Cubit<TasksStates> {
     try {
       int? companyId;
 
-      // Optional: Try to use previously loaded tasks to get the companyId
+      // Try to extract companyId from previously loaded data
       if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
-        companyId = getAllTaskList!.first.owner?.companyId;
+        companyId = getAllTaskList!.first.companies?.id;
       }
 
       final filters = <String, dynamic>{
         'fields': '*.*.*',
-        if (companyId != null) 'filter[companies.id]': companyId.toInt(),
+        if (companyId != null) 'filter[companies.id]': companyId,
       };
 
       final value = await repo.getAllTasks(filters);
@@ -269,6 +269,7 @@ class TasksCubit extends Cubit<TasksStates> {
       debugPrint('❌ Error getting tasks: $error');
     }
   }
+
 
 
 
