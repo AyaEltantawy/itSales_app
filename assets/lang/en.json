@@ -56,6 +56,13 @@
   "Total number of employees": "Total number of employees",
   "Weekly task reports": "Weekly task reports",
   "Export files": "Export files",
-  "exports_service_charts": "Exports Service Charts"
+  "exports_service_charts": "Exports Service Charts",
+  "login_done_successfuly": "Login Done Successfuly",
+  "please_waiting": "Please Waiting...",
+  "Please follow the instructions.": "Please follow the instructions.",
+  "email": "Email",
+  "back": "Back",
+  "forget_password": "Forget Password?",
+  "Remember me": "Remember me"
 
 }

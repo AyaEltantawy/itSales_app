@@ -26,7 +26,10 @@ class ResetPasswordPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Image.asset("assets/images/xicon.png"),
+                  InkWell(
+                      onTap: (){navigateTo(context, AppRoutes.otpPage);},
+
+                      child: Image.asset("assets/images/xicon.png")),
                   SizedBox(
                     width: 10.w,
                   ),
@@ -80,7 +83,7 @@ class ResetPasswordPage extends StatelessWidget {
                   isColor: true,
                   textSize: 15.sp,
                   toPage: () {
-                    navigateTo(context, AppRoutes.passwordChangedSuccessPage);
+                    navigateTo(context, AppRoutes.entryPoint);
                   })
             ],
           );

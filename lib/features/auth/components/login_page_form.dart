@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/components/app_text_form_field.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:svg_flutter/svg.dart';
 import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/constants.dart';
@@ -46,15 +47,16 @@ class _LoginPageFormState extends State<LoginPageForm> {
         password: passController.text.trim(),
       );
     } else {
-
       Future.delayed(Duration.zero, () {
         if (context.mounted) {
-          Utils.showSnackBar(context, 'يرجى الالتزام بالتعليمات');
+          Utils.showSnackBar(
+              context,
+              AppLocalizations.of(context)!
+                  .translate("Please follow the instructions."));
         }
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +74,12 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 context,
                 keyboardType: TextInputType.emailAddress,
                 controller: emailController,
-                validate: Validators.requiredWithFieldName('البريد الالكتروني').call,
+                validate: Validators.requiredWithFieldName(
+                        AppLocalizations.of(context)!
+                            .translate("Please follow the instructions."))
+                    .call,
                 prefix: const Icon(AppIcons.email),
-                label: 'اكتب البريد الالكتروني',
+                label: AppLocalizations.of(context)!.translate("write_email"),
               ),
               SizedBox(height: 15.h),
               defaultTextFormFeild(
@@ -85,7 +90,8 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 onSubmit: (v) => onLogin(context),
                 secure: !isPasswordShown,
                 prefix: const Icon(AppIcons.lock),
-                label: 'اكتب كلمة المرور',
+                label:
+                    AppLocalizations.of(context)!.translate("write_password"),
                 suffix: IconButton(
                   onPressed: onPassShowClicked,
                   icon: Icon(
@@ -103,7 +109,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 isColor: true,
                 height: 56.h,
                 width: double.infinity,
-                text: 'تسجيل الدخول',
+                text: AppLocalizations.of(context)!.translate("login"),
                 context: context,
                 textSize: 17.sp,
                 toPage: () {
@@ -115,7 +121,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
               SizedBox(height: 20.h),
               defaultButton(
                 context: context,
-                text: "رجوع",
+                text: AppLocalizations.of(context)!.translate("back"),
                 width: double.infinity,
                 height: 56.h,
                 isColor: false,

@@ -1,4 +1,6 @@
 {
+ "back": "رجوع",
+ "email": "البريد الالكتروني",
 "hello": "مرحبا",
  "login": "تسجيل الدخول",
   "no_internet_connection": "لا يوجد اتصال بالانترنت",
@@ -56,7 +58,13 @@
  "Total number of employees": "اجمالي عدد الموظفين",
  "Weekly task reports": "تقارير المهام الاسبوعيه",
  "Export files": "تصدير الملفات",
- "exports_service_charts": "مخططات خدمة التصدير"
+ "exports_service_charts": "مخططات خدمة التصدير",
+ "login_done_successfuly": "تم تسجيل الدخول بنجاح",
+ "please_waiting": "يرجى الانتظار...",
+ "Please follow the instructions.": "يرجي الالتزام بالتعليمات",
+ "forget_password": "نسيت كلمة السر",
+ "Remember me": "تذكرني"
+
 
 
 

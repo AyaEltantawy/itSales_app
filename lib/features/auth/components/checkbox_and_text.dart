@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/constants/app_colors.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 
 import '../../../core/routes/app_routes.dart' show AppRoutes;
 import '../../../core/themes/styles.dart';
@@ -20,7 +21,6 @@ class CheckBoxAndText extends StatelessWidget {
     return Row(
       children: [
         Row(
-
           children: [
             Row(
               children: [
@@ -37,10 +37,12 @@ class CheckBoxAndText extends StatelessWidget {
                     value: isChecked,
                     onChanged: (value) => toggleCheckbox(),
                     activeColor: AppColors.primary,
-                    side: BorderSide(color: AppColors.primary, width: 1),
+                    side: const BorderSide(color: AppColors.primary, width: 1),
                   ),
                 ),
-                Text("تذكرنى المرة القادمة",
+                Text(
+                    maxLines: 2,
+                    AppLocalizations.of(context)!.translate("Remember me"),
                     style: TextStyles.font16Weight300Black),
               ],
             ),
@@ -49,8 +51,7 @@ class CheckBoxAndText extends StatelessWidget {
             ),
             InkWell(
               child: Text(
-                "نسيت كلمة السر ؟",
-
+                AppLocalizations.of(context)!.translate("forget_password"),
                 style: TextStyles.font16Weight300Emerald,
               ),
               onTap: () {

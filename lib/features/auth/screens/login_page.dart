@@ -23,11 +23,15 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
       if (state is PostErrorLoginSalesState) {
-       Utils.showSnackBar(context,  'عفوا البيانات غير صحيحة');
+        Utils.showSnackBar(
+            context,
+            AppLocalizations.of(context)!
+                .translate("sorry data is in correct"));
       }
 
       if (state is PostSuccessLoginSalesState) {
-        Utils.showSnackBar(context,'تم تسجيل الدخول بنجاح');
+        Utils.showSnackBar(context,
+            AppLocalizations.of(context)!.translate("login_done_successfuly"));
 
         navigateTo(context, AppRoutes.entryPoint);
         print('success');
@@ -42,7 +46,7 @@ class LoginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'يرجى الانتظار...',
+                      AppLocalizations.of(context)!.translate("please_waiting"),
                       style: AppFonts.style20medium,
                     ),
                     AppLottie.loader,
