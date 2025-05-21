@@ -247,7 +247,7 @@ class TasksCubit extends Cubit<TasksStates> {
 
       final filters = <String, dynamic>{
         'fields': '*.*.*',
-        if (companyId != null) 'filter[companies.id]': companyId,
+        if (companyId != null) 'filter[companies.id]': companyId.toInt(),
       };
 
       final value = await repo.getAllTasks(filters);

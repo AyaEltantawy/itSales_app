@@ -31,11 +31,31 @@
   "change_password": "Change Password",
   "help": "Help",
   "language": "Language",
+  "dark_mode": "Dark Mode",
   "sign_out": "Sign Out",
   "sorry data is in correct": "Sorry, Data is in correct",
   "User registered successfully": "User registered successfully",
   "register": "Register",
-  "write_your_data_to_register": "Write your data to register"
-
+  "write_your_data_to_register": "Write your data to register",
+  "service_1": "Service 1",
+  "service_2": "Service 2",
+  "edit_data_of_employee": "Edit data of  employee",
+  "edit_done_successfuly": "Edit done Successfuly",
+  "choose_employee_name": "Choose Employee Name",
+  "write_email": "Write Email",
+  "write_password":"Write Password",
+  "Password does not match": "Password does not match",
+  "password_confirmation": "Password Confirmation",
+  "you_are_not_connect": "You Are Not Connect",
+  "employee_photo": "Employee Photo",
+  "Do not leave this field blank.": "Do not leave this field blank.",
+  "Overall performance summary": "Overall performance summary",
+  "Total tasks completed": "Total tasks completed",
+  "Number of open tasks": "Number of open tasks",
+  "Average task completion time": "Average task completion time",
+  "Total number of employees": "Total number of employees",
+  "Weekly task reports": "Weekly task reports",
+  "Export files": "Export files",
+  "exports_service_charts": "Exports Service Charts"
 
 }

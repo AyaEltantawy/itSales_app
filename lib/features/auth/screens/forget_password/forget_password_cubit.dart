@@ -15,7 +15,7 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
   Future<void> forgetPassword(BuildContext context) async {
     final body = {
       'email': emailController.text.trim(),
-      'reset_url': "https://geotask.guessit.com/reset-password"
+      'reset_url': "https://itsale.guessit.com/reset-password"
     ,
     };
 

@@ -5,6 +5,7 @@ import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/auth/screens/forget_password/forget_password_state.dart';
 
 import '../../../core/app_storage/app_storage.dart';
+import '../../../core/cache_helper/cache_helper.dart';
 import '../../../core/dio_helper.dart';
 import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/token.dart';
@@ -22,14 +23,15 @@ class CompanyCubit extends Cubit<CompanyState> {
     emit(LoadingCompany());
 
     try {
-      print("Final token used: ${token}");
+      print("Final token used: $token");
       final response = await DioHelper.post(
         "items/company?fields=*.*",
         true,
         body: body,
       );
+
       print("Company response: ${response.data}");
-      print("tooooooooooken$token");
+
       final data = response.data;
 
       if (data is! Map<String, dynamic>) {
@@ -43,7 +45,14 @@ class CompanyCubit extends Cubit<CompanyState> {
       final responseData = data['data'];
       final responseError = data['error'];
 
-      if (responseData != null && response.statusCode ==200) {
+      if (responseData != null && response.statusCode == 200) {
+        // ✅ Cache owner ID using CacheHelper
+        final owner = responseData['owner'];
+        if (owner != null && owner['id'] != null) {
+          await CacheHelper.saveData(key: 'owner_id', value: owner['id']);
+          print('✅ Cached owner ID: ${owner['id']}');
+        }
+
         emit(SuccessCompany());
 
         if (context.mounted) {
@@ -51,7 +60,7 @@ class CompanyCubit extends Cubit<CompanyState> {
             context,
             responseData['message'] ?? 'تم تسجيل الشركة بنجاح',
           );
-          navigateTo(context,  AppRoutes.entryPoint);
+          navigateTo(context, AppRoutes.entryPoint);
         }
       } else {
         emit(ErrorCompany());
@@ -67,7 +76,7 @@ class CompanyCubit extends Cubit<CompanyState> {
       if (context.mounted) {
         Utils.showSnackBar(context, "حدث خطأ أثناء تسجيل الشركة");
       }
-      print("Error during company registration: $e");
+      print("❌ Error during company registration: $e");
     }
   }
 }

@@ -12,6 +12,7 @@ import '../../core/constants/app_animation.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_defaults.dart';
 import '../../core/constants/navigation.dart';
+import '../../core/localization/app_localizations.dart';
 import '../../core/utils/token.dart';
 import '../../core/utils/transition.dart';
 import '../Tasks_Screens/screens/tasks.dart';
@@ -30,21 +31,18 @@ class _NotificationPageState extends State<NotificationPage> {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    var cubit  = TasksCubit.get(context);
+    var cubit = TasksCubit.get(context);
     return Scaffold(
-
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: BlocConsumer<TasksCubit,TasksStates>(
-            listener: (context, state) {
-        
-            },
+          child: BlocConsumer<TasksCubit, TasksStates>(
+            listener: (context, state) {},
             builder: (context, state) {
-              if(state is GetLoadingAllNotificationState)
-              {
+              if (state is GetLoadingAllNotificationState) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,50 +51,46 @@ class _NotificationPageState extends State<NotificationPage> {
                   ],
                 );
               }
-        
-            return  Column(
-              children: [
-                SizedBox(height: 10.h),
-                 Padding(
-                   padding:  EdgeInsets.symmetric(horizontal:  20.0.w),
-                   child: const CustomAppBar(title: 'الاشعارات', back: true,),
-                 ),
-                SizedBox(height: 10.h),
 
-                ListView.separated(
+              return Column(
+                children: [
+                  SizedBox(height: 10.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                    child: CustomAppBar(
+                      title: AppLocalizations.of(context)!
+                          .translate("notifications"),
+                      back: true,
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-        reverse: true,
+                    reverse: true,
                     itemCount: cubit.getNotificationsList!.length,
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: 0.h),
+                    separatorBuilder: (context, index) => SizedBox(height: 0.h),
                     itemBuilder: (context, index) {
-                      return
-                        InkWell(
-                          onTap: ()
-                          {
-                          },
-                          child: NotificationTile(
-
-                            imageLink: 'https://i.imgur.com/e3z9DmE.png',
-                            title: cubit.getNotificationsList![index].title.toString(),
-                            subtitle: cubit.getNotificationsList![index].message.toString(),
-                            time: cubit.getNotificationsList![index].created_on.toString(),
-                          ),
-                        );
-        
+                      return InkWell(
+                        onTap: () {},
+                        child: NotificationTile(
+                          imageLink: 'https://i.imgur.com/e3z9DmE.png',
+                          title: cubit.getNotificationsList![index].title
+                              .toString(),
+                          subtitle: cubit.getNotificationsList![index].message
+                              .toString(),
+                          time: cubit.getNotificationsList![index].created_on
+                              .toString(),
+                        ),
+                      );
                     },
                   ),
-              ],
-            );
+                ],
+              );
             },
-        
           ),
         ),
       ),
-
-
-
     );
   }
 }
@@ -118,7 +112,8 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppDefaults.padding,vertical: AppDefaults.padding / 2),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppDefaults.padding, vertical: AppDefaults.padding / 2),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
@@ -131,17 +126,16 @@ class NotificationTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-
             Expanded(
               flex: 3,
               child: ListTile(
-
                 title: Text(
                   title,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: globalDark
-                            ? AppColors.textWhite :  AppColors.textBlack,
+                            ? AppColors.textWhite
+                            : AppColors.textBlack,
                       ),
                 ),
                 subtitle: Column(
@@ -152,28 +146,23 @@ class NotificationTile extends StatelessWidget {
                     Text(subtitle),
                     const SizedBox(height: 4),
                     Text(
-                      time.substring(12,16),
+                      time.substring(12, 16),
                       style: AppFonts.style12colored,
                     ),
                   ],
                 ),
-
               ),
             ),
-
             Expanded(
               flex: 1,
               child: Padding(
-                padding:  EdgeInsets.only(top: 10.h),
+                padding: EdgeInsets.only(top: 10.h),
                 child: Text(
-                  time.substring(0,10),
+                  time.substring(0, 10),
                   style: AppFonts.style14normal,
-
-
                 ),
               ),
             ),
-
           ],
         ),
       ),

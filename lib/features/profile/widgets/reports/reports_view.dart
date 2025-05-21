@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/components/app_buttons.dart';
 import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/themes/colors.dart';
 import 'package:itsale/core/utils/token.dart';
@@ -53,7 +54,7 @@ class ReportsPage extends StatelessWidget {
                           width: 10.w,
                         ),
                         Text(
-                          'التقارير',
+                          AppLocalizations.of(context)!.translate("reports"),
                           style: AppFonts.style16semiBold,
                           textAlign: TextAlign.right,
                         ),
@@ -85,42 +86,42 @@ class ReportsPage extends StatelessWidget {
                 ),
 
                 Text(
-                  "ملخص الأداء العام",
+                  AppLocalizations.of(context)!.translate("Overall performance summary"),
                   style: TextStyles.font20Weight500BaseBlack,
                 ),
                 SizedBox(
                   height: 20.h,
                 ),
                 TextAndNumber(
-                  text: " مجموع المهمات المكتملة",
+                  text: AppLocalizations.of(context)!.translate("Total tasks completed"),
                   numberText: "244",
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
                 TextAndNumber(
-                  text: " عدد المهام المفتوحة",
+                  text: AppLocalizations.of(context)!.translate("Number of open tasks"),
                   numberText: "17",
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
-                TextAndNumber(
-                  text: " متوسط وقت أنجاز المهام",
+             TextAndNumber(
+                  text: AppLocalizations.of(context)!.translate("Average task completion time"),
                   numberText: "8h",
                 ),
                 SizedBox(
                   height: 10.h,
                 ),
                 TextAndNumber(
-                  text: "اجمالى عدد الموظفين",
+                  text: AppLocalizations.of(context)!.translate("Total number of employees"),
                   numberText: "23",
                 ),
                 SizedBox(
                   height: 20.h,
                 ),
                 Text(
-                  "تقارير المهام الأسبوعية",
+                  AppLocalizations.of(context)!.translate("Weekly task reports"),
                   style: TextStyles.font20Weight500BaseBlack,
                 ),
                 SizedBox(
@@ -140,7 +141,7 @@ class ReportsPage extends StatelessWidget {
                   height: 20.h,
                 ),
                 Text(
-                  "تصدير الملفات",
+                  AppLocalizations.of(context)!.translate("Export files"),
                   style: TextStyles.font20Weight500BaseBlack,
                 ),
                 SizedBox(
@@ -169,7 +170,7 @@ class ReportsPage extends StatelessWidget {
                 ),
                 defaultButton(
                     context: context,
-                    text: "Export Sevice Charts",
+                    text: AppLocalizations.of(context)!.translate("exports_service_charts"),
                     width: double.infinity,
                     height: 56.h,
                     isColor: true,

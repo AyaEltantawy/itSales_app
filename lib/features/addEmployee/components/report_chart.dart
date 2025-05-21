@@ -17,55 +17,62 @@ class ReportChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final taskCubit = TasksCubit.get(context);
-    final completedTasks = TasksCubit.get(context)
-        .getAllTaskList!
+    final completedTasks = taskCubit.getAllTaskList!
         .where((task) => task.task_status == 'completed')
         .toList();
-    final uncompletedTasks = TasksCubit.get(context)
-        .getAllTaskList!
+    final uncompletedTasks = taskCubit.getAllTaskList!
         .where((task) => task.task_status != 'completed')
         .toList();
+
+    final int totalTasks = taskCubit.getAllTaskList!.length;
+
     final List<SalesData> service1Data = [
       SalesData(
-        '${completedTasks.length}/${TasksCubit.get(context).getAllTaskList!.length}',
+        AppLocalizations.of(context)!.translate("service_1"),
         completedTasks.length.toDouble(),
       ),
     ];
     final List<SalesData> service2Data = [
       SalesData(
-        '${uncompletedTasks.length}/${TasksCubit.get(context).getAllTaskList!.length}',
-        completedTasks.length.toDouble(),
+        AppLocalizations.of(context)!.translate("service_2"),
+        uncompletedTasks.length.toDouble(),
       ),
     ];
+
     return Container(
       width: 300,
       height: 250,
       child: SfCartesianChart(
-title: ChartTitle(alignment:ChartAlignment.far,text: AppLocalizations.of(context)!.translate("weekly_statistics"),),
+        title: ChartTitle(
+          alignment: ChartAlignment.far,
+          text: AppLocalizations.of(context)!.translate("weekly_statistics"),
+        ),
         primaryXAxis: CategoryAxis(),
         primaryYAxis: NumericAxis(
-            minimum: 0,
-            maximum: TasksCubit.get(context).getAllTaskList!.length.toDouble(),
-            interval: 1),
+          minimum: 0,
+          maximum: totalTasks.toDouble(),
+          interval: 1,
+        ),
         series: <CartesianSeries>[
           ColumnSeries<SalesData, String>(
             dataSource: service1Data,
             xValueMapper: (SalesData data, _) => data.date,
             yValueMapper: (SalesData data, _) => data.value,
-            name: 'الخدمة 1',
+            name: AppLocalizations.of(context)!.translate("service_1"),
             color: Colors.blue,
-            dataLabelSettings: DataLabelSettings(isVisible: false),
+            dataLabelSettings: DataLabelSettings(isVisible: true),
           ),
           ColumnSeries<SalesData, String>(
             dataSource: service2Data,
             xValueMapper: (SalesData data, _) => data.date,
             yValueMapper: (SalesData data, _) => data.value,
-            name: 'الخدمة 2',
+            name: AppLocalizations.of(context)!.translate("service_2"),
             color: Colors.blue[200],
-            dataLabelSettings: DataLabelSettings(isVisible: false),
+            dataLabelSettings: DataLabelSettings(isVisible: true),
           ),
         ],
       ),
     );
   }
 }
+

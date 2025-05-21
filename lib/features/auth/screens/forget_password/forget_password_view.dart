@@ -18,7 +18,7 @@ import 'forget_password_state.dart';
 class ForgetPasswordPage extends StatelessWidget {
   ForgetPasswordPage({super.key});
 
-  final String resetUrl = "https://geotask.guessit.com/reset-password";
+  final String resetUrl = "https://itsale.guessit.com/reset-password";
 
   Future<void> _launchResetUrl(BuildContext context) async {
     final Uri url = Uri.parse(resetUrl);

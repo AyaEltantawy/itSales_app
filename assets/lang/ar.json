@@ -36,7 +36,28 @@
  "sorry data is in correct": "عفوا البيانات غير صحيحة",
  "User registered successfully": "تم تسجيل المستخدم بنجاح",
  "register": "إنشاء حساب جديد",
- "write_your_data_to_register": "اكتب بياناتك لانشاء حساب جديد"
+ "write_your_data_to_register": "اكتب بياناتك لانشاء حساب جديد",
+ "service_1": "الخدمة1",
+ "service_2": "الخدمة2",
+ "edit_data_of_employee": "تعديل بيانات الموظف",
+ "edit_done_successfuly": "تم التعديل بنجاح",
+ "choose_employee_name": "اختر اسم الموظف",
+ "write_email": "اكتب البريد الالكتروني",
+ "write_password": "اكتب كلمة السر",
+ "Password does not match": "كلمة السر غير مطابقة",
+ "password_confirmation": "تاكيد كلمة السر",
+ "you_are_not_connect": "أنت غير متصل بالانترنت",
+ "employee_photo": "صورة الموظف",
+ "Do not leave this field blank.": "لا تترك هذا الحقل فارغا",
+ "Overall performance summary": "ملخص الاداء العام",
+ "Total tasks completed": "مجموع المهمات المكتملة",
+ "Number of open tasks": "عدد المهام المفتوحة",
+ "Average task completion time": "متوسط وقت انجاز المهام",
+ "Total number of employees": "اجمالي عدد الموظفين",
+ "Weekly task reports": "تقارير المهام الاسبوعيه",
+ "Export files": "تصدير الملفات",
+ "exports_service_charts": "مخططات خدمة التصدير"
+
 
 
 }
