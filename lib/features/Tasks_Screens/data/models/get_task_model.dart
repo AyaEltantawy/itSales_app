@@ -122,7 +122,20 @@ class FilesResponseModel {
   DirectusFilesId? directus_files_id;
 
   FilesResponseModel({this.id, this.directus_files_id});
-  factory FilesResponseModel.fromJson(Map<String, dynamic> json) => _$FilesResponseModelFromJson(json);
+
+  factory FilesResponseModel.fromJson(Map<String, dynamic> json) {
+    final raw = json['directus_files_id'];
+    return FilesResponseModel(
+      id: json['id'] as int?,
+      directus_files_id: raw is Map<String, dynamic>
+          ? DirectusFilesId.fromJson(raw)
+          : raw is int
+          ? DirectusFilesId(id: raw)
+          : null,
+    );
+
+  }
+
   Map<String, dynamic> toJson() => _$FilesResponseModelToJson(this);
 }
 
@@ -203,7 +216,7 @@ class AllTasksModel {
 
 @JsonSerializable()
 class DataAllTasks {
-  dynamic? id;
+  int? id;
   String? status;
   dynamic? sort;
   Owner? owner;
@@ -224,8 +237,8 @@ class DataAllTasks {
   String? complete_date;
   String? cancelled_date;
   List<FilesResponseModel>? files;
-  Company? companies;
-  int? companyId;
+  //Company? companies;
+  //int? companyId;
 
   DataAllTasks({
     this.id,
@@ -249,21 +262,21 @@ class DataAllTasks {
     this.complete_date,
     this.cancelled_date,
     this.files,
-    this.companies,
-    this.companyId,
+    //this.companies,
+   // this.companyId,
   });
 
   factory DataAllTasks.fromJson(Map<String, dynamic> json) {
     final companiesJson = json['companies'];
-    Company? company;
-    int? companyId;
-
-    if (companiesJson is Map<String, dynamic>) {
-      company = Company.fromJson(companiesJson);
-      companyId = companiesJson['id'] as int?;
-    } else if (companiesJson is int) {
-      companyId = companiesJson;
-    }
+    // Company? company;
+    // int? companyId;
+    //
+    // if (companiesJson is Map<String, dynamic>) {
+    //   company = Company.fromJson(companiesJson);
+    //   companyId = companiesJson['id'] as int?;
+    // } else if (companiesJson is int) {
+    //   companyId = companiesJson;
+    // }
 
     return DataAllTasks(
       id: json['id'],
@@ -295,53 +308,63 @@ class DataAllTasks {
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
       files: (json['files'] as List?)
-          ?.whereType<Map<String, dynamic>>()
-          .map((e) => FilesResponseModel.fromJson(e))
+          ?.map((e) {
+        if (e is Map<String, dynamic>) {
+          return FilesResponseModel.fromJson(e);
+        } else if (e is int) {
+          return FilesResponseModel(id: e); // handle int fallback
+        } else {
+          return null;
+        }
+      })
+          .whereType<FilesResponseModel>()
           .toList(),
-      companies: company,
-      companyId: companyId,
+
+     // companies: company,
+     // companyId: companyId,
     );
   }
 
   Map<String, dynamic> toJson() => _$DataAllTasksToJson(this);
 }
 
+// @JsonSerializable()
+// class Company {
+//   dynamic? id;
+//   String? status;
+//   dynamic sort;
+//   dynamic? owner;
+//   String? created_on;
+//   dynamic? modified_by;
+//   String? modified_on;
+//   String? name;
+//   dynamic? logo;
+//   String? email;
+//   String? whatsapp;
+//   String? website;
+//
+//   Company({
+//     this.id,
+//     this.status,
+//     this.sort,
+//     this.owner,
+//     this.created_on,
+//     this.modified_by,
+//     this.modified_on,
+//     this.name,
+//     this.logo,
+//     this.email,
+//     this.whatsapp,
+//     this.website,
+//   });
+//
+//   factory Company.fromJson(Map<String, dynamic> json) =>
+//       _$CompanyFromJson(json);
+//
+//   Map<String, dynamic> toJson() => _$CompanyToJson(this);
+// }
+
 @JsonSerializable()
-class Company {
-  dynamic? id;
-  String? status;
-  dynamic sort;
-  dynamic? owner;
-  String? created_on;
-  dynamic? modified_by;
-  String? modified_on;
-  String? name;
-  dynamic? logo;
-  String? email;
-  String? whatsapp;
-  String? website;
-
-  Company({
-    this.id,
-    this.status,
-    this.sort,
-    this.owner,
-    this.created_on,
-    this.modified_by,
-    this.modified_on,
-    this.name,
-    this.logo,
-    this.email,
-    this.whatsapp,
-    this.website,
-  });
-
-  factory Company.fromJson(Map<String, dynamic> json) =>
-      _$CompanyFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CompanyToJson(this);
-}
-
 @JsonSerializable()
 class Owner {
   dynamic id;
@@ -350,13 +373,6 @@ class Owner {
   String? first_name;
   String? last_name;
   String? email;
-
-  /// Accepts either int or map from API
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  int? companyId;
-
-  dynamic companies;
-
   String? token;
   String? external_id;
   String? theme;
@@ -371,6 +387,9 @@ class Owner {
   bool? email_notifications;
   String? last_access_on;
   String? last_page;
+
+  /// Only keep this - no dynamic or map allowed
+  int companies;
 
   Owner({
     this.id,
@@ -393,33 +412,24 @@ class Owner {
     this.email_notifications,
     this.last_access_on,
     this.last_page,
-    this.companies,
-  }) {
-    // Initialize companyId based on companies
-    if (companies is int) {
-      companyId = companies as int;
-    } else if (companies is Map<String, dynamic> &&
-        companies.containsKey('id')) {
-      companyId = companies['id'];
-    }
-  }
+    required this.companies,
+  });
 
   factory Owner.fromJson(Map<String, dynamic> json) {
-    final instance = _$OwnerFromJson(json);
-    // Handle `companies` field manually
-    if (json['companies'] is int) {
-      instance.companyId = json['companies'];
-    } else if (json['companies'] is Map<String, dynamic>) {
-      instance.companyId = json['companies']['id'];
-    }
-    return instance;
+    // Handle companies being sent as map or int
+    final cleanedJson = Map<String, dynamic>.from(json);
+    final rawCompanies = json['companies'];
+
+    cleanedJson['companies'] = (rawCompanies is Map && rawCompanies.containsKey('id'))
+        ? rawCompanies['id'] as int
+        : rawCompanies is int
+        ? rawCompanies
+        : 0;
+
+    return _$OwnerFromJson(cleanedJson);
   }
 
-  Map<String, dynamic> toJson() {
-    final data = _$OwnerToJson(this);
-    data['companies'] = companies;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$OwnerToJson(this);
 }
 
 @JsonSerializable()

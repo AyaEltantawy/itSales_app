@@ -11,7 +11,6 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/Tasks_Screens/data/models/notifications_model.dart';
 import 'package:itsale/features/auth/data/repo.dart';
-
 import '../../../../core/utils/snack_bar.dart';
 import '../../../../core/utils/token.dart';
 import '../models/get_task_model.dart';
@@ -218,12 +217,12 @@ class TasksCubit extends Cubit<TasksStates> {
     });
   }
 
-
   List<DataAllTasks>? getLastTaskList = [];
   List<DataAllTasks>? getLastTaskListForOneUser = [];
   List<DataAllTasks>? getTaskListForOneUserSearch = [];
   List<DataAllTasks>? getAllTaskListFilter = [];
   List<DataAllTasks>? getAllTaskList = [];
+
   Future<void> getAllTasksFun() async {
     final hasInternet = await InternetConnectionChecker().hasConnection;
     if (!hasInternet) {
@@ -242,12 +241,13 @@ class TasksCubit extends Cubit<TasksStates> {
 
       // Try to extract companyId from previously loaded data
       if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
-        companyId = getAllTaskList!.first.companies?.id;
+        companyId = getAllTaskList!.first.owner?.companies;
       }
 
       final filters = <String, dynamic>{
         'fields': '*.*.*',
-        if (companyId != null) 'filter[companies.id]': companyId,
+        if (companyId != null)
+          'filter[companies.id]': companyId as Map<String, dynamic>
       };
 
       final value = await repo.getAllTasks(filters);
@@ -269,13 +269,6 @@ class TasksCubit extends Cubit<TasksStates> {
       debugPrint('❌ Error getting tasks: $error');
     }
   }
-
-
-
-
-
-
-
 
   getAllTasksFunWithFilter({
     String? status,

@@ -74,7 +74,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                     const Spacer(),
                     Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.warning.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(50.r),
@@ -157,7 +157,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                           client_name: cubit.client_name.toString(),
                           due_date: cubit.due_date.toString(),
                           start_date:
-                              cubit.start_date ?? cubit.due_date.toString(),
+                          cubit.start_date ?? cubit.due_date.toString(),
                         );
                       },
                       child: CustomButton(
@@ -211,7 +211,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                     const Spacer(),
                     Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.progress,
                         borderRadius: BorderRadius.circular(2),
@@ -325,7 +325,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                     const Spacer(),
                     Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.canceled,
                         borderRadius: BorderRadius.circular(2),
@@ -439,7 +439,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                     const Spacer(),
                     Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.greenColor,
                         borderRadius: BorderRadius.circular(2),
@@ -553,7 +553,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                     const Spacer(),
                     Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                       decoration: BoxDecoration(
                         color: AppColors.inbox,
                         borderRadius: BorderRadius.circular(2),
