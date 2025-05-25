@@ -40,8 +40,14 @@ class HomeEmployeeScreen extends StatefulWidget {
 class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
   @override
   void initState() {
+    if (companyId == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigateTo(context, AppRoutes.splash);
+      });
+      return;
+    }
     log(DateFormat('yyyy-MM-dd', 'en').format(DateTime.now()));
-    AppCubit.get(context).getCompanyFun();
+    // AppCubit.get(context).getCompanyFun();
     role == '1'
         ? TasksCubit.get(context).getAllTasksFun()
         : TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
@@ -52,7 +58,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
   @override
   Widget build(BuildContext context) {
     Future<void> _refreshData() async {
-      AppCubit.get(context).getCompanyFun();
+      // AppCubit.get(context).getCompanyFun();
       if (role == '1') {
         await TasksCubit.get(context).getAllTasksFun();
       } else {
@@ -133,10 +139,26 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                             const GreetingSection(),
                             SizedBox(height: 16.h),
                             CompanyDetails(
-                              number: AppCubit.get(context).getInfoLogin?.companies?.whatsapp??"",
-                              link: AppCubit.get(context).getInfoLogin?.companies?.website??'',
-                                companyName: AppCubit.get(context).getInfoLogin?.companies?.name??'',
-                            email: AppCubit.get(context).getInfoLogin?.companies?.email??'',
+                              number: AppCubit.get(context)
+                                      .getInfoLogin
+                                      ?.companies
+                                      ?.whatsapp ??
+                                  "",
+                              link: AppCubit.get(context)
+                                      .getInfoLogin
+                                      ?.companies
+                                      ?.website ??
+                                  '',
+                              companyName: AppCubit.get(context)
+                                      .getInfoLogin
+                                      ?.companies
+                                      ?.name ??
+                                  '',
+                              email: AppCubit.get(context)
+                                      .getInfoLogin
+                                      ?.companies
+                                      ?.email ??
+                                  '',
                             ),
                             SizedBox(
                               height: 20.h,

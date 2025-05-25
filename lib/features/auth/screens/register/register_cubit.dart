@@ -87,7 +87,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       'first_name': firstNameController.text.trim(),
       'last_name': lastNameController.text.trim(),
       'role': '1',
-      'companies': 1
+
       //AppCubit.get(context).getInfoLogin?.companies?.id,
     };
 

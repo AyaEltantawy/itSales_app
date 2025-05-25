@@ -10,12 +10,13 @@ class BottomAppBarItem extends StatelessWidget {
     super.key,
     required this.icon,
     required this.isActive,
-    required this.onTap,
+    required this.onTap, required this.filledIcon, required this.outlinedIcon,
   });
-
+  final IconData filledIcon;
   final IconData icon;
   final bool isActive;
   final VoidCallback onTap;
+  final IconData outlinedIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class BottomAppBarItem extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(14.0.w),
         child: Icon(
-          icon,
+          isActive ? filledIcon : outlinedIcon,
           size: 30.sp,
           color: isActive
               ? AppColors.primary

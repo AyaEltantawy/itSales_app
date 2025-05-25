@@ -102,4 +102,20 @@ class AppIcons {
   static const IconData person_2_outlined = IconData(0xf08ae, fontFamily: 'MaterialIcons');
   static const IconData language = IconData(0xe366, fontFamily: 'MaterialIcons');
   static const IconData password = IconData(0xe47a, fontFamily: 'MaterialIcons');
+  static const IconData dashboard_outlined = IconData(0xefa1, fontFamily: 'MaterialIcons');
+  static const IconData people_outline = IconData(0xe488, fontFamily: 'MaterialIcons',);
+  static const IconData checklist_outlined = IconData(0xef4a, fontFamily: 'MaterialIcons');
+  static const IconData insert_chart_outlined = IconData(0xf12a, fontFamily: 'MaterialIcons');
+  static const IconData notifications_none = IconData(0xe451, fontFamily: 'MaterialIcons');
+  static const IconData settings_outlined = IconData(0xf36e, fontFamily: 'MaterialIcons');
+  static const IconData vpn_key_outlined = IconData(0xf4aa, fontFamily: 'MaterialIcons');
+  static const IconData home = IconData(0xe318, fontFamily: 'MaterialIcons');
+
+  static const IconData people = IconData(0xe486, fontFamily: 'MaterialIcons');
+  static const IconData help_outline = IconData(
+    0xe30b,
+    fontFamily: 'MaterialIcons',
+    matchTextDirection: true,
+  );
+
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:itsale/core/routes/magic_router.dart';
+import 'package:itsale/main.dart';
 import 'package:path/path.dart';
 import 'package:intl/src/intl/date_format.dart';
 import 'package:bloc/bloc.dart';
@@ -13,6 +14,7 @@ import 'package:itsale/features/Tasks_Screens/data/models/notifications_model.da
 import 'package:itsale/features/auth/data/repo.dart';
 import '../../../../core/utils/snack_bar.dart';
 import '../../../../core/utils/token.dart';
+
 import '../models/get_task_model.dart';
 
 class TasksCubit extends Cubit<TasksStates> {
@@ -237,19 +239,23 @@ class TasksCubit extends Cubit<TasksStates> {
     emit(GetLoadingAllTaskState());
 
     try {
-      int? companyId;
+
+      //TODO: Get user company
+
 
       // Try to extract companyId from previously loaded data
-      if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
-        companyId = getAllTaskList!.first.owner?.companies;
-      }
+      // if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
+      //   companyId = getAllTaskList!.first.owner?.companies;
+      // }
+
+
 
       final filters = <String, dynamic>{
-        'fields': '*.*.*',
-        if (companyId != null)
-          'filter[companies.id]': companyId as Map<String, dynamic>
+        'fields': '*.*',
+        // if (companyId != null)
+          'filter[company.id]': companyId
       };
-
+print("CommmmmmmmpanyId$companyId");
       final value = await repo.getAllTasks(filters);
 
       getAllTaskList = value.data;

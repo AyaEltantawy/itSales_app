@@ -34,7 +34,7 @@ class SelectAnyButtonBottomSheet extends StatelessWidget {
                 width: double.infinity,
                 text: 'اضافة موظف',
                 icon: Icons.add,
-                height: 36.h,
+                height: 56.h,
                 textSize: 15.sp,
                 toPage: (){navigateTo(context, AppRoutes.addEmployee);}
 
@@ -54,7 +54,7 @@ class SelectAnyButtonBottomSheet extends StatelessWidget {
                     width: double.infinity,
                     text: 'اضافة مهمة',
                     icon: Icons.add,
-                    height: 36.h,
+                    height: 56.h,
                     textSize: 15.sp,
                     toPage: (){navigateTo(context, AppRoutes.addTask);}
 

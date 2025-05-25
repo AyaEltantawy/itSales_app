@@ -9,6 +9,7 @@ import '../../features/Tasks_Screens/data/models/get_task_model.dart'
     show AddTaskModel, AddTaskRequestModel, AllTasksModel, GetUserTaskModel;
 import '../../features/Tasks_Screens/data/models/notifications_model.dart';
 import '../../features/addEmployee/data/models/add_employee_model.dart';
+import '../../features/auth/company/widgets/company_model.dart';
 import '../../features/auth/data/models/login_model.dart';
 import '../../features/auth/screens/register/models/register_model.dart';
 import '../../features/home/data/models/all_employees_model.dart';
@@ -70,7 +71,7 @@ abstract class WebServices {
   @GET('items/locations?filter[task]={id}')
   Future<GetLocationModel> getOneLocation (@Header('Authorization') String token, @Path('id') String id) ;
   @GET('items/company?fields=*.*')
-  Future<GetCompanyModel> getCompany(@Header('Authorization') String token, ) ;
+  Future<CompanyModel> getCompany(@Header('Authorization') String token, ) ;
 
 
   /// employees

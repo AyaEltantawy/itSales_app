@@ -33,14 +33,17 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BottomAppBarItem(
+              outlinedIcon: AppIcons.menu_outlined,
               icon: AppIcons.menu_outlined,
               isActive: widget.currentIndex == 4,
-              onTap: () => widget.onNavTap(4),
+              onTap: () => widget.onNavTap(4), filledIcon: AppIcons.menu_outlined,
             ),
             BottomAppBarItem(
-              icon: AppIcons.person_2_outlined,
+               outlinedIcon:AppIcons.people_outline ,
+           icon: AppIcons.people_outline,
+
               isActive: widget.currentIndex == 3,
-              onTap: () => widget.onNavTap(3),
+              onTap: () => widget.onNavTap(3), filledIcon: AppIcons.people,
             ),
             const Padding(
               padding: EdgeInsets.all(AppDefaults.padding * 1.5),
@@ -49,12 +52,17 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
             BottomAppBarItem(
               icon: AppIcons.task_outlined,
               isActive: widget.currentIndex == 1,
-              onTap: () => widget.onNavTap(1),
+              onTap: () => widget.onNavTap(1), filledIcon: AppIcons.tasks,
+              outlinedIcon: AppIcons.task_outlined,
             ),
             BottomAppBarItem(
+              outlinedIcon:AppIcons.home_outlined ,
               icon: AppIcons.home_outlined,
+              filledIcon:AppIcons.home,
               isActive: widget.currentIndex == 0,
-              onTap: () => widget.onNavTap(0),
+              onTap: () { widget.onNavTap(0);
+
+                },
             ),
           ],
         ),

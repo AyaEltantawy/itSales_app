@@ -157,6 +157,14 @@ class AppCubit extends Cubit<AppStates> {
       final userData = await repo.getDataUser();
       getInfoLogin = userData.data as login_model.DataInfoLogin;
       emit(GetSuccessInfoState());
+
+      // ✅ Save company ID using correct key
+      final companyId = getInfoLogin?.companies?.id;
+      print("companyIId$companyId");
+      if (companyId != null) {
+        await CacheHelper.saveData(key: 'company_id', value: companyId);
+        debugPrint('✅ Cached company ID from user info: $companyId');
+      }
     } catch (error) {
       if (!await InternetConnectionChecker().hasConnection) {
         Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
@@ -167,33 +175,32 @@ class AppCubit extends Cubit<AppStates> {
         emit(GetErrorInfoState());
       }
     }
-  }
 
-  List<Data>? companyData;
+    List<Data>? companyData;
 
-  Future<void> getCompanyFun() async {
-    if (!await InternetConnectionChecker().hasConnection) {
-      Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
-      emit(NoInternetConnectionState());
-      return;
-    }
-    emit(GetLoadingCompanyState());
-
-    try {
-      final response = await repo.getCompany();
-      print("rrrrrrrrrrrrr${response}");
-      companyData = response.data!;
-
-      emit(GetSuccessCompanyState()); // use consistent naming
-    } catch (onError) {
-      if (!await InternetConnectionChecker().hasConnection) {
-        Utils.showSnackBar(
-            MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
-        emit(NoInternetConnectionState());
-      } else {
-        emit(GetErrorCompanyState());
-        debugPrint('Error in getCompanyFun: ${onError.toString()}');
-      }
-    }
-  }
-}
+  // Future<void> getCompanyFun() async {
+  //   if (!await InternetConnectionChecker().hasConnection) {
+  //     Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
+  //     emit(NoInternetConnectionState());
+  //     return;
+  //   }
+  //   emit(GetLoadingCompanyState());
+  //
+  //   try {
+  //     final response = await repo.getCompany();
+  //     print("rrrrrrrrrrrrr${response}");
+  //     companyData = response.data!;
+  //
+  //     emit(GetSuccessCompanyState()); // use consistent naming
+  //   } catch (onError) {
+  //     if (!await InternetConnectionChecker().hasConnection) {
+  //       Utils.showSnackBar(
+  //           MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
+  //       emit(NoInternetConnectionState());
+  //     } else {
+  //       emit(GetErrorCompanyState());
+  //       debugPrint('Error in getCompanyFun: ${onError.toString()}');
+  //     }
+  //   }
+  // }
+}}

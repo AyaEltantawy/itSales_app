@@ -68,7 +68,7 @@ class _EntryPointUIState extends State<EntryPointUI> {
 
   /// All the pages
   List<Widget> pages = [
-    const HomeEmployeeScreen(
+  HomeEmployeeScreen(
       back: false,
     ),
      TasksScreenForEmployee(
@@ -118,7 +118,9 @@ class _EntryPointUIState extends State<EntryPointUI> {
         floatingActionButton: SizedBox(
           height: 74,
           width: 74,
+
           child: FloatingActionButton(
+
             onPressed: () {
               showMaterialModalBottomSheet(
                 context: context,

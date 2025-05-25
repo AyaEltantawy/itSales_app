@@ -1,6 +1,7 @@
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/app/app.dart';
@@ -499,72 +500,99 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           SizedBox(height: 16.h),
-                          defaultTextFormFeild(
-                            context,
-                            keyboardType: TextInputType.text,
-                            validate: (value) {
-                              if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
-                              }
 
-                              final uri = Uri.tryParse(value);
-                              if (uri == null || !uri.hasAbsolutePath) {
-                                return 'Please enter a valid URL';
-                              }
-                              return null;
-                            },
-                            label: 'الصق رابط Google Map الخاص بموقع المهمة',
-                            onTap: () {},
-                            controller: location,
-                            prefix: Icon(
-                              Icons.link,
-                              color: AppColors.placeholder,
-                            ),
-                          ),
-                          SizedBox(height: 16.h),
-                          Center(
-                            child: InkWell(
-                                onTap: () async {
-                                  final result = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LocationPickerScreen(),
-                                    ),
-                                  );
-                                  if (result != null) {
-                                    print("Latitude: ${result['latitude']}");
-                                    print("Longitude: ${result['longitude']}");
-                                    print("Address: ${result['address']}");
-                                    setState(() {
-                                      address.text = result['address'];
+// Inside your build method
+              defaultTextFormFeild(
+              context,
+              keyboardType: TextInputType.text,
+              validate: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'لا تترك هذا الحقل فارغا';
+                }
 
-                                      location.text =
-                                          '${result['address'].toString()}';
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                    height: 40.h,
-                                    width: 180.w,
-                                    padding: EdgeInsets.all(12.w),
-                                    decoration: BoxDecoration(
-                                        borderRadius: AppDefaults.borderRadius,
-                                        color: globalDark
-                                            ? AppColors.cardColorDark
-                                            : AppColors.textWhite,
-                                        border: Border.all(
-                                            color: AppColors.primary)),
-                                    child: Text(
-                                      AppLocalizations.of(context)!.translate("location_on_map"),
-                                      style: TextStyle(
-                                          color: globalDark
-                                              ? AppColors.textWhite
-                                              : AppColors.textBlack,
-                                          fontSize: 14.sp),
-                                    ))),
-                          ),
-                          SizedBox(height: 24.h),
+                final uri = Uri.tryParse(value);
+                if (uri == null || !uri.isAbsolute) {
+                  return 'Please enter a valid URL';
+                }
+                return null;
+              },
+              label: 'الصق رابط Google Map الخاص بموقع المهمة',
+              onTap: () {},
+              controller: location,
+              prefix: Icon(
+                Icons.link,
+                color: AppColors.placeholder,
+              ),
+            ),
+
+            SizedBox(height: 10.h),
+
+// Copy Button
+            Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+            onPressed: () {
+            if (location.text.isNotEmpty) {
+            Clipboard.setData(ClipboardData(text: location.text));
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('تم نسخ الرابط')),
+            );
+            }
+            },
+            icon: Icon(Icons.copy, size: 18, color: AppColors.primary),
+            label: Text(
+            'نسخ الرابط',
+            style: TextStyle(color: AppColors.primary),
+            ),
+            ),
+            ),
+
+            SizedBox(height: 16.h),
+
+// Location Picker Button
+            Center(
+            child: InkWell(
+            onTap: () async {
+            final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) => const LocationPickerScreen(),
+            ),
+            );
+
+            if (result != null) {
+            final latitude = result['latitude'];
+            final longitude = result['longitude'];
+
+            setState(() {
+            address.text = result['address'];
+            location.text =
+            'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+            });
+            }
+            },
+            child: Container(
+            height: 40.h,
+            width: 180.w,
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+            borderRadius: AppDefaults.borderRadius,
+            color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
+            border: Border.all(color: AppColors.primary),
+            ),
+            child: Text(
+            AppLocalizations.of(context)!.translate("location_on_map"),
+            style: TextStyle(
+            color: globalDark ? AppColors.textWhite : AppColors.textBlack,
+            fontSize: 14.sp,
+            ),
+            ),
+            ),
+            ),
+            ),
+
+            SizedBox(height: 24.h),
                           const SectionHeader(title: 'بيانات العميل'),
                           SizedBox(height: 16.h),
                           defaultTextFormFeild(

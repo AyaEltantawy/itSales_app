@@ -1,12 +1,14 @@
 class AppRoutes {
   /// The Initial Page
   static const introLogin = '/intro_login';
+  static const editDataPage = '/edit_data_page';
   static const splash = '/splash_screen';
   static const onBoarding = '/onboarding';
   static const choosePage = '/choose_page';
   static const  profilePage= '/profile_page';
   static const successPage = '/successPage';
   static const companyPage = '/companyPage';
+  static const changePasswordPage = '/changePasswordPage';
   /* <---- Login, Signup -----> */
   static const login = '/login';
   static const signup = '/signup';

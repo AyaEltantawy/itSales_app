@@ -1,0 +1,2 @@
+C:/Users/NUMBER 1/Downloads/itsales_app-main/android/app/.cxx/RelWithDebInfo/c68542q6/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/NUMBER 1/Downloads/itsales_app-main/android/app/.cxx/RelWithDebInfo/c68542q6/armeabi-v7a/CMakeFiles/rebuild_cache.dir

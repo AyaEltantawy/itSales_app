@@ -4,11 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/components/app_buttons.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
-import 'package:svg_flutter/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/components/app_text_form_field.dart'
-    show defaultTextFormFeild;
+import '../../../../core/components/app_text_form_field.dart' show defaultTextFormFeild;
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/themes/styles.dart';
 import '../../../../core/utils/validators.dart';
@@ -18,17 +16,22 @@ import 'forget_password_state.dart';
 class ForgetPasswordPage extends StatelessWidget {
   ForgetPasswordPage({super.key});
 
-  final String resetUrl = "com.guessit.geotask://ForgetPasswordPage";
+  final String resetUrl = "geotask://reset_password";
 
   Future<void> _launchResetUrl(BuildContext context) async {
     final Uri url = Uri.parse(resetUrl);
 
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.inAppWebView);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('لا يمكن فتح رابط إعادة تعيين كلمة المرور')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('لا يمكن فتح رابط إعادة تعيين كلمة المرور')),
+        const SnackBar(content: Text('حدث خطأ أثناء محاولة فتح الرابط')),
       );
     }
   }
@@ -36,12 +39,12 @@ class ForgetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => ForgetPasswordCubit(),
+      create: (_) => ForgetPasswordCubit(),
       child: Scaffold(
         body: SafeArea(
           child: BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
             builder: (context, state) {
-              final controller = BlocProvider.of<ForgetPasswordCubit>(context);
+              final cubit = context.read<ForgetPasswordCubit>();
 
               return ListView(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
@@ -69,10 +72,8 @@ class ForgetPasswordPage extends StatelessWidget {
                   defaultTextFormFeild(
                     context,
                     keyboardType: TextInputType.emailAddress,
-                    controller: controller.emailController,
-                    validate:
-                        Validators.requiredWithFieldName('البريد الالكتروني')
-                            .call,
+                    controller: cubit.emailController,
+                    validate: Validators.requiredWithFieldName('البريد الالكتروني').call,
                     prefix: const Icon(AppIcons.email),
                     label: 'اكتب البريد الالكتروني',
                   ),
@@ -84,7 +85,7 @@ class ForgetPasswordPage extends StatelessWidget {
                     height: 56.h,
                     isColor: true,
                     textSize: 15.sp,
-                    toPage: () => controller.forgetPassword(context),
+                    toPage: () => cubit.forgetPassword(context),
                   ),
                   SizedBox(height: 25.h),
                   Center(

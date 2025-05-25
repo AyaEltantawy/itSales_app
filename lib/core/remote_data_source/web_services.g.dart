@@ -474,7 +474,7 @@ class _WebServices implements WebServices {
   }
 
   @override
-  Future<GetCompanyModel> getCompany(String token) async {
+  Future<CompanyModel> getCompany(String token) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
@@ -497,9 +497,9 @@ class _WebServices implements WebServices {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late GetCompanyModel _value;
+    late CompanyModel _value;
     try {
-      _value = GetCompanyModel.fromJson(_result.data!);
+      _value = CompanyModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

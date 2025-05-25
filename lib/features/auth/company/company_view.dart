@@ -42,16 +42,46 @@ class CompanyPage extends StatelessWidget {
                   ),
                   Text(
                       textAlign: TextAlign.start,
-                      "ادخل شركتك",
+                      "ادخل معلومات شركتك",
                       style: TextStyles.font20Weight500BaseBlack),
+                  Text("الاسم",style: TextStyles.font16Weight400Black),
+                  SizedBox(height: 5.h,),
+
                   defaultTextFormFeild(
+
                       controller: controller.companyController,
                       context,
                       keyboardType: TextInputType.name,
                       hint: "اكتب اسم شركتك"),
+                  SizedBox(height: 20.h),
+                  Text("رقم الهاتف",style: TextStyles.font16Weight400Black),
+                  SizedBox(height: 5.h,),
+
+                  defaultTextFormFeild(
+                      controller: controller.whatsappController,
+                      context,
+                      keyboardType: TextInputType.phone,
+                      hint: "اكتب رقم شركتك"),
                   SizedBox(
                     height: 20.h,
                   ),
+                  Text(" البريد الالكتروني",style: TextStyles.font16Weight400Black),
+                  SizedBox(height: 5.h,),
+
+                  defaultTextFormFeild(
+                      controller: controller.emailController,
+                      context,
+                      keyboardType: TextInputType.emailAddress,
+                      hint: "اكتب البريد الالكتروني التابع لشركتك"),
+                  Text("الرابط",style: TextStyles.font16Weight400Black),
+                  SizedBox(height: 5.h,),
+
+                  defaultTextFormFeild(
+                      controller: controller.websiteController,
+                      context,
+                      keyboardType: TextInputType.url,
+                      hint: "اكتب الرابط التابع لشركتك"),
+                  SizedBox(height: 20.h,),
                   defaultButton(
                       context: context,
                       text: "اتمم انشاء حسابك",

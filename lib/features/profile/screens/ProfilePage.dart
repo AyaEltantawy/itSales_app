@@ -7,6 +7,7 @@ import 'package:itsale/core/components/network_image.dart';
 import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
+import 'package:itsale/core/themes/colors.dart';
 import 'package:itsale/features/HomeEmployee/screens/home_employee.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/states.dart';
@@ -71,12 +72,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     SizedBox(height: 20.h),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppDefaults.padding,
-                          vertical: AppDefaults.padding / 2),
-                      child: Text(
-                          AppLocalizations.of(context)!.translate("menu"),
-                          style: AppFonts.style20medium),
+                      padding: EdgeInsets.only(right: 23.w),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                              "assets/images/back_arrow_with_container.png"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppDefaults.padding,
+                                vertical: AppDefaults.padding / 2),
+                            child: Text(
+                                AppLocalizations.of(context)!.translate("menu"),
+                                style: AppFonts.style20medium),
+                          ),
+                        ],
+                      ),
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(
@@ -85,56 +95,68 @@ class _SettingsPageState extends State<SettingsPage> {
                       decoration: BoxDecoration(
                         color: globalDark
                             ? AppColors.cardColorDark
-                            : AppColors.cardColor,
+                            : AppColors.gray,
                         borderRadius: AppDefaults.borderRadius,
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          user?.avatar?.data == null
-                              ? Padding(
-                                  padding: EdgeInsets.only(
-                                      right: 8.0.w, left: 10.0.w),
-                                  child: Container(
-                                    height: 40.h,
-                                    width: 40.w,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.gray,
-                                      borderRadius: BorderRadius.circular(5.r),
-                                    ),
-                                  ),
-                                )
-                              : Padding(
-                                  padding: EdgeInsets.only(
-                                      right: 8.0.w, left: 10.0.w),
-                                  child: Container(
-                                    height: 40.h,
-                                    width: 40.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.r),
-                                    ),
-                                    child: NetworkImageWithLoader(
-                                      user!.avatar!.data!.full_url.toString(),
-                                    ),
-                                  ),
-                                ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Text(
-                                '${user?.first_name ?? ''} ${user?.last_name ?? ''}',
-                                style: AppFonts.style16Normal,
-                              ),
-                              Text(
-                                role == "1"
-                                    ? AppLocalizations.of(context)!
-                                        .translate("manager")
-                                    : AppLocalizations.of(context)!
-                                        .translate("employee"),
-                                style: AppFonts.style12light,
+                              user?.avatar?.data == null
+                                  ? Padding(
+                                      padding: EdgeInsets.only(
+                                          right: 8.0.w, left: 10.0.w),
+                                      child: Container(
+                                        height: 40.h,
+                                        width: 40.w,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.gray,
+                                          borderRadius:
+                                              BorderRadius.circular(5.r),
+                                        ),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: EdgeInsets.only(
+                                          right: 8.0.w, left: 10.0.w),
+                                      child: Container(
+                                        height: 40.h,
+                                        width: 40.w,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5.r),
+                                        ),
+                                        child: NetworkImageWithLoader(
+                                          user!.avatar!.data!.full_url
+                                              .toString(),
+                                        ),
+                                      ),
+                                    ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${user?.first_name ?? ''} ${user?.last_name ?? ''}',
+                                    style: AppFonts.style16Normal,
+                                  ),
+                                  Text(
+                                    role == "1"
+                                        ? AppLocalizations.of(context)!
+                                            .translate("manager")
+                                        : AppLocalizations.of(context)!
+                                            .translate("employee"),
+                                    style: AppFonts.style12light,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          Icon(
+                            Icons.arrow_forward_ios_outlined,
+                            color: ColorsManager.black,
+                          )
                         ],
                       ),
                     ),
@@ -158,24 +180,45 @@ class _SettingsPageState extends State<SettingsPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const AllEmployeeScreen(
-                                            task: false, admin: true),
+                                        const HomeEmployeeScreen(
+                                      back: false,
+                                    ),
                                   ),
                                 );
                               },
                               child: AppSettingsListTile(
                                 style: AppFonts.style16semiBold,
-                                widget: Icon(AppIcons.persons,
+                                widget: Icon(AppIcons.home_outlined,
                                     color: globalDark
                                         ? AppColors.textWhite
                                         : AppColors.textBlack),
                                 label: AppLocalizations.of(context)!
-                                    .translate("managers"),
+                                    .translate("main"),
                               ),
                             ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AllEmployeeScreen(
+                                      task: false, admin: true),
+                                ),
+                              );
+                            },
+                            child: AppSettingsListTile(
+                              style: AppFonts.style16semiBold,
+                              widget: Icon(AppIcons.people_outline,
+                                  color: globalDark
+                                      ? AppColors.textWhite
+                                      : AppColors.textBlack),
+                              label: AppLocalizations.of(context)!
+                                  .translate("managers"),
+                            ),
+                          ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.tasks,
+                            widget: Icon(AppIcons.task_outlined,
                                 color: globalDark
                                     ? AppColors.textWhite
                                     : AppColors.textBlack),
@@ -193,7 +236,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppLottie.report,
+                            widget: Icon(AppIcons.insert_chart_outlined,
                                 color: globalDark
                                     ? AppColors.textWhite
                                     : AppColors.textBlack),
@@ -204,7 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.notifications,
+                            widget: Icon(AppIcons.notifications_none,
                                 color: globalDark
                                     ? AppColors.textWhite
                                     : AppColors.textBlack),
@@ -215,7 +258,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.settings,
+                            widget: Icon(AppIcons.settings_outlined,
                                 color: globalDark
                                     ? AppColors.textWhite
                                     : AppColors.textBlack),
@@ -226,23 +269,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 MaterialPageRoute(
                                     builder: (context) => MainSettingsPage())),
                           ),
+
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.password,
-                                color: globalDark
-                                    ? AppColors.textWhite
-                                    : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!
-                                .translate("change_password"),
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangePasswordPage())),
-                          ),
-                          AppSettingsListTile(
-                            style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.help,
+                            widget: Icon(AppIcons.help_outline,
                                 color: globalDark
                                     ? AppColors.textWhite
                                     : AppColors.textBlack),
@@ -250,44 +280,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 AppLocalizations.of(context)!.translate("help"),
                             onTap: () => navigateTo(context, AppRoutes.helpPge),
                           ),
-                          AppSettingsListTile(
-                            style: AppFonts.style16semiBold,
-                            widget: Icon(AppIcons.language,
-                                color: globalDark
-                                    ? AppColors.textWhite
-                                    : AppColors.textBlack),
-                            label: AppLocalizations.of(context)!
-                                .translate("language"),
-                            onTap: () => showDialog(
-                                context: context,
-                                builder: (context) => LanguageShowDialogPage()),
-                          ),
-                          BlocBuilder<AppCubit, AppStates>(
-                            builder: (context, state) {
-                              return Row(
-                                children: [
-                                  SizedBox(width: 10.w),
-                                  Icon(Icons.dark_mode_outlined,
-                                      color: globalDark
-                                          ? AppColors.textWhite
-                                          : AppColors.textBlack),
-                                  SizedBox(width: 10.w),
-                                  Text(
-                                      AppLocalizations.of(context)!
-                                          .translate("dark_mode"),
-                                      style: AppFonts.style16semiBold),
-                                  const Spacer(),
-                                  Switch(
-                                    value: AppCubit.get(context).isDarkMode,
-                                    onChanged: (value) {
-                                      context.read<AppCubit>().toggleTheme();
-                                      setState(() {});
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
+
+
                           SizedBox(height: 20.h),
                           AppSettingsListTile(
                             style: AppFonts.style16semiBoldError,

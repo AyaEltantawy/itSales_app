@@ -11,7 +11,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 String? token ;
 String? role ;
 String? userId ;
-
+int? companyId;
 
 void checkTokenAndShowLoginDialog( context) {
   if (token == null) {

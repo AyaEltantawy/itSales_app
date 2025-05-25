@@ -2,6 +2,7 @@ import 'package:itsale/core/cache_helper/cache_helper.dart';
 import 'package:itsale/features/HomeEmployee/models/get_company_model.dart';
 import 'package:itsale/features/auth/data/models/login_model.dart' as login_model show GetUserInfo, LoginModel, SalesModel;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../company/widgets/company_model.dart';
 import '../screens/register/models/register_model.dart' as register_model show RegisterModel, SalesModel, User;
 
 import '../../../core/remote_data_source/web_services.dart';
@@ -122,7 +123,7 @@ class Repository {
     return await webServices.getOneLocation('Bearer $token', id);
   }
 
-  Future<GetCompanyModel> getCompany  () async
+  Future<CompanyModel> getCompany  () async
   {
     return await webServices.getCompany('Bearer $token', );
   }

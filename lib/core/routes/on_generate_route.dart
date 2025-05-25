@@ -39,6 +39,7 @@ import '../../features/detailed_employee_screen/screens/detailed_employee_screen
 import '../../features/entrypoint/components/select_any_button_bottom_sheet.dart';
 import '../../features/home/components/widgets_for_tasks_screen.dart';
 import '../../features/home/screens/employee_screen.dart';
+import '../../features/profile/widgets/edit_data/edit_data_view.dart';
 import '../../features/profile/widgets/help/help_view.dart';
 import '../../features/profile/widgets/reports/reports_view.dart';
 import '../remote_data_source/web_services.dart';
@@ -132,11 +133,13 @@ class RouteGenerator {
 
       case AppRoutes.homeEmployee:
         return animatedNavigation(
-            screen: const HomeEmployeeScreen(
+            screen:  HomeEmployeeScreen(
           back: false,
         ));
       case AppRoutes.helpPge:
         return animatedNavigation(screen: const HelpPage());
+      case AppRoutes.editDataPage:
+        return animatedNavigation(screen:  EditDataPage());
 
       case AppRoutes.addTask:
         return animatedNavigation(
@@ -148,6 +151,8 @@ class RouteGenerator {
 
       case AppRoutes.notifications:
         return animatedNavigation(screen: const NotificationPage());
+      case AppRoutes.changePasswordPage:
+        return animatedNavigation(screen: const ChangePasswordPage());
 
       case AppRoutes.settingsNotifications:
         return animatedNavigation(screen: const NotificationSettingsPage());
