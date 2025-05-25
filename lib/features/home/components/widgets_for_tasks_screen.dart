@@ -27,7 +27,9 @@ class BuildSearchFilter extends StatefulWidget {
     required this.emp,
     required this.task,
     required this.admin,
-    required this.toggleViewMode, this.onSearchPressed, this.onTap,
+    required this.toggleViewMode,
+    this.onSearchPressed,
+    this.onTap,
   });
 
   @override
@@ -49,77 +51,76 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: widget.onTap,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 14),
-                  child: Image.asset("assets/images/search_icon.png"),
+          GestureDetector(
+            onTap: widget.onTap,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              child: Icon(
+                Icons.search,
+                color: Colors.white,
+                size: 26.sp,
+              ),
+            ),
+          ),
+          if (!widget.admin && role != '3') ...[
+            SizedBox(width: 10.w),
+            InkWell(
+              onTap: () {
+                _showFilterDialog(context);
+              },
+              child: Container(
+                width: 52.w,
+                height: 52.w,
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: SvgPicture.asset(
+                  AppIcons.filterIcon,
+                  colorFilter:
+                      ColorFilter.mode(AppColors.textWhite, BlendMode.srcIn),
                 ),
               ),
-              if (!widget.admin && role != '3') ...[
-                SizedBox(width: 10.w),
-                InkWell(
-                  onTap: () {
-                    _showFilterDialog(context);
-                  },
-                  child: Container(
-                    width: 42.w,
-                    height: 42.h,
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SvgPicture.asset(
-                      AppIcons.filterIcon,
-                      colorFilter: ColorFilter.mode(
-                          AppColors.textWhite, BlendMode.srcIn),
-                    ),
+            ),
+          ],
+          if (!widget.emp) ...[
+            SizedBox(width: 8.w),
+            InkWell(
+              onTap: widget.toggleViewMode,
+              child: Container(
+                  alignment: Alignment.center,
+                  width: 52.w,
+                  height: 52.w,
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: widget.isGrid
+                        ? AppColors.primary
+                        : globalDark
+                            ? AppColors.lightGreenColor
+                            : AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-              ],
-              if (!widget.emp) ...[
-                SizedBox(width: 8.w),
-                InkWell(
-                  onTap: widget.toggleViewMode,
-                  child: Container(
-                    width: 42.w,
-                    height: 42.h,
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: widget.isGrid
-                          ? AppColors.backArrowsContainerColor
-                          : globalDark
-                          ? AppColors.lightGreenColor
-                          : AppColors.backArrowsContainerColor,
-                      borderRadius: BorderRadius.circular(8),
+                  child: Center(
+                    child: Icon(
+                      Icons.grid_view,
+                      size: 40.sp,
+                      color: Colors.white,
                     ),
-                    child: SvgPicture.asset(
-                      widget.isGrid ? AppIcons.list : AppIcons.shapeIcon,
-                      colorFilter: widget.isGrid
-                          ? null
-                          : ColorFilter.mode(
-                          AppColors.textBlack, BlendMode.srcIn),
-                    ),
-                  ),
-                ),
-              ]
-            ],
-          ),
-
-
-
-        ]);
+                  )),
+            ),
+          ]
+        ],
+      ),
+    ]);
   }
 }
 
@@ -142,9 +143,9 @@ Widget addEmployee(String? text, TextStyle style, Color color) {
           ),
           Expanded(
               child: Text(
-                '  إضافة $text',
-                style: style,
-              )),
+            '  إضافة $text',
+            style: style,
+          )),
         ],
       ),
     ),

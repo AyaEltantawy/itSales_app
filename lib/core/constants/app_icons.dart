@@ -117,5 +117,6 @@ class AppIcons {
     fontFamily: 'MaterialIcons',
     matchTextDirection: true,
   );
+  static const IconData fillter = IconData(0xe26f, fontFamily: 'MaterialIcons');
 
 }

@@ -141,7 +141,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                             ),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10.w, vertical: 10.h),
-                            child: const Icon(Icons.add),
+                            child:  Icon(Icons.add,color: Colors.white,size:30.sp),
                           ),
                         ),
                     ],

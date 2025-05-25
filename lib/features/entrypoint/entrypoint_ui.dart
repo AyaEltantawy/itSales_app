@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/utils/transition.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -129,7 +130,7 @@ class _EntryPointUIState extends State<EntryPointUI> {
               );
             },
             shape: const CircleBorder(),
-            child: SvgPicture.asset(AppIcons.addTask, height: 25, width: 25),
+            child:Icon(Icons.add,color:Colors.white,size: 30.sp,),
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
