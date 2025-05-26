@@ -239,23 +239,19 @@ class TasksCubit extends Cubit<TasksStates> {
     emit(GetLoadingAllTaskState());
 
     try {
-
       //TODO: Get user company
-
 
       // Try to extract companyId from previously loaded data
       // if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
       //   companyId = getAllTaskList!.first.owner?.companies;
       // }
 
-
-
       final filters = <String, dynamic>{
         'fields': '*.*',
         // if (companyId != null)
-          'filter[company.id]': companyId
+        'filter[company.id]': companyId
       };
-print("CommmmmmmmpanyId$companyId");
+      print("CommmmmmmmpanyId$companyId");
       final value = await repo.getAllTasks(filters);
 
       getAllTaskList = value.data;

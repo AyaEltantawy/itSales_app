@@ -18,29 +18,37 @@ class CompanyDetails extends StatelessWidget {
     required this.link,
   });
 
+  Future<void> _launchURL(BuildContext context) async {
+    // Ensure link starts with http:// or https://
+    final String fixedLink = link.startsWith('http://') || link.startsWith('https://')
+        ? link
+        : 'https://$link';
+
+    final Uri uri = Uri.parse(fixedLink);
+
+    try {
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch URL: $fixedLink')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error launching URL: $fixedLink')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<void> launchURL() async {
-      final Uri uri = Uri.parse(link);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        throw 'Could not launch $link';
-      }
-    }
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.sp),
         border: Border.all(width: 1, color: Colors.black),
       ),
       child: Padding(
-        padding: EdgeInsets.only(
-          top: 20.h,
-          bottom: 20.h,
-          right: 20.w,
-          left: 150.w,
-        ),
+        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -60,11 +68,12 @@ class CompanyDetails extends StatelessWidget {
             ),
             SizedBox(height: 10.h),
             GestureDetector(
-              onTap: launchURL,
+              onTap: () => _launchURL(context),
               child: Text(
                 link,
                 style: TextStyles.font16Weight300EmeraldWithoutLine.copyWith(
                   decoration: TextDecoration.underline,
+                  color: Colors.blue,
                 ),
               ),
             ),

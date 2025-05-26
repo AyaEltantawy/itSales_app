@@ -67,11 +67,8 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     } else {
       emit(GetLoadingSalesState());
 
-      await repo.allUsers({
-        'fields': '*.*',
-        'filter[companies.id]':
-        (users != null && users!.length > 1) ? users![1].companies?.id : null,
-      }).then((value) {
+      await repo.allUsers(
+          {'fields': '*.*', 'filter[companies.id]': companyId}).then((value) {
         users = value.data;
         print("dfghjkl ${users?[1].companies?.id}");
         print("userssssssssssssssssssssssssss");
@@ -161,7 +158,8 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
-            MagicRouter.currentContext!, 'أنت غير متصل بالانترنت',
+            MagicRouter.currentContext!,
+            'أنت غير متصل بالانترنت',
           );
 
           emit(NoInternetState());
@@ -181,25 +179,35 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     String? address,
     String? phone2,
     String? whatsapp,
+
   }) async {
     emit(AddLoadingEmployeeInfoState());
 
+
+
     await repo
-        .addEmployee(AddEmployeeRequestModel(
-      user: employeeId,
-      status: status,
-      email: email,
-      address: address,
-      phone_1: phone1,
-      phone_2: phone2,
-      whatsapp: whatsapp,
-    ))
+        .addEmployee(
+            AddEmployeeRequestModel(
+              user: employeeId,
+              status: status,
+              email: email,
+              address: address,
+              phone_1: phone1,
+              phone_2: phone2,
+              whatsapp: whatsapp,
+
+            ),
+         )
         .then((value) {
       emit(AddSuccessEmployeeInfoState());
+
       getAllSales();
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -223,37 +231,34 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     int? avatar,
   }) async {
     emit(AddLoadingUserState());
-
     await repo
-        .addUser(AddUserRequestModel(
+        .addUser(
 
+        AddUserRequestModel(
       email: email,
       first_name: firstName,
       last_name: lastName,
-
       role: role,
-
       password: password,
-
-
+          companies: companyId
     ))
         .then((value) {
-
       emit(AddSuccessUserState());
-      navigateTo(MagicRouter.currentContext!,AppRoutes.entryPoint);
+      navigateTo(MagicRouter.currentContext!, AppRoutes.entryPoint);
       // MagicRouter.navigateTo(EntryPointUI());
       addEmployeeFun(
-
           employeeId: value.data!.id.toString(),
           status: 'published',
           email: emailEmp,
           address: address,
-
           phone2: phone2,
-          whatsapp: whatsapp, phone1: '');
+          whatsapp: whatsapp,
+
+          phone1: '');
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت');
+        Utils.showSnackBar(
+            MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
 
         emit(NoInternetState());
       }
@@ -283,33 +288,36 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
     await repo
         .editDataUser(
-        idUser,
-        EditUserRequestModel(
-          password: password,
-          status: status ?? 'active',
-          email: email,
-          first_name: firstName,
-          last_name: lastName,
-          role: role,
-          avatar: avatar,
-        ))
+            idUser,
+            EditUserRequestModel(
+              password: password,
+              status: status ?? 'active',
+              email: email,
+              first_name: firstName,
+              last_name: lastName,
+              role: role,
+              avatar: avatar,
+            ))
         .then((value) {
       emit(SuccessEditUserState());
       employeeId != '0'
           ? editEmployeeFun(
-          employeeId: employeeId,
-          user: value.data!.id.toString(),
-          status: empStatus ?? 'published',
-          email: emailEmp,
-          address: address,
-          phone1: phone1,
-          phone2: phone2,
-          whatsapp: whatsapp)
+              employeeId: employeeId,
+              user: value.data!.id.toString(),
+              status: empStatus ?? 'published',
+              email: emailEmp,
+              address: address,
+              phone1: phone1,
+              phone2: phone2,
+              whatsapp: whatsapp)
           : Container();
       getAllSales();
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت',);
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -332,22 +340,25 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
     await repo
         .editEmployee(
-        employeeId,
-        AddEmployeeRequestModel(
-          user: user,
-          status: status,
-          email: email,
-          address: address,
-          phone_1: phone1,
-          phone_2: phone2,
-          whatsapp: whatsapp,
-        ))
+            employeeId,
+            AddEmployeeRequestModel(
+              user: user,
+              status: status,
+              email: email,
+              address: address,
+              phone_1: phone1,
+              phone_2: phone2,
+              whatsapp: whatsapp,
+            ))
         .then((value) {
       emit(EditSuccessEmployeeInfoState());
       getAllSales();
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!,'أنت غير متصل بالانترنت', );
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
 
         emit(NoInternetState());
       }
@@ -355,6 +366,8 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       debugPrint('errrrrror ${onError.toString()}');
     });
   }
+
+
 
   Future<void> uploadFile(
       File file, {
@@ -373,12 +386,12 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         String? address,
         String? phone2,
         String? whatsapp,
+        int? companyId,
       }) async {
     Dio dio = Dio();
     try {
       emit(PostLoadingFileState());
-      String baseUrl =
-          "https://eby-itsales.guessitt.com/public/itsales/"; // Replace with your base URL
+      String baseUrl = "https://eby-itsales.guessitt.com/public/itsales/";
       String endpoint = "files";
       String fileName = basename(file.path);
 
@@ -386,9 +399,12 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         "data": await MultipartFile.fromFile(file.path, filename: fileName),
       });
 
+
+
       Response response = await dio.post(
         "$baseUrl$endpoint",
         data: formData,
+
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -399,11 +415,10 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       if (response.statusCode == 200) {
         emit(PostSuccessFileState());
         print("File uploaded successfully!");
-
         print(response.data['data']['id']);
 
-        edit
-            ? editUserFun(
+        if (edit) {
+          editUserFun(
             idUser: idUser,
             avatar: response.data['data']['id'],
             phone1: phone1,
@@ -418,8 +433,10 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
             email: email,
             status: status,
             empStatus: empStatus,
-            role: role)
-            : adduserFun(
+            role: role,
+          );
+        } else {
+          adduserFun(
             firstName: firstName,
             avatar: response.data['data']['id'],
             lastName: lastName,
@@ -431,19 +448,25 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
             address: address,
             phone1: phone1,
             phone2: phone2,
-            whatsapp: whatsapp);
+            whatsapp: whatsapp,
+
+          );
+        }
       } else {
         emit(PostErrorFileState());
         print("File upload failed with status: ${response.statusCode}");
       }
     } catch (e) {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت',);
-
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
         emit(NoInternetState());
       }
       emit(PostErrorFileState());
       print("Error during file upload: $e");
     }
   }
+
 }

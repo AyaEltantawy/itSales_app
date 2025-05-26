@@ -10,6 +10,7 @@ import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
+import 'package:itsale/core/utils/token.dart';
 
 import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/features/home/data/states.dart';
@@ -591,6 +592,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                             _selectedItemRole != null) {
                           EmployeeCubit.get(context).uploadFile(selectedImage!,
                               edit: false,
+                              companyId: companyId,
                               idUser: employeeUserId.toString(),
                               employeeId: employeeId.toString(),
                               firstName: firstName,

@@ -48,33 +48,33 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(PasswordShownState());
   }
 
-  Future<void> addUser(BuildContext context) async {
-    final isFormValid = formKey.currentState?.validate() ?? false;
-    if (!isFormValid) {
-      Utils.showSnackBar(context, 'يرجى تعبئة كافة الحقول بشكل صحيح');
-      return;
-    }
-
-    emit(RegisterLoadingState());
-
-    final addUserRequest = AddUserRequestModel(
-      email: emailController.text,
-      password: passwordController.text,
-      first_name: firstNameController.text,
-      last_name: lastNameController.text,
-    );
-
-    try {
-      final result = await repo.addUser(addUserRequest);
-      await CacheHelper.saveData(key: 'token', value: token);
-      emit(RegisterSuccessState(result));
-      Utils.showSnackBar(context, 'تمت إضافة المستخدم بنجاح');
-      MagicRouter.navigateTo(EntryPointUI());
-    } catch (error) {
-      Utils.showSnackBar(context, 'فشل في إضافة المستخدم');
-      emit(RegisterErrorState(error.toString()));
-    }
-  }
+  // Future<void> addUser(BuildContext context) async {
+  //   final isFormValid = formKey.currentState?.validate() ?? false;
+  //   if (!isFormValid) {
+  //     Utils.showSnackBar(context, 'يرجى تعبئة كافة الحقول بشكل صحيح');
+  //     return;
+  //   }
+  //
+  //   emit(RegisterLoadingState());
+  //
+  //   final addUserRequest = AddUserRequestModel(
+  //     email: emailController.text,
+  //     password: passwordController.text,
+  //     first_name: firstNameController.text,
+  //     last_name: lastNameController.text,
+  //   );
+  //
+  //   try {
+  //     final result = await repo.addUser(addUserRequest,);
+  //     await CacheHelper.saveData(key: 'token', value: token);
+  //     emit(RegisterSuccessState(result));
+  //     Utils.showSnackBar(context, 'تمت إضافة المستخدم بنجاح');
+  //     MagicRouter.navigateTo(EntryPointUI());
+  //   } catch (error) {
+  //     Utils.showSnackBar(context, 'فشل في إضافة المستخدم');
+  //     emit(RegisterErrorState(error.toString()));
+  //   }
+  // }
 
   Future<void> register(BuildContext context) async {
     if (!formKey.currentState!.validate()) return;

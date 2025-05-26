@@ -82,12 +82,12 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                   width: 90.w, // wider width for image container
                   child: NetworkImageWithLoader(
                     fit: BoxFit.fill,
-                    AppCubit.get(context)
-                        .getInfoLogin!
-                        .avatar!
-                        .data!
-                        .full_url
-                        .toString(),
+                      AppCubit.get(context)
+                          .getInfoLogin
+                          ?.avatar
+                          ?.data
+                          ?.full_url
+                          ?.toString() ??""
                   ),
                 ),
               ),

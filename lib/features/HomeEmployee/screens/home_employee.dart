@@ -15,6 +15,7 @@ import 'package:itsale/features/auth/data/states.dart';
 import 'package:svg_flutter/svg.dart';
 import 'package:flutter_echarts/flutter_echarts.dart';
 import '../../../core/app/app.dart';
+import '../../../core/cache_helper/cache_helper.dart';
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_animation.dart';
 import '../../../core/routes/app_routes.dart';
@@ -38,34 +39,50 @@ class HomeEmployeeScreen extends StatefulWidget {
 }
 
 class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
+  bool isLoading = true;
+
   @override
   void initState() {
-    if (companyId == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        navigateTo(context, AppRoutes.splash);
-      });
-      return;
-    }
-    log(DateFormat('yyyy-MM-dd', 'en').format(DateTime.now()));
-    // AppCubit.get(context).getCompanyFun();
-    role == '1'
-        ? TasksCubit.get(context).getAllTasksFun()
-        : TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
-
     super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    Future<void> _refreshData() async {
-      // AppCubit.get(context).getCompanyFun();
+    // Wait until after the first frame to check cache and navigate
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final id = CacheHelper.getData(key: 'company_id');
+
+      debugPrint('Fetched companyId: $id');
+
+      if (id == null && role == 1) {
+        navigateTo(context, AppRoutes.companyPage);
+        return;
+      }
+
+      companyId = id;
+
+      // Load tasks based on role
       if (role == '1') {
         await TasksCubit.get(context).getAllTasksFun();
       } else {
         await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
       }
-      // Optional: call setState if needed
+
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Future<void> _refreshData() async {
+      if (role == '1') {
+        await TasksCubit.get(context).getAllTasksFun();
+      } else {
+        await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
+      }
     }
+
+    if (isLoading)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
     return SafeArea(
       child: Scaffold(
@@ -75,26 +92,28 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
             physics: const BouncingScrollPhysics(),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: AppDefaults.padding.w),
-              child:
-                  BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
-                if (state is ThemeState) {
-                  globalDark = state.isDarkMode;
-                  setState(() {});
-                } else {
-                  globalDark = context.read<AppCubit>().isDarkMode;
-                  setState(() {});
-                }
-              }, builder: (context, state) {
-                if (state is NoInternetState ||
-                    AppCubit.get(context).getInfoLogin == null) {
-                  return const NoInternet();
-                }
-                if (state is GetLoadingInfoState ||
-                    AppCubit.get(context).getInfoLogin == null) {
-                  return AppLottie.loader;
-                }
+              child: BlocConsumer<AppCubit, AppStates>(
+                listener: (context, state) {
+                  if (state is ThemeState) {
+                    globalDark = state.isDarkMode;
+                    setState(() {});
+                  } else {
+                    globalDark = context.read<AppCubit>().isDarkMode;
+                    setState(() {});
+                  }
+                },
+                builder: (context, state) {
+                  final loginInfo = AppCubit.get(context).getInfoLogin;
 
-                return Column(
+                  if (state is NoInternetState || loginInfo == null) {
+                    return const NoInternet();
+                  }
+
+                  if (state is GetLoadingInfoState || loginInfo == null) {
+                    return AppLottie.loader;
+                  }
+
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 10.h),
@@ -107,19 +126,14 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                               Text(AppLocalizations.of(context)!
                                   .translate("main_page")),
                               InkWell(
-                                onTap: () {
-                                  navigateTo(context, AppRoutes.notifications);
-                                },
+                                onTap: () => navigateTo(
+                                    context, AppRoutes.notifications),
                                 child: badges.Badge(
                                   position: badges.BadgePosition.topEnd(
                                       top: -25, end: 10),
                                   showBadge: true,
-                                  ignorePointer: false,
-                                  onTap: () {},
-                                  badgeContent: const Text(
-                                    "3",
-                                    textAlign: TextAlign.center,
-                                  ),
+                                  badgeContent: const Text("3",
+                                      textAlign: TextAlign.center),
                                   child: Image.asset("assets/images/bell.png"),
                                 ),
                               ),
@@ -127,116 +141,87 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                           ),
                         ],
                       ),
-                      // const Divider(),
-
-                      SizedBox(
-                        height: 40.h,
-                      ),
+                      SizedBox(height: 40.h),
                       Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const GreetingSection(),
-                            SizedBox(height: 16.h),
-                            CompanyDetails(
-                              number: AppCubit.get(context)
-                                      .getInfoLogin
-                                      ?.companies
-                                      ?.whatsapp ??
-                                  "",
-                              link: AppCubit.get(context)
-                                      .getInfoLogin
-                                      ?.companies
-                                      ?.website ??
-                                  '',
-                              companyName: AppCubit.get(context)
-                                      .getInfoLogin
-                                      ?.companies
-                                      ?.name ??
-                                  '',
-                              email: AppCubit.get(context)
-                                      .getInfoLogin
-                                      ?.companies
-                                      ?.email ??
-                                  '',
-                            ),
-                            SizedBox(
-                              height: 20.h,
-                            ),
-                            SizedBox(height: 8.h),
-                            BlocConsumer<TasksCubit, TasksStates>(
-                              listener: (context, state) {},
-                              builder: (context, state) {
-                                List<DataAllTasks>? completedTasks;
-                                List<DataAllTasks>? uncompletedTasks;
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const GreetingSection(),
+                          SizedBox(height: 16.h),
+                          CompanyDetails(
+                            number: loginInfo.companies?.whatsapp ?? "",
+                            link: loginInfo.companies?.website ?? '',
+                            companyName: loginInfo.companies?.name ?? '',
+                            email: loginInfo.companies?.email ?? '',
+                          ),
+                          SizedBox(height: 20.h),
+                          BlocConsumer<TasksCubit, TasksStates>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              final allTasks =
+                                  TasksCubit.get(context).getAllTaskList ?? [];
+                              final userTasks =
+                                  TasksCubit.get(context).getUserTaskList ?? [];
 
-                                List<DataUserTask>? completedTasksForUser;
-                                List<DataUserTask>? uncompletedTasksForUser;
-                                completedTasks = TasksCubit.get(context)
-                                    .getAllTaskList!
-                                    .where((task) =>
-                                        task.task_status == 'completed')
-                                    .toList();
-                                uncompletedTasks = TasksCubit.get(context)
-                                    .getAllTaskList!
-                                    .where((task) =>
-                                        task.task_status != 'completed')
-                                    .toList();
-                                completedTasksForUser = TasksCubit.get(context)
-                                    .getUserTaskList!
-                                    .where((task) =>
-                                        task.task_status == 'completed')
-                                    .toList();
-                                uncompletedTasksForUser =
-                                    TasksCubit.get(context)
-                                        .getUserTaskList!
-                                        .where((task) =>
-                                            task.task_status != 'completed')
-                                        .toList();
-                                if (state is GetLoadingAllTaskState ||
-                                    state is GetLoadingUserTaskState) {
-                                  return AppLottie.loader;
-                                }
-                                return TasksCubit.get(context)
-                                            .getAllTaskList!
-                                            .isNotEmpty ||
-                                        TasksCubit.get(context)
-                                            .getUserTaskList!
-                                            .isNotEmpty
-                                    ? TaskSummarySection(
-                                        completedTasks: completedTasks,
-                                        completedTasksForUser:
-                                            completedTasksForUser,
-                                        uncompletedTasks: uncompletedTasks,
-                                        uncompletedTasksForUser:
-                                            uncompletedTasksForUser,
-                                      )
-                                    : const Center(child: Text("لا يوجد مهمة"));
-                              },
-                            ),
-                            SizedBox(height: 20.h),
-                            const ChartsSection(),
-                            SizedBox(height: 16.h),
-                            BlocConsumer<TasksCubit, TasksStates>(
-                              listener: (context, state) {},
-                              builder: (context, state) {
-                                if (state is GetErrorAllTaskState) {
-                                  return const Center(
-                                      child: Text("مع الاسف حدث خطأ"));
-                                }
+                              final completedTasks = allTasks
+                                  .where((e) => e.task_status == 'completed')
+                                  .toList();
+                              final uncompletedTasks = allTasks
+                                  .where((e) => e.task_status != 'completed')
+                                  .toList();
 
-                                return CompletedTasksSection(
-                                    data: role == '1'
-                                        ? TasksCubit.get(context)
-                                            .getLastTaskList
-                                        : TasksCubit.get(context)
-                                            .getLastTaskListForOneUser);
-                              },
-                            ),
-                            SizedBox(height: 32.h),
-                          ])
-                    ]);
-              }),
+                              final completedTasksForUser = userTasks
+                                  .where((e) => e.task_status == 'completed')
+                                  .toList();
+                              final uncompletedTasksForUser = userTasks
+                                  .where((e) => e.task_status != 'completed')
+                                  .toList();
+
+                              if (state is GetLoadingAllTaskState ||
+                                  state is GetLoadingUserTaskState) {
+                                return AppLottie.loader;
+                              }
+
+                              final hasTasks =
+                                  allTasks.isNotEmpty || userTasks.isNotEmpty;
+
+                              return hasTasks
+                                  ? TaskSummarySection(
+                                      completedTasks: completedTasks,
+                                      completedTasksForUser:
+                                          completedTasksForUser,
+                                      uncompletedTasks: uncompletedTasks,
+                                      uncompletedTasksForUser:
+                                          uncompletedTasksForUser,
+                                    )
+                                  : const Center(child: Text("لا يوجد مهمة"));
+                            },
+                          ),
+                          SizedBox(height: 20.h),
+                          const ChartsSection(),
+                          SizedBox(height: 16.h),
+                          BlocConsumer<TasksCubit, TasksStates>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              if (state is GetErrorAllTaskState) {
+                                return const Center(
+                                    child: Text("مع الاسف حدث خطأ"));
+                              }
+
+                              final data = role == '1'
+                                  ? TasksCubit.get(context).getLastTaskList
+                                  : TasksCubit.get(context)
+                                      .getLastTaskListForOneUser;
+
+                              return CompletedTasksSection(data: data);
+                            },
+                          ),
+                          SizedBox(height: 32.h),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

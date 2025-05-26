@@ -511,6 +511,7 @@ class _WebServices implements WebServices {
   Future<AddEmployeeModel> addEmployee(
     String token,
     AddEmployeeRequestModel add,
+
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

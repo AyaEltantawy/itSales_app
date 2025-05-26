@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:itsale/core/utils/token.dart';
 import 'package:itsale/features/auth/screens/register/models/register_model.dart'
     as register_model;
 import 'package:retrofit/error_logger.dart';
@@ -75,8 +76,9 @@ abstract class WebServices {
 
 
   /// employees
+
   @POST('items/employees')
-  Future<AddEmployeeModel> addEmployee (@Header('Authorization') String token, @Body() AddEmployeeRequestModel add) ;
+  Future<AddEmployeeModel> addEmployee (@Header('Authorization') String token, @Body() AddEmployeeRequestModel add,  ) ;
 
   @GET('items/employees?filter[company.id]=1&fields=*.*.*')
   Future<AllEmployeeModel> getAllEmployee (@Header('Authorization') String token) ;

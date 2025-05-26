@@ -1,6 +1,5 @@
 import 'dart:async';
-
-import 'package:app_links/app_links.dart'; // <-- Use app_links package
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,13 +10,13 @@ import 'package:itsale/core/cache_helper/cache_helper.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/on_generate_route.dart';
 import 'package:itsale/core/themes/app_themes.dart';
-import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
-import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/generated/l10n.dart';
 
+import '../../features/Tasks_Screens/data/cubit/cubit.dart';
 import '../../features/auth/data/cubit.dart';
 import '../../features/auth/data/states.dart';
 import '../../features/auth/screens/forget_password/forget_password_view.dart';
+import '../../features/home/data/cubit.dart';
 import '../../features/profile/widgets/language_show_dialog/language_show_dialog_cubit.dart';
 import '../../features/profile/widgets/language_show_dialog/language_show_dialog_state.dart';
 import '../injection/injection.dart';
@@ -44,8 +43,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     locale = Locale(widget.defaultLocale);
+
     languageCubit = LanguageShowDialogCubit()
       ..appLanguageFunc(LanguageEventEnums.InitialLanguage);
 
@@ -56,11 +55,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _handleIncomingAppLinks() {
-    _sub = _appLinks.uriLinkStream.listen((uri) {
-      _processUri(uri);
-    }, onError: (err) {
-      debugPrint('Error in app link stream: $err');
-    });
+    _sub = _appLinks.uriLinkStream.listen(
+          (Uri uri) {
+        _processUri(uri);
+      },
+      onError: (err) {
+        debugPrint('Error in app link stream: $err');
+      },
+    );
   }
 
   Future<void> _handleInitialAppLink() async {
@@ -70,25 +72,26 @@ class _MyAppState extends State<MyApp> {
         _processUri(initialUri);
       }
     } on PlatformException catch (e) {
-      debugPrint('Failed to get initial app link: $e');
+      debugPrint('PlatformException while getting initial app link: $e');
     } catch (e) {
-      debugPrint('Error getting initial app link: $e');
+      debugPrint('Error while getting initial app link: $e');
     }
   }
 
   void _processUri(Uri uri) {
     debugPrint('Processing app link: $uri');
 
-    if (uri.scheme == 'geotask' && uri.host == 'reset_password') {
+    final isResetPasswordDeepLink =
+        (uri.scheme == 'geotask' && uri.host == 'reset_password') ||
+            (uri.host == 'myapp.guessit.com' && uri.path == '/resetpass');
+
+    if (isResetPasswordDeepLink) {
       final token = uri.queryParameters['token'];
       if (token != null) {
-        // Navigate after frame build to avoid errors during init
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => ForgetPasswordPage(),
-            ),
+            MaterialPageRoute(builder: (_) => ForgetPasswordPage()),
           );
         });
       }

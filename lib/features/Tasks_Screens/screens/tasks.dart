@@ -1256,7 +1256,7 @@ class TaskListFilter extends StatelessWidget {
               },
               child: role == '1'
                   ? TaskCardList(
-                  avatar: TasksCubit.get(context).getAllTaskListFilter![index].assigned_to!.avatar != null
+                  avatar: TasksCubit.get(context).getAllTaskListFilter?[index].assigned_to?.avatar != null
                       ? TasksCubit.get(context)
                       .getAllTaskListFilter![index]
                       .assigned_to!

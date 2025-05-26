@@ -12,21 +12,33 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
   final emailController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  static final _emailRegex =
+  RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"); // Email pattern
+
   Future<void> forgetPassword(BuildContext context) async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
+    final email = emailController.text.trim();
 
     final body = {
-      'email': emailController.text.trim(),
-      'reset_url': 'geotask://reset_password',
+      'email': email,
+      'reset_url': 'geotask.com://reset_password',
     };
 
-    print('Request Body: $body');
+    debugPrint('Sending forget password request: $body');
     emit(LoadingForgetPassword());
 
     try {
-      final response =
-      await DioHelper.post("auth/password/request", true, body: body);
+      final response = await DioHelper.post(
+        "auth/password/request",
+        true,
+        body: body,
+      );
+
       final data = response.data as Map<String, dynamic>;
-      print("Response Data: $data");
+      debugPrint("Forget password response: $data");
 
       final isSuccess = data['public'] == true;
       final message = data['data'] ?? data['message'] ?? 'Password reset initiated.';
@@ -35,10 +47,8 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
         emit(LoadingSuccess());
         Utils.showSnackBar(context, message.toString());
 
-        // Navigate to OTP only if email is valid
-        if (RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$").hasMatch(emailController.text.trim())) {
-          Navigator.push(
-            context,
+        if (_emailRegex.hasMatch(email)) {
+          Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => OtpPage()),
           );
         }
@@ -49,7 +59,7 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
     } catch (e) {
       emit(LoadingError());
       Utils.showSnackBar(context, "حدث خطأ أثناء إعادة تعيين كلمة المرور");
-      print("ForgetPassword error: $e");
+      debugPrint("ForgetPasswordCubit error: $e");
     }
   }
 }
