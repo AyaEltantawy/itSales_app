@@ -83,6 +83,7 @@ class AddTaskRequestModel {
   String? assigned_to;
   List<Files>? files;
   int? location;
+  int? company;
 
   AddTaskRequestModel({
     this.status,
@@ -100,6 +101,7 @@ class AddTaskRequestModel {
     this.assigned_to,
     this.files,
     this.location,
+    this.company
   });
 
   factory AddTaskRequestModel.fromJson(Map<String, dynamic> json) => _$AddTaskRequestModelFromJson(json);

@@ -90,6 +90,7 @@ class TasksCubit extends Cubit<TasksStates> {
     required String task_status,
   }) async {
     emit(AddLoadingUserTaskState());
+    print("companyId${companyId}");
 
     await repo
         .addTask(AddTaskRequestModel(
@@ -106,6 +107,7 @@ class TasksCubit extends Cubit<TasksStates> {
       priority: priority,
       start_date: start_date,
       task_status: task_status,
+      company: companyId
     ))
         .then((value) {
       emit(AddSuccessUserTaskState());
@@ -128,6 +130,7 @@ class TasksCubit extends Cubit<TasksStates> {
           message: ' راجع مهماتك الواردة:  ${value.data!.title.toString()}',
           title: 'هناك مهمة جديدة',
           user: value.data!.assigned_to!.id!.toInt());
+
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
