@@ -463,8 +463,8 @@ class TaskList extends StatelessWidget {
                               ? cubit.getUserTaskList![index].title.toString()
                               : cubit.getAllTaskList![index].title.toString(),
                           nameEmployee: role != "3"
-                              ? '${TasksCubit.get(context).getAllTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to!.last_name.toString()}'
-                              : '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}',
+                              ? '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name.toString()}'
+                              : '${TasksCubit.get(context).getUserTaskList![index].assigned_to?.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to?.last_name.toString()}',
                           nameClient: role == "3"
                               ? cubit.getUserTaskList![index].client_name
                               .toString()
@@ -541,36 +541,9 @@ class TaskList extends StatelessWidget {
                     .toString()
                     : '',
                 avatar: role == "3"
-                    ? (TasksCubit.get(context)
-                    .getUserTaskList![index]
-                    .assigned_to!
-                    .avatar !=
-                    null
-                    ? TasksCubit.get(context)
-                    .getUserTaskList![index]
-                    .assigned_to!
-                    .avatar!
-                    .data!
-                    .full_url
-                    .toString()
-                    : 'null')
-                    : (TasksCubit.get(context)
-                    .getAllTaskList![index]
-                    .assigned_to !=
-                    null &&
-                    TasksCubit.get(context)
-                        .getAllTaskList![index]
-                        .assigned_to!
-                        .avatar !=
-                        null
-                    ? TasksCubit.get(context)
-                    .getAllTaskList![index]
-                    .assigned_to!
-                    .avatar!
-                    .data!
-                    .full_url
-                    .toString()
-                    : 'null'),
+                    ? (TasksCubit.get(context).getUserTaskList![index].assigned_to?.avatar?.data?.full_url?.toString() ?? 'null')
+                    : (TasksCubit.get(context).getAllTaskList![index].assigned_to?.avatar?.data?.full_url?.toString() ?? 'null'),
+
                 names: role == '3'
                     ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}'
                     : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name.toString()}',

@@ -31,7 +31,7 @@ class TaskDetailsScreen extends StatefulWidget {
   final String locationId ;
   final String link ;
   final String task_status ;
- final List<FilesResponseModel>? file;
+ final List<dynamic>? file;
   final int id ;
 
 

@@ -2,11 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.guessit.geotask">
 
-    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- Scoped storage note: removed WRITE/READ_EXTERNAL_STORAGE -->
 
     <application
         android:name="${applicationName}"
@@ -22,66 +20,29 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
 
-            <!-- Launcher Intent -->
+            <!-- Launcher intent -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="eby-itsales.guessitt.com"
+                    android:pathPrefix="/reset-password" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Custom Deep Link (e.g., geotask://resetpass) -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="geotask" />
-            </intent-filter>
-
-            <!-- Web Deep Link: https://myapp.guessit.com/resetpass -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="myapp.guessit.com"
-                    android:pathPrefix="/resetpass" />
-            </intent-filter>
-
-            <!-- Optional Web Deep Link: https://geotask.com -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="geotask.com"
-                    android:pathPrefix="/" />
-            </intent-filter>
-
-            <!-- Splash Theme -->
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
         </activity>
 
-        <!-- Flutter engine config -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-
-    <!-- Optional Queries (only needed if querying external apps) -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT" />
-            <data android:mimeType="text/plain" />
-        </intent>
-
-        <!-- Optional: Allow querying of geotask scheme -->
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="geotask" />
-        </intent>
-    </queries>
-
 </manifest>

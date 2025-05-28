@@ -7,7 +7,7 @@ import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-
+String? resetToken;
 String? token ;
 String? role ;
 String? userId ;

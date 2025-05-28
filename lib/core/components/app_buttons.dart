@@ -26,12 +26,12 @@ IconData? icon,
 
             color: isColor? AppColors.primary : AppColors.textWhite,
             border: Border.all(width: 1,color: AppColors.primary),
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(100.r),
           ),
           child: Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon,color: Colors.white,size: 30,)??Container(),
-              SizedBox(width: 5.w,),
+              //Icon(icon,color: Colors.white,size: 30,)??Container(),
+              //SizedBox(width: 5.w,),
               Text(textAlign: TextAlign.center,
                 text,
                 style: TextStyle(

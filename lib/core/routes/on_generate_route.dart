@@ -62,7 +62,7 @@ class RouteGenerator {
         return animatedNavigation(screen: const OnBoardingPage());
 
       case AppRoutes.login:
-        return animatedNavigation(screen: const LoginPage());
+        return animatedNavigation(screen: LoginPage());
 
       case AppRoutes.choosePage:
         return animatedNavigation(screen: const ChoosePage());
@@ -115,7 +115,7 @@ class RouteGenerator {
       case AppRoutes.signup:
         return animatedNavigation(screen: const SignUpPage());
       case AppRoutes.successPage:
-        return animatedNavigation(screen:  SuccessPage());
+        return animatedNavigation(screen: SuccessPage());
       case AppRoutes.profilePage:
         return animatedNavigation(screen: const SettingsPage());
 
@@ -126,20 +126,20 @@ class RouteGenerator {
         return animatedNavigation(screen: const NumberVerificationPage());
 
       case AppRoutes.forgotPassword:
-        return animatedNavigation(screen:  ForgetPasswordPage());
+        return animatedNavigation(screen: ForgetPasswordPage());
 
       case AppRoutes.passwordReset:
         return animatedNavigation(screen: const PasswordResetPage());
 
       case AppRoutes.homeEmployee:
         return animatedNavigation(
-            screen:  HomeEmployeeScreen(
+            screen: HomeEmployeeScreen(
           back: false,
         ));
       case AppRoutes.helpPge:
         return animatedNavigation(screen: const HelpPage());
       case AppRoutes.editDataPage:
-        return animatedNavigation(screen:  EditDataPage());
+        return animatedNavigation(screen: EditDataPage());
 
       case AppRoutes.addTask:
         return animatedNavigation(

@@ -1,45 +1,43 @@
 import 'package:bloc/bloc.dart';
+import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/routes/app_routes.dart';
+import 'package:itsale/core/routes/magic_router.dart';
+import '../../../../core/dio_helper.dart';
 
+import '../../../../core/utils/token.dart';
 import 'reset_password_state.dart';
 
 class ResetPasswordCubit extends Cubit<ResetPasswordState> {
-  ResetPasswordCubit() : super(ResetPasswordState().init());
-  // confirmPassword() async {
-  //   final body = {
-  //     'email': email,
-  //     'code': otpCode,
-  //     'password': passwordController.text.toString()
-  //   };
-  //   print('email $email');
-  //
-  //   print('body ${body}');
-  //   emit(LoadingConfirm());
-  //   DioHelper.post("auth/forget/reset", false, body: body).then((response) {
-  //     final data = response.data as Map<String, dynamic>;
-  //
-  //     print("dataaa $data");
-  //     // print(data['message']);
-  //     if (data['status'] == true) {
-  //       emit(LoadingSuccess());
-  //       showDialog(
-  //           context: MagicRouter.currentContext,
-  //           builder: (context) => ResetPasswordDialog(
-  //             defaultText: 'Congratulations',
-  //             mainText: "Reset Code has been sent to your Email at ",
-  //           ));
-  //       MagicRouter.navigateTo(LoginPage());
-  //       print('data ${data['data']}');
-  //       //Utils.showSnackBar(MagicRouter.currentContext,data['data']as bool,);
-  //     } else {
-  //       emit(LoadingError());
-  //       Utils.showSnackBar(
-  //         MagicRouter.currentContext,
-  //         data['message'],
-  //       );
-  //     }
-  //   });
-  // }
-  //
-  //
+  ResetPasswordCubit() : super(ResetPasswordInitial());
 
+  void resetPassword({
+
+    required String newPassword,
+  }) async {
+    final body = {
+      'token': resetToken,
+      'password': newPassword,
+    };
+
+    emit(LoadingConfirm());
+
+    try {
+      final response = await DioHelper.post(
+        "auth/password/reset",
+        false,
+        body: body,
+      );
+
+      final data = response.data;
+print("dataReset$data");
+      if (data['status'] == true) {
+        emit(LoadingSuccess());
+        navigateTo(MagicRouter.currentContext!, AppRoutes.login);
+      } else {
+        emit(LoadingError(message: data['message'] ?? "حدث خطأ غير معروف"));
+      }
+    } catch (e) {
+      emit(LoadingError(message: "فشل الاتصال بالخادم"));
+    }
+  }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:itsale/core/utils/token.dart';
+import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
 
 import '../components/app_back_button.dart';
 import '../components/network_image.dart';
@@ -62,7 +64,12 @@ class UnknownPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.entryPoint);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+                  );
+
                 },
                 child: const Text('Try Again'),
               ),

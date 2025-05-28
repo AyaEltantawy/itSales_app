@@ -88,76 +88,78 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: AppDefaults.padding),
-                      height: 80.h,
-                      decoration: BoxDecoration(
-                        color: globalDark
-                            ? AppColors.cardColorDark
-                            : AppColors.gray,
-                        borderRadius: AppDefaults.borderRadius,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              user?.avatar?.data == null
-                                  ? Padding(
-                                      padding: EdgeInsets.only(
-                                          right: 8.0.w, left: 10.0.w),
-                                      child: Container(
-                                        height: 40.h,
-                                        width: 40.w,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.gray,
-                                          borderRadius:
-                                              BorderRadius.circular(5.r),
+                    InkWell(onTap: (){navigateTo(context,AppRoutes.editDataPage);},
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: AppDefaults.padding),
+                        height: 80.h,
+                        decoration: BoxDecoration(
+                          color: globalDark
+                              ? AppColors.cardColorDark
+                              : AppColors.gray,
+                          borderRadius: AppDefaults.borderRadius,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                user?.avatar?.data == null
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 8.0.w, left: 10.0.w),
+                                        child: Container(
+                                          height: 40.h,
+                                          width: 40.w,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.gray,
+                                            borderRadius:
+                                                BorderRadius.circular(5.r),
+                                          ),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 8.0.w, left: 10.0.w),
+                                        child: Container(
+                                          height: 40.h,
+                                          width: 40.w,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5.r),
+                                          ),
+                                          child: NetworkImageWithLoader(
+                                            user!.avatar!.data!.full_url
+                                                .toString(),
+                                          ),
                                         ),
                                       ),
-                                    )
-                                  : Padding(
-                                      padding: EdgeInsets.only(
-                                          right: 8.0.w, left: 10.0.w),
-                                      child: Container(
-                                        height: 40.h,
-                                        width: 40.w,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5.r),
-                                        ),
-                                        child: NetworkImageWithLoader(
-                                          user!.avatar!.data!.full_url
-                                              .toString(),
-                                        ),
-                                      ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${user?.first_name ?? ''} ${user?.last_name ?? ''}',
+                                      style: AppFonts.style16Normal,
                                     ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${user?.first_name ?? ''} ${user?.last_name ?? ''}',
-                                    style: AppFonts.style16Normal,
-                                  ),
-                                  Text(
-                                    role == "1"
-                                        ? AppLocalizations.of(context)!
-                                            .translate("manager")
-                                        : AppLocalizations.of(context)!
-                                            .translate("employee"),
-                                    style: AppFonts.style12light,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: ColorsManager.black,
-                          )
-                        ],
+                                    Text(
+                                      role == "1"
+                                          ? AppLocalizations.of(context)!
+                                              .translate("manager")
+                                          : AppLocalizations.of(context)!
+                                              .translate("employee"),
+                                      style: AppFonts.style12light,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_outlined,
+                              color: ColorsManager.black,
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     Container(

@@ -17,7 +17,7 @@ import 'forget_password_state.dart';
 class ForgetPasswordPage extends StatelessWidget {
   ForgetPasswordPage({super.key});
 
-  final String resetUrl = "geotask.com://reset_password";
+  final String resetUrl = "https://eby-itsales.guessitt.com/reset-password";
 
   Future<void> _launchResetUrl(BuildContext context) async {
     final Uri url = Uri.parse(resetUrl);
@@ -78,7 +78,7 @@ class ForgetPasswordPage extends StatelessWidget {
                         context,
                         keyboardType: TextInputType.emailAddress,
                         controller: cubit.emailController,
-                        validate: Validators.requiredWithFieldName('البريد الالكتروني').call,
+                        validator: Validators.requiredWithFieldName('البريد الالكتروني').call,
                         prefix: const Icon(AppIcons.email),
                         label: 'اكتب البريد الالكتروني',
                       ),

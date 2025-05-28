@@ -397,7 +397,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             context,
                             controller: taskTitle,
                             keyboardType: TextInputType.text,
-                            validate: (value) {
+                            validator: (value) {
                               if (value == null || value == '') {
                                 return 'لا تترك هذا الحقل فارغا';
                               }
@@ -416,7 +416,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             context,
                             controller: deadlineController,
                             keyboardType: TextInputType.datetime,
-                            validate: (value) {
+                            validator: (value) {
                               if (value == null || value == '') {
                                 return 'لا تترك هذا الحقل فارغا';
                               }
@@ -485,7 +485,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           defaultTextFormFeild(
                             context,
                             keyboardType: TextInputType.text,
-                            validate: (value) {
+                            validator: (value) {
                               if (value == null || value == '') {
                                 return 'لا تترك هذا الحقل فارغا';
                               }
@@ -505,7 +505,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               defaultTextFormFeild(
               context,
               keyboardType: TextInputType.text,
-              validate: (value) {
+              validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'لا تترك هذا الحقل فارغا';
                 }
@@ -598,7 +598,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           defaultTextFormFeild(
                             context,
                             keyboardType: TextInputType.name,
-                            validate: (value) {
+                            validator: (value) {
                               if (value == null || value == '') {
                                 return 'لا تترك هذا الحقل فارغا';
                               }
@@ -616,7 +616,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           defaultTextFormFeild(
                             context,
                             keyboardType: TextInputType.phone,
-                            validate: (value) {
+                            validator: (value) {
                               if (value == null || value == '') {
                                 return 'لا تترك هذا الحقل فارغا';
                               }
@@ -694,6 +694,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             deadlineController.text != '' &&
                             !widget.isEdit) {
                           TasksCubit.get(context).addTaskFun(
+                            company: companyId,
                             status: 'published',
                             assigned_to:
                                 role == '1' ? selectedId : userId.toString(),

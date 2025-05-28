@@ -25,7 +25,9 @@ class OtpPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Image.asset("assets/images/xicon.png"),
+                  InkWell(
+                      onTap: (){navigateTo(context, AppRoutes.forgotPassword);},
+                      child: Image.asset("assets/images/xicon.png")),
                   SizedBox(
                     width: 10.w,
                   ),

@@ -5,6 +5,7 @@ import 'package:itsale/core/dio_helper.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
 import 'package:itsale/features/auth/data/repo.dart';
+import 'package:itsale/features/auth/screens/login_page.dart';
 import 'package:itsale/features/auth/screens/password_changed_success/success_view.dart';
 import 'package:itsale/features/entrypoint/entrypoint_ui.dart';
 import '../../../../core/app_storage/app_storage.dart';
@@ -86,9 +87,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       'password': password,
       'first_name': firstNameController.text.trim(),
       'last_name': lastNameController.text.trim(),
-      'role': '1',
-
-      //AppCubit.get(context).getInfoLogin?.companies?.id,
+      'role': role.toString() == "1" ? "1" : role.toString(),
     };
 
     print('Register body: $body');
@@ -112,43 +111,27 @@ class RegisterCubit extends Cubit<RegisterState> {
       final responseError = data['error'];
 
       if (responseData != null && responseData['code'] == 'created') {
-
         final loginResponse = await repo.loginSales(
           login_model.SalesModel(email: email, password: password),
         );
 
-        final loginData = loginResponse.data;
-        final user = loginData?.user;
-        final tokenValue = loginData?.token;
+        emit(LoadingSuccess());
 
-        if (tokenValue != null && user != null) {
-          await CacheHelper.saveData(key: 'token', value: tokenValue);
-          await CacheHelper.saveData(key: 'role', value: user.role ?? '');
-          await CacheHelper.saveData(
-              key: 'fName', value: user.first_name ?? '');
-          await CacheHelper.saveData(key: 'lName', value: user.last_name ?? '');
-          await CacheHelper.saveData(key: 'email', value: user.email ?? '');
-          await CacheHelper.saveData(key: 'userId', value: user.id ?? '');
+        if (context.mounted) {
+          Utils.showSnackBar(
+            context,
+            responseData['message'] ?? 'تم التسجيل بنجاح',
+          );
 
-
-          token = tokenValue;
-          role = user.role ?? '';
-          userId = user.id ?? '';
-
-          emit(LoadingSuccess());
-
-          if (context.mounted) {
-            Utils.showSnackBar(
-                context, responseData['message'] ?? 'تم التسجيل بنجاح');
-
-            navigateTo(context, AppRoutes.successPage);
-          }
-        } else {
-          emit(LoadingFailed());
-          if (context.mounted) {
-            Utils.showSnackBar(
-                context, "لم يتم تسجيل الدخول تلقائيًا بعد التسجيل");
-          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(
+                initialPassword: passwordController,
+                initialEmail: emailController,
+              ),
+            ),
+          );
         }
       } else if (responseError != null) {
         final errorMessage = responseError['message'] ?? "حدث خطأ غير معروف";
@@ -184,4 +167,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     timezoneController.dispose();
     return super.close();
   }
-}
+
+
+
+  }
+

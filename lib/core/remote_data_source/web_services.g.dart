@@ -131,10 +131,14 @@ class _WebServices implements WebServices {
   }
 
   @override
-  Future<AddUserModel> addUser(AddUserRequestModel add) async {
+  Future<AddUserModel> addUser(
+    AddUserRequestModel add,
+    String token,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(add.toJson());
     final _options = _setStreamType<AddUserModel>(Options(
@@ -144,7 +148,7 @@ class _WebServices implements WebServices {
     )
         .compose(
           _dio.options,
-          'custom/signup',
+          'users',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -300,7 +304,7 @@ class _WebServices implements WebServices {
     )
         .compose(
           _dio.options,
-          'items/tasks?fields=*.*.*',
+          'items/tasks',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -480,7 +484,7 @@ class _WebServices implements WebServices {
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<GetCompanyModel>(Options(
+    final _options = _setStreamType<CompanyModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -511,7 +515,6 @@ class _WebServices implements WebServices {
   Future<AddEmployeeModel> addEmployee(
     String token,
     AddEmployeeRequestModel add,
-
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

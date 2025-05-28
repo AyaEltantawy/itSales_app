@@ -74,7 +74,7 @@ class _ChoosePageState extends State<ChoosePage> {
                 InkWell(
                   onTap: ()
                   {
-                    Navigator.of(context).push(loginTransition(const LoginPage()));
+                    Navigator.of(context).push(loginTransition( LoginPage()));
                   },
                   child:   AccountTypeCard(
                     icon: AppImages.employee,
@@ -87,7 +87,7 @@ class _ChoosePageState extends State<ChoosePage> {
                 InkWell(
                   onTap: ()
                   {
-                    Navigator.of(context).push(loginTransition(const LoginPage()));
+                    Navigator.of(context).push(loginTransition(LoginPage()));
                   },
                   child:  AccountTypeCard(
                     icon: AppImages.manager,

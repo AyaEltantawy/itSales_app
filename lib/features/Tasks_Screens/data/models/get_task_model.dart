@@ -10,7 +10,10 @@ class GetUserTaskModel {
 
   GetUserTaskModel({this.data});
 
-  factory GetUserTaskModel.fromJson(Map<String, dynamic> json) => _$GetUserTaskModelFromJson(json);
+ factory GetUserTaskModel.fromJson(Map<String, dynamic> json) =>
+     _$GetUserTaskModelFromJson(json);
+
+
   Map<String, dynamic> toJson() => _$GetUserTaskModelToJson(this);
 }
 
@@ -36,7 +39,7 @@ class DataUserTask {
   Location? location;
   String? complete_date;
   String? cancelled_date;
-  List<FilesResponseModel>? files;
+  List<dynamic>? files;
 
   DataUserTask({
     this.id,
@@ -62,7 +65,9 @@ class DataUserTask {
     this.files,
   });
 
-  factory DataUserTask.fromJson(Map<String, dynamic> json) => _$DataUserTaskFromJson(json);
+  factory DataUserTask.fromJson(Map<String, dynamic> json) =>
+      _$DataUserTaskFromJson(json);
+
   Map<String, dynamic> toJson() => _$DataUserTaskToJson(this);
 }
 
@@ -81,30 +86,31 @@ class AddTaskRequestModel {
   String? description;
   String? notes;
   String? assigned_to;
-  List<Files>? files;
+  dynamic? files;
   int? location;
   int? company;
 
-  AddTaskRequestModel({
-    this.status,
-    this.due_date,
-    this.title,
-    this.client_name,
-    this.client_phone,
-    this.task_status,
-    this.priority,
-    this.start_date,
-    this.complete_date,
-    this.cancelled_date,
-    this.description,
-    this.notes,
-    this.assigned_to,
-    this.files,
-    this.location,
-    this.company
-  });
+  AddTaskRequestModel(
+      {this.status,
+      this.due_date,
+      this.title,
+      this.client_name,
+      this.client_phone,
+      this.task_status,
+      this.priority,
+      this.start_date,
+      this.complete_date,
+      this.cancelled_date,
+      this.description,
+      this.notes,
+      this.assigned_to,
+      this.files,
+      this.location,
+      this.company});
 
-  factory AddTaskRequestModel.fromJson(Map<String, dynamic> json) => _$AddTaskRequestModelFromJson(json);
+  factory AddTaskRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$AddTaskRequestModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AddTaskRequestModelToJson(this);
 }
 
@@ -115,6 +121,7 @@ class Files {
   Files({this.directus_files_id});
 
   factory Files.fromJson(Map<String, dynamic> json) => _$FilesFromJson(json);
+
   Map<String, dynamic> toJson() => _$FilesToJson(this);
 }
 
@@ -132,10 +139,9 @@ class FilesResponseModel {
       directus_files_id: raw is Map<String, dynamic>
           ? DirectusFilesId.fromJson(raw)
           : raw is int
-          ? DirectusFilesId(id: raw)
-          : null,
+              ? DirectusFilesId(id: raw)
+              : null,
     );
-
   }
 
   Map<String, dynamic> toJson() => _$FilesResponseModelToJson(this);
@@ -183,7 +189,9 @@ class DirectusFilesId {
     this.data,
   });
 
-  factory DirectusFilesId.fromJson(Map<String, dynamic> json) => _$DirectusFilesIdFromJson(json);
+  factory DirectusFilesId.fromJson(Map<String, dynamic> json) =>
+      _$DirectusFilesIdFromJson(json);
+
   Map<String, dynamic> toJson() => _$DirectusFilesIdToJson(this);
 }
 
@@ -193,7 +201,9 @@ class DirectusFilesIdRequest {
 
   DirectusFilesIdRequest({this.id});
 
-  factory DirectusFilesIdRequest.fromJson(Map<String, dynamic> json) => _$DirectusFilesIdRequestFromJson(json);
+  factory DirectusFilesIdRequest.fromJson(Map<String, dynamic> json) =>
+      _$DirectusFilesIdRequestFromJson(json);
+
   Map<String, dynamic> toJson() => _$DirectusFilesIdRequestToJson(this);
 }
 
@@ -202,7 +212,10 @@ class AddTaskModel {
   DataUserTask? data;
 
   AddTaskModel({this.data});
-  factory AddTaskModel.fromJson(Map<String, dynamic> json) => _$AddTaskModelFromJson(json);
+
+  factory AddTaskModel.fromJson(Map<String, dynamic> json) =>
+      _$AddTaskModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AddTaskModelToJson(this);
 }
 
@@ -211,19 +224,20 @@ class AllTasksModel {
   List<DataAllTasks>? data;
 
   AllTasksModel({this.data});
-  factory AllTasksModel.fromJson(Map<String, dynamic> json) => _$AllTasksModelFromJson(json);
+
+  factory AllTasksModel.fromJson(Map<String, dynamic> json) =>
+      _$AllTasksModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AllTasksModelToJson(this);
 }
 
-
-@JsonSerializable()
 class DataAllTasks {
   int? id;
   String? status;
-  dynamic? sort;
-  Owner? owner;
+  dynamic sort;
+  dynamic? owner;
   String? created_on;
-  Owner? modified_by;
+  dynamic? modified_by;
   String? modified_on;
   AssignedTo? assigned_to;
   String? due_date;
@@ -235,12 +249,11 @@ class DataAllTasks {
   String? task_status;
   String? priority;
   String? start_date;
-  Location? location;
+  dynamic? location;
   String? complete_date;
   String? cancelled_date;
-  List<FilesResponseModel>? files;
-  //Company? companies;
-  //int? companyId;
+  dynamic? files;
+  dynamic? company;
 
   DataAllTasks({
     this.id,
@@ -264,37 +277,19 @@ class DataAllTasks {
     this.complete_date,
     this.cancelled_date,
     this.files,
-    //this.companies,
-   // this.companyId,
+    this.company,
   });
 
   factory DataAllTasks.fromJson(Map<String, dynamic> json) {
-    final companiesJson = json['companies'];
-    // Company? company;
-    // int? companyId;
-    //
-    // if (companiesJson is Map<String, dynamic>) {
-    //   company = Company.fromJson(companiesJson);
-    //   companyId = companiesJson['id'] as int?;
-    // } else if (companiesJson is int) {
-    //   companyId = companiesJson;
-    // }
-
     return DataAllTasks(
-      id: json['id'],
+      id: json['id'] as int?,
       status: json['status'] as String?,
       sort: json['sort'],
-      owner: json['owner'] is Map<String, dynamic>
-          ? Owner.fromJson(json['owner'])
-          : null,
+      owner:json['owner'],
       created_on: json['created_on'] as String?,
-      modified_by: json['modified_by'] is Map<String, dynamic>
-          ? Owner.fromJson(json['modified_by'])
-          : null,
+      modified_by: json['modified_by'],
       modified_on: json['modified_on'] as String?,
-      assigned_to: json['assigned_to'] is Map<String, dynamic>
-          ? AssignedTo.fromJson(json['assigned_to'])
-          : null,
+      assigned_to: json['assigned_to'] != null ? AssignedTo.fromJson(json['assigned_to']) : null, //json['assigned_to'],
       due_date: json['due_date'] as String?,
       title: json['title'] as String?,
       description: json['description'] as String?,
@@ -304,72 +299,88 @@ class DataAllTasks {
       task_status: json['task_status'] as String?,
       priority: json['priority'] as String?,
       start_date: json['start_date'] as String?,
-      location: json['location'] is Map<String, dynamic>
-          ? Location.fromJson(json['location'])
-          : null,
+      location: json['location'],
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
-      files: (json['files'] as List?)
-          ?.map((e) {
-        if (e is Map<String, dynamic>) {
-          return FilesResponseModel.fromJson(e);
-        } else if (e is int) {
-          return FilesResponseModel(id: e); // handle int fallback
-        } else {
-          return null;
-        }
-      })
-          .whereType<FilesResponseModel>()
-          .toList(),
-
-     // companies: company,
-     // companyId: companyId,
+      files: json['files'],
+      company: json['company'],
     );
   }
 
-  Map<String, dynamic> toJson() => _$DataAllTasksToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'sort': sort,
+      'owner': owner?.toJson(),
+      'created_on': created_on,
+      'modified_by': modified_by?.toJson(),
+      'modified_on': modified_on,
+      'assigned_to': assigned_to?.toJson(),
+      'due_date': due_date,
+      'title': title,
+      'description': description,
+      'client_name': client_name,
+      'client_phone': client_phone,
+      'notes': notes,
+      'task_status': task_status,
+      'priority': priority,
+      'start_date': start_date,
+      'location': location?.toJson(),
+      'complete_date': complete_date,
+      'cancelled_date': cancelled_date,
+      'files': files?.map((e) => e.toJson()).toList(),
+      'company': company?.toJson(),
+    };
+  }
+
+  static Owner? _parseOwner(dynamic json) {
+    if (json == null) return null;
+    if (json is int) return Owner(id: json);
+    if (json is Map<String, dynamic>) return Owner.fromJson(json);
+    return null;
+  }
 }
 
-// @JsonSerializable()
-// class Company {
-//   dynamic? id;
-//   String? status;
-//   dynamic sort;
-//   dynamic? owner;
-//   String? created_on;
-//   dynamic? modified_by;
-//   String? modified_on;
-//   String? name;
-//   dynamic? logo;
-//   String? email;
-//   String? whatsapp;
-//   String? website;
-//
-//   Company({
-//     this.id,
-//     this.status,
-//     this.sort,
-//     this.owner,
-//     this.created_on,
-//     this.modified_by,
-//     this.modified_on,
-//     this.name,
-//     this.logo,
-//     this.email,
-//     this.whatsapp,
-//     this.website,
-//   });
-//
-//   factory Company.fromJson(Map<String, dynamic> json) =>
-//       _$CompanyFromJson(json);
-//
-//   Map<String, dynamic> toJson() => _$CompanyToJson(this);
-// }
+@JsonSerializable()
+class Company {
+  int? id;
+  String? status;
+  dynamic sort;
+  int? owner;
+  String? created_on;
+  int? modified_by;
+  String? modified_on;
+  String? name;
+  String? logo;
+  String? email;
+  String? whatsapp;
+  String? website;
+
+  Company({
+    this.id,
+    this.status,
+    this.sort,
+    this.owner,
+    this.created_on,
+    this.modified_by,
+    this.modified_on,
+    this.name,
+    this.logo,
+    this.email,
+    this.whatsapp,
+    this.website,
+  });
+
+  factory Company.fromJson(Map<String, dynamic> json) =>
+      _$CompanyFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CompanyToJson(this);
+}
 
 @JsonSerializable()
-@JsonSerializable()
 class Owner {
-  dynamic id;
+  int? id;
   String? status;
   Role? role;
   String? first_name;
@@ -389,9 +400,7 @@ class Owner {
   bool? email_notifications;
   String? last_access_on;
   String? last_page;
-
-  /// Only keep this - no dynamic or map allowed
-  int companies;
+  int? companies;
 
   Owner({
     this.id,
@@ -414,21 +423,17 @@ class Owner {
     this.email_notifications,
     this.last_access_on,
     this.last_page,
-    required this.companies,
+    this.companies,
   });
 
   factory Owner.fromJson(Map<String, dynamic> json) {
-    // Handle companies being sent as map or int
-    final cleanedJson = Map<String, dynamic>.from(json);
+    final cleaned = Map<String, dynamic>.from(json);
     final rawCompanies = json['companies'];
-
-    cleanedJson['companies'] = (rawCompanies is Map && rawCompanies.containsKey('id'))
-        ? rawCompanies['id'] as int
-        : rawCompanies is int
-        ? rawCompanies
-        : 0;
-
-    return _$OwnerFromJson(cleanedJson);
+    cleaned['companies'] =
+        (rawCompanies is Map && rawCompanies.containsKey('id'))
+            ? rawCompanies['id'] as int
+            : (rawCompanies is int ? rawCompanies : null);
+    return _$OwnerFromJson(cleaned);
   }
 
   Map<String, dynamic> toJson() => _$OwnerToJson(this);
@@ -480,13 +485,15 @@ class OwnerLocation {
     this.last_page,
   });
 
-  factory OwnerLocation.fromJson(Map<String, dynamic> json) => _$OwnerLocationFromJson(json);
+  factory OwnerLocation.fromJson(Map<String, dynamic> json) =>
+      _$OwnerLocationFromJson(json);
+
   Map<String, dynamic> toJson() => _$OwnerLocationToJson(this);
 }
 
 @JsonSerializable()
 class AssignedTo {
-  dynamic? id;
+  int? id;
   String? status;
   Role? role;
   String? first_name;
@@ -530,13 +537,25 @@ class AssignedTo {
     this.last_page,
   });
 
-  factory AssignedTo.fromJson(Map<String, dynamic> json) => _$AssignedToFromJson(json);
+  AssignedTo.fromJson(Map<String, dynamic> json) {
+    avatar = json['avatar'] != null ? Avatar.fromJson(json['avatar']) : null;
+  }
+  // factory AssignedTo.fromJson(dynamic json) {
+  //
+  //     this.avatar = json['a?vatar'] != null ? Avatar.fromJson(json['avatar']) : null;
+  //
+  //   // if (json == null) return AssignedTo();
+  //   // if (json is int) return AssignedTo(id: json);
+  //   // if (json is Map<String, dynamic>) return _$AssignedToFromJson(json);
+  //   // throw Exception('Invalid type for AssignedTo: ${json.runtimeType}');
+  // }
+
   Map<String, dynamic> toJson() => _$AssignedToToJson(this);
 }
 
 @JsonSerializable()
 class Location {
-  dynamic? id;
+  int? id;
   String? status;
   String? sort;
   OwnerLocation? owner;
@@ -562,6 +581,12 @@ class Location {
     this.map_url,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) => _$LocationFromJson(json);
+  factory Location.fromJson(dynamic json) {
+    if (json == null) return Location();
+    if (json is int) return Location(id: json);
+    if (json is Map<String, dynamic>) return _$LocationFromJson(json);
+    throw Exception('Invalid type for Location: ${json.runtimeType}');
+  }
+
   Map<String, dynamic> toJson() => _$LocationToJson(this);
 }

@@ -58,19 +58,22 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
   getAllSales() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(
-        MagicRouter.currentContext!,
-        'أنت غير متصل بالانترنت',
-      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+      } else {
+        print("Unable to show snackbar: context is null");
+      }
+
 
       emit(NoInternetState());
     } else {
       emit(GetLoadingSalesState());
 
       await repo.allUsers(
-          {'fields': '*.*', 'filter[companies.id]': companyId}).then((value) {
+          {'fields': '*.*', 'filter[companies]': companyId}).then((value) {
         users = value.data;
-        print("dfghjkl ${users?[1].companies?.id}");
+        print("dfghjkl ${companyId}");
         print("userssssssssssssssssssssssssss");
         print(users);
         emit(GetSuccessSalesState());
@@ -92,10 +95,13 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
   getAdmins({int? role, String? search}) async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(
-        MagicRouter.currentContext!,
-        'أنت غير متصل بالانترنت',
-      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+      } else {
+        print("Unable to show snackbar: context is null");
+      }
+
 
       emit(NoInternetState());
     } else {
@@ -196,6 +202,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
               phone_2: phone2,
               whatsapp: whatsapp,
 
+
             ),
          )
         .then((value) {
@@ -229,8 +236,10 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     String? phone2,
     String? whatsapp,
     int? avatar,
+    int? companies
   }) async {
     emit(AddLoadingUserState());
+    print("tokenForAddUsers$token");
     await repo
         .addUser(
 
@@ -241,13 +250,18 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       role: role,
       password: password,
           companies: companyId
-    ))
+    ),)
         .then((value) {
       emit(AddSuccessUserState());
-      navigateTo(MagicRouter.currentContext!, AppRoutes.entryPoint);
+
+      getAllSales();
+      print("companyIdForUser$companyId");
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+      navigateTo(context, AppRoutes.entryPoint);}
       // MagicRouter.navigateTo(EntryPointUI());
       addEmployeeFun(
-          employeeId: value.data!.id.toString(),
+          employeeId: value.data?.id?.toString()??'',
           status: 'published',
           email: emailEmp,
           address: address,
@@ -257,9 +271,10 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
           phone1: '');
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(
-            MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
-
+        final context = MagicRouter.currentContext;
+        if (context != null) {
+          Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+        }
         emit(NoInternetState());
       }
       emit(AddErrorUserState());
@@ -450,7 +465,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
             phone2: phone2,
             whatsapp: whatsapp,
 
-          );
+          companies: companyId);
         }
       } else {
         emit(PostErrorFileState());

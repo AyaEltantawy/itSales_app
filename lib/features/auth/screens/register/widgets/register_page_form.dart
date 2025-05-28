@@ -47,7 +47,7 @@ class RegisterPageForm extends StatelessWidget {
           defaultTextFormFeild(
             context,
             controller: firstNameController,
-            validate: Validators.requiredWithFieldName('الاسم الأول'),
+            validator: Validators.requiredWithFieldName('الاسم الأول'),
             prefix: Icon(AppIcons.person_2_outlined),
             label: "الاسم الأول", keyboardType:TextInputType.name ,
           ),
@@ -56,7 +56,7 @@ class RegisterPageForm extends StatelessWidget {
             keyboardType:TextInputType.name ,
             context,
             controller: lastNameController,
-            validate: Validators.requiredWithFieldName('الاسم الأخير'),
+            validator: Validators.requiredWithFieldName('الاسم الأخير'),
             prefix: Icon(AppIcons.person_2_outlined),
             label: "الاسم الأخير",
           ),
@@ -65,7 +65,7 @@ class RegisterPageForm extends StatelessWidget {
             context,
             keyboardType: TextInputType.emailAddress,
             controller: emailController,
-            validate: Validators.requiredWithFieldName('البريد الالكتروني'),
+            validator: Validators.requiredWithFieldName('البريد الالكتروني'),
             prefix: const Icon(AppIcons.email),
             label: 'البريد الالكتروني',
           ),
@@ -74,7 +74,7 @@ class RegisterPageForm extends StatelessWidget {
             keyboardType: TextInputType.multiline,
             context,
             controller: passwordController,
-            validate: Validators.password,
+            validator: Validators.password,
             onSubmit: (_) => onSubmit(),
             secure: !isPasswordShown,
             prefix: const Icon(AppIcons.lock),
@@ -92,7 +92,7 @@ class RegisterPageForm extends StatelessWidget {
             keyboardType: TextInputType.multiline,
             context,
             controller: confirmPasswordController,
-            validate: (value) {
+            validator: (value) {
               if (value != passwordController.text) {
                 return 'كلمة المرور غير متطابقة';
               }

@@ -30,7 +30,8 @@ class Repository {
       throw Exception('Authentication token not found.');
     }
 
-    return webServices.addUser( add);
+    return webServices.addUser( add,'Bearer $token');
+
   }
 
   // REGISTER

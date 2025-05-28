@@ -33,10 +33,12 @@ class TasksCubit extends Cubit<TasksStates> {
     String? status,
   }) async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(
-        MagicRouter.currentContext!,
-        'أنت غير متصل بالانترنت',
-      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+      } else {
+        print("Unable to show snackbar: context is null");
+      }
 
       emit(NoInternetState());
     } else {
@@ -72,74 +74,97 @@ class TasksCubit extends Cubit<TasksStates> {
     }
   }
 
-  addTaskFun({
-    required String status,
-    required String title,
-    required String description,
-    required String client_phone,
-    required String notes,
-    required String assigned_to,
-    String? cancelled_date,
-    required String client_name,
-    String? complete_date,
-    required String due_date,
-    required String address,
-    required String mapUrl,
-    String? priority,
-    String? start_date,
-    required String task_status,
-  }) async {
+  // Create New Task Function
+  addTaskFun(
+      {required String status,
+      required String title,
+      required String description,
+      required String client_phone,
+      required String notes,
+      required String assigned_to,
+      String? cancelled_date,
+      required String client_name,
+      String? complete_date,
+      required String due_date,
+      required String address,
+      required String mapUrl,
+      String? priority,
+      String? start_date,
+      required String task_status,
+      int? company}) async {
+
+      print({
+                "status": status,
+                "title": title,
+                "description": description,
+                "client_phone": client_phone,
+                "notes": notes,
+                "assigned_to": assigned_to,
+                "cancelled_date": cancelled_date,
+                "client_name": client_name,
+                "complete_date": complete_date,
+                "due_date": due_date,
+                "priority": priority,
+                "start_date": start_date,
+                "task_status": task_status,
+                "company": company
+      });
     emit(AddLoadingUserTaskState());
-    print("companyId${companyId}");
 
-    await repo
-        .addTask(AddTaskRequestModel(
-      status: status,
-      title: title,
-      description: description,
-      client_phone: client_phone,
-      notes: notes,
-      assigned_to: assigned_to,
-      cancelled_date: cancelled_date,
-      client_name: client_name,
-      complete_date: complete_date,
-      due_date: due_date,
-      priority: priority,
-      start_date: start_date,
-      task_status: task_status,
-      company: companyId
-    ))
-        .then((value) {
+    await repo.addTask(AddTaskRequestModel(
+            status: status,
+            title: title,
+            description: description,
+            client_phone: client_phone,
+            notes: notes,
+            assigned_to: assigned_to,
+            cancelled_date: cancelled_date,
+            client_name: client_name,
+            complete_date: complete_date,
+            due_date: due_date,
+            priority: priority,
+            start_date: start_date,
+            task_status: task_status,
+            company: company))
+        .then((response) {
       emit(AddSuccessUserTaskState());
-      postLocationFun(
-          title: title,
-          description: description,
-          client_phone: client_phone,
-          notes: notes,
-          assigned_to: assigned_to,
-          client_name: client_name,
-          due_date: due_date,
-          priority: 'high',
-          task_status: task_status,
-          address: address,
-          map_url: mapUrl,
-          taskId: value.data!.id.toString());
 
-      postNotificationFun(
-          isRead: false,
-          message: ' راجع مهماتك الواردة:  ${value.data!.title.toString()}',
-          title: 'هناك مهمة جديدة',
-          user: value.data!.assigned_to!.id!.toInt());
+      print("response===");
+      print(response);
+
+    //   // print("companyIdForTasks$companyId");
+    //   // postLocationFun(
+    //   //     title: title,
+    //   //     description: description,
+    //   //     client_phone: client_phone,
+    //   //     notes: notes,
+    //   //     assigned_to: assigned_to,
+    //   //     client_name: client_name,
+    //   //     due_date: due_date,
+    //   //     priority: 'high',
+    //   //     task_status: task_status,
+    //   //     address: address,
+    //   //     map_url: mapUrl,
+    //   //     taskId: value.data!.id.toString()
+    //   // );
+    //   //
+    //   // postNotificationFun(
+    //   //     isRead: false,
+    //   //     message: ' راجع مهماتك الواردة:  ${value.data?.title.toString()}',
+    //   //     title: 'هناك مهمة جديدة',
+    //   //     user: value.data!.assigned_to!.id!.toInt()
+    //   // );
+    //   // getAllTasksFun();
 
     }).catchError((onError) async {
-      if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(
-          MagicRouter.currentContext!,
-          'أنت غير متصل بالانترنت',
-        );
-
-        emit(NoInternetState());
-      }
+      // if (await InternetConnectionChecker().hasConnection == false) {
+      //   Utils.showSnackBar(
+      //     MagicRouter.currentContext!,
+      //     'أنت غير متصل بالانترنت',
+      //   );
+      //
+      //   emit(NoInternetState());
+      // }
 
       emit(AddErrorUserTaskState());
       debugPrint('errrrrror ${onError.toString()}');
@@ -231,10 +256,13 @@ class TasksCubit extends Cubit<TasksStates> {
   Future<void> getAllTasksFun() async {
     final hasInternet = await InternetConnectionChecker().hasConnection;
     if (!hasInternet) {
-      Utils.showSnackBar(
-        MagicRouter.currentContext!,
-        'أنت غير متصل بالانترنت',
-      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+      } else {
+        print("Unable to show snackbar: context is null");
+      }
+
       emit(NoInternetState());
       return;
     }
@@ -242,22 +270,14 @@ class TasksCubit extends Cubit<TasksStates> {
     emit(GetLoadingAllTaskState());
 
     try {
-      //TODO: Get user company
-
-      // Try to extract companyId from previously loaded data
-      // if (getAllTaskList != null && getAllTaskList!.isNotEmpty) {
-      //   companyId = getAllTaskList!.first.owner?.companies;
-      // }
-
-      final filters = <String, dynamic>{
-        'fields': '*.*',
-        // if (companyId != null)
-        'filter[company.id]': companyId
-      };
+      final filters = {'fields': '*.*', 'filter[company.id]': companyId};
       print("CommmmmmmmpanyId$companyId");
       final value = await repo.getAllTasks(filters);
 
+
       getAllTaskList = value.data;
+      print("getAllTaskList");
+      print(getAllTaskList?[0].assigned_to);
       emit(GetSuccessAllTaskState());
     } catch (error) {
       final stillHasInternet = await InternetConnectionChecker().hasConnection;
@@ -286,10 +306,13 @@ class TasksCubit extends Cubit<TasksStates> {
   }) async {
     getUserTaskList = [];
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(
-        MagicRouter.currentContext!,
-        'أنت غير متصل بالانترنت',
-      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+      } else {
+        print("Unable to show snackbar: context is null");
+      }
+
       emit(NoInternetState());
       return;
     } else {

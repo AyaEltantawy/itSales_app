@@ -158,7 +158,7 @@ class AppCubit extends Cubit<AppStates> {
       getInfoLogin = userData.data as login_model.DataInfoLogin;
       emit(GetSuccessInfoState());
 
-      // ✅ Save company ID using correct key
+
       final companyId = getInfoLogin?.companies?.id;
       print("companyIId$companyId");
       if (companyId != null) {
@@ -176,7 +176,7 @@ class AppCubit extends Cubit<AppStates> {
       }
     }
 
-    List<Data>? companyData;
+    // List<Data>? companyData;
 
   // Future<void> getCompanyFun() async {
   //   if (!await InternetConnectionChecker().hasConnection) {

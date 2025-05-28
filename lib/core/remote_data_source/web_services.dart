@@ -38,8 +38,8 @@ abstract class WebServices {
   Future<GetUserInfo> editDataUser (@Header('Authorization') String token, @Path('id') String id,  @Body() EditUserRequestModel add) ;
 
 
-  @POST('custom/signup')
-  Future<AddUserModel> addUser (@Body() AddUserRequestModel add) ;
+  @POST('users')
+  Future<AddUserModel> addUser (@Body() AddUserRequestModel add ,@Header('Authorization') String token) ;
 
   //?
   @GET('users')
@@ -54,7 +54,7 @@ abstract class WebServices {
   Future<GetUserTaskModel> getUserTask (@Header('Authorization') String token, @Path('id') String id, @Queries() Map<String, dynamic>? queryParams) ;
 
 
-  @POST('items/tasks?fields=*.*.*')
+  @POST('items/tasks')
   Future<AddTaskModel> addTask (@Header('Authorization') String token, @Body() AddTaskRequestModel add) ;
 
 

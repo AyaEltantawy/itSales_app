@@ -11,15 +11,18 @@ import '../../../core/constants/constants.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/themes/app_themes.dart';
 import '../../../core/utils/snack_bar.dart';
+import '../../../core/utils/token.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/components/app_buttons.dart';
 import '../data/cubit.dart';
 import '../data/states.dart';
 import 'checkbox_and_text.dart' show CheckBoxAndText;
-import 'login_header.dart';
 
 class LoginPageForm extends StatefulWidget {
-  const LoginPageForm({super.key});
+  final TextEditingController? emailController;
+  final TextEditingController? passwordController;
+
+  const LoginPageForm({super.key, this.emailController, this.passwordController});
 
   @override
   State<LoginPageForm> createState() => _LoginPageFormState();
@@ -28,8 +31,27 @@ class LoginPageForm extends StatefulWidget {
 class _LoginPageFormState extends State<LoginPageForm> {
   final _key = GlobalKey<FormState>();
   bool isPasswordShown = false;
-  final emailController = TextEditingController();
-  final passController = TextEditingController();
+
+  late TextEditingController emailController;
+  late TextEditingController passController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = widget.emailController ?? TextEditingController();
+    passController = widget.passwordController ?? TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    if (widget.emailController == null) {
+      emailController.dispose();
+    }
+    if (widget.passwordController == null) {
+      passController.dispose();
+    }
+    super.dispose();
+  }
 
   void onPassShowClicked() {
     setState(() {
@@ -37,8 +59,14 @@ class _LoginPageFormState extends State<LoginPageForm> {
     });
   }
 
-  void onLogin(BuildContext context) {
-    final bool isFormOkay = _key.currentState?.validate() ?? false;
+  void onLogin(BuildContext context) async {
+    final isFormOkay = _key.currentState?.validate() ?? false;
+    if (companyId == null ) {
+      print("Invalid companyId: $companyId");
+      await navigateTo(context, AppRoutes.companyPage);
+    } else {
+      navigateTo(context, AppRoutes.entryPoint);
+    }
 
     if (isFormOkay) {
       AppCubit.get(context).postLoginSales(
@@ -46,21 +74,27 @@ class _LoginPageFormState extends State<LoginPageForm> {
         email: emailController.text.trim(),
         password: passController.text.trim(),
       );
+
     } else {
       Future.delayed(Duration.zero, () {
         if (context.mounted) {
           Utils.showSnackBar(
-              context,
-              AppLocalizations.of(context)!
-                  .translate("Please follow the instructions."));
+            context,
+            AppLocalizations.of(context)!
+                .translate("Please follow the instructions."),
+          );
         }
+
       });
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final cubit = AppCubit.get(context);
+    final local = AppLocalizations.of(context)!;
+
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -74,24 +108,22 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 context,
                 keyboardType: TextInputType.emailAddress,
                 controller: emailController,
-                validate: Validators.requiredWithFieldName(
-                        AppLocalizations.of(context)!
-                            .translate("Please follow the instructions."))
-                    .call,
+                validator: Validators.requiredWithFieldName(
+                  local.translate("Please follow the instructions."),
+                ).call,
                 prefix: const Icon(AppIcons.email),
-                label: AppLocalizations.of(context)!.translate("write_email"),
+                label: local.translate("write_email"),
               ),
               SizedBox(height: 15.h),
               defaultTextFormFeild(
                 context,
                 keyboardType: TextInputType.text,
                 controller: passController,
-                validate: Validators.password.call,
+                validator: Validators.password.call,
                 onSubmit: (v) => onLogin(context),
                 secure: !isPasswordShown,
                 prefix: const Icon(AppIcons.lock),
-                label:
-                    AppLocalizations.of(context)!.translate("write_password"),
+                label: local.translate("write_password"),
                 suffix: IconButton(
                   onPressed: onPassShowClicked,
                   icon: Icon(
@@ -109,7 +141,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
                 isColor: true,
                 height: 56.h,
                 width: double.infinity,
-                text: AppLocalizations.of(context)!.translate("login"),
+                text: local.translate("login"),
                 context: context,
                 textSize: 17.sp,
                 toPage: () {
@@ -121,7 +153,7 @@ class _LoginPageFormState extends State<LoginPageForm> {
               SizedBox(height: 20.h),
               defaultButton(
                 context: context,
-                text: AppLocalizations.of(context)!.translate("back"),
+                text: local.translate("back"),
                 width: double.infinity,
                 height: 56.h,
                 isColor: false,

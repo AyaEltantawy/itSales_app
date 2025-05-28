@@ -1,6 +1,7 @@
 class AppRoutes {
   /// The Initial Page
   static const introLogin = '/intro_login';
+  static const otpPage = '/otp_page';
   static const editDataPage = '/edit_data_page';
   static const splash = '/splash_screen';
   static const onBoarding = '/onboarding';
@@ -36,7 +37,7 @@ class AppRoutes {
   static const confirmPage = '/confirm_page';
   static const registerPage = '/register_page';
   static const chooseLoginOrSignUpPage= '/choose_login_or_sign_up_page';
-  static const otpPage= '/otp';
+
   static const resetPasswordPage= '/resetPasswordPage';
   static const passwordChangedSuccessPage= '/passwordChangedSuccessPage';
 

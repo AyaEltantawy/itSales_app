@@ -28,15 +28,29 @@ class SelectAnyButtonBottomSheet extends StatelessWidget {
               onTap: () {
                 navigateTo(context, AppRoutes.addEmployee);
               },
-              child: defaultButton(
-                context: context,
-                isColor: true,
-                width: double.infinity,
-                text: 'اضافة موظف',
-                icon: Icons.add,
+              child: Container(
                 height: 56.h,
-                textSize: 15.sp,
-                toPage: (){navigateTo(context, AppRoutes.addEmployee);}
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+
+                  color:  AppColors.primary ,
+                  border: Border.all(width: 1,color: AppColors.primary),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.add,color: Colors.white,size: 30,)??Container(),
+                    SizedBox(width: 5.w,),
+                    Text(textAlign: TextAlign.center,
+                      "اضافة موظف",
+                      style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w700
+                          ,color: AppColors.textWhite ),
+                    ),
+                  ],
+                ),
 
               ),
 
@@ -44,22 +58,35 @@ class SelectAnyButtonBottomSheet extends StatelessWidget {
             SizedBox(
               height: 20.w,
             ),
-            InkWell(
-                onTap: () {
-                  navigateTo(context, AppRoutes.addTask);
-                },
-                child: defaultButton(
-                    context: context,
-                    isColor: true,
-                    width: double.infinity,
-                    text: 'اضافة مهمة',
-                    icon: Icons.add,
-                    height: 56.h,
-                    textSize: 15.sp,
-                    toPage: (){navigateTo(context, AppRoutes.addTask);}
 
-                ),),
-          ],
+              InkWell(
+                onTap: (){navigateTo(context, AppRoutes.addTask);},
+                child: Container(
+                  height: 56.h,
+                  width: double.infinity,
+
+                  decoration: BoxDecoration(
+
+                    color:  AppColors.primary ,
+                    border: Border.all(width: 1,color: AppColors.primary),
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add,color: Colors.white,size: 30,)??Container(),
+                      SizedBox(width: 5.w,),
+                      Text(textAlign: TextAlign.center,
+                        "اضافة مهمة",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700
+                            ,color: AppColors.textWhite ),
+                      ),
+                    ],
+                  ),
+
+                ),
+              )          ],
         ),
       ),
     );

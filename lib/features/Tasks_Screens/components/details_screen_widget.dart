@@ -279,7 +279,7 @@ class ClientSection extends StatelessWidget {
 }
 class AttachmentsSection extends StatelessWidget {
   const AttachmentsSection({super.key, required this.files});
- final List<FilesResponseModel>? files ;
+ final List<dynamic>? files ;
 
 
 

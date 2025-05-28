@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
 
 import '../../../../core/dio_helper.dart';
 import '../../../../core/utils/snack_bar.dart';
@@ -24,7 +25,7 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
 
     final body = {
       'email': email,
-      'reset_url': 'geotask.com://reset_password',
+      'reset_url': 'https://eby-itsales.guessitt.com/reset-password',
     };
 
     debugPrint('Sending forget password request: $body');
@@ -48,10 +49,8 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
         Utils.showSnackBar(context, message.toString());
 
         if (_emailRegex.hasMatch(email)) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => OtpPage()),
-          );
-        }
+
+               }
       } else {
         emit(LoadingError());
         Utils.showSnackBar(context, message.toString());

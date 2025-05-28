@@ -75,71 +75,102 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
   }
 
   Future<void> loadEmployeeData() async {
+    if (EmployeeCubit.get(context).users == null) return;
+
     for (int x = 0; x < EmployeeCubit.get(context).users!.length; x++) {
       if (widget.empId == EmployeeCubit.get(context).users![x].id) {
-        _selectedItemRole = EmployeeCubit.get(context).users![x].role!.id == 3
+        _selectedItemRole = EmployeeCubit.get(context).users![x].role?.id == 3
             ? 'موظف'
             : 'مدير';
-        _selectedItem2 = EmployeeCubit.get(context).users![x].status == 'active'
+        _selectedItem2 =
+        EmployeeCubit.get(context).users![x].status == 'active'
             ? 'نشط'
             : 'متوقف';
 
         password.text = '1234568';
         fullName.text =
-            '${EmployeeCubit.get(context).users![x].first_name.toString()} ${EmployeeCubit.get(context).users![x].last_name.toString()}';
-        email.text = EmployeeCubit.get(context).users![x].email.toString();
-        email.text = EmployeeCubit.get(context).users![x].email.toString();
-        emailEmp.text =
-            EmployeeCubit.get(context).users![x].employee_info![0].email != null
-                ? EmployeeCubit.get(context)
-                    .users![x]
-                    .employee_info![0]
-                    .email
-                    .toString()
-                : '';
+        '${EmployeeCubit.get(context).users![x].first_name ?? ''} ${EmployeeCubit.get(context).users![x].last_name ?? ''}';
+        email.text =
+            EmployeeCubit.get(context).users![x].email?.toString() ?? '';
+
+        emailEmp.text = EmployeeCubit.get(context)
+            .users![x]
+            .employee_info
+            ?.isNotEmpty ==
+            true
+            ? EmployeeCubit.get(context)
+            .users![x]
+            .employee_info![0]
+            .email
+            ?.toString() ??
+            ''
+            : '';
+
         phone1.text = EmployeeCubit.get(context)
+            .users![x]
+            .employee_info
+            ?.isNotEmpty ==
+            true
+            ? EmployeeCubit.get(context)
             .users![x]
             .employee_info![0]
             .phone_1
-            .toString();
-        phone2.text =
-            EmployeeCubit.get(context).users![x].employee_info![0].phone_2 !=
-                    null
-                ? EmployeeCubit.get(context)
-                    .users![x]
-                    .employee_info![0]
-                    .phone_2
-                    .toString()
-                : '';
-        whatsApp.text =
-            EmployeeCubit.get(context).users![x].employee_info![0].whatsapp !=
-                    null
-                ? EmployeeCubit.get(context)
-                    .users![x]
-                    .employee_info![0]
-                    .whatsapp
-                    .toString()
-                : '';
-        address.text =
-            EmployeeCubit.get(context).users![x].employee_info![0].address !=
-                    null
-                ? EmployeeCubit.get(context)
-                    .users![x]
-                    .employee_info![0]
-                    .address
-                    .toString()
-                : '';
-        avatar = EmployeeCubit.get(context).users![x].avatar != null
-            ? EmployeeCubit.get(context)
-                .users![x]
-                .avatar!
-                .data!
-                .full_url
-                .toString()
+            ?.toString() ??
+            ''
             : '';
-        avatarId = EmployeeCubit.get(context).users![x].avatar?.id;
-        employeeId = EmployeeCubit.get(context).users![x].employee_info![0].id;
-        employeeUserId = EmployeeCubit.get(context).users![x].id;
+
+        phone2.text = EmployeeCubit.get(context)
+            .users![x]
+            .employee_info
+            ?.isNotEmpty ==
+            true
+            ? EmployeeCubit.get(context)
+            .users![x]
+            .employee_info![0]
+            .phone_2
+            ?.toString() ??
+            ''
+            : '';
+
+        whatsApp.text = EmployeeCubit.get(context)
+            .users?[x]
+            .employee_info
+            ?.isNotEmpty ==
+            true
+            ? EmployeeCubit.get(context)
+            .users![x]
+            .employee_info![0]
+            .whatsapp
+            ?.toString() ??
+            ''
+            : '';
+
+        address.text = EmployeeCubit.get(context)
+            .users?[x]
+            .employee_info
+            ?.isNotEmpty ==
+            true
+            ? EmployeeCubit.get(context)
+            .users![x]
+            .employee_info![0]
+            .address
+            ?.toString() ??
+            ''
+            : '';
+
+        avatar = EmployeeCubit.get(context).users?[x].avatar?.data?.full_url ??
+            '';
+        avatarId = EmployeeCubit.get(context).users?[x].avatar?.id;
+
+        employeeId = EmployeeCubit.get(context)
+            .users![x]
+            .employee_info
+            ?.isNotEmpty ==
+            true
+            ? EmployeeCubit.get(context).users![x].employee_info![0].id
+            : null;
+
+        employeeUserId = EmployeeCubit.get(context).users?[x].id;
       }
     }
   }
@@ -218,11 +249,17 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               SectionHeader(title: AppLocalizations.of(context)!.translate("login_data")),
                               SizedBox(height: 16.h),
                               defaultTextFormFeild(
+                                textDirection: TextDirection.rtl,
                                 context,
                                 keyboardType: TextInputType.text,
-                                validate: (value) {
-                                  if (value == null || value == '') {
+                               // <-- add this to support Arabic writing properly
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
                                     return AppLocalizations.of(context)!.translate("Do not leave this field blank.");
+                                  }
+                                  List<String> parts = value.trim().split(' ');
+                                  if (parts.length < 2 || parts.any((part) => part.isEmpty)) {
+                                    return AppLocalizations.of(context)!.translate("Please enter both first name and last name.");
                                   }
                                   return null;
                                 },
@@ -234,18 +271,20 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                                   color: AppColors.placeholder,
                                 ),
                               ),
+
                               SizedBox(height: 16.h),
                               defaultTextFormFeild(
                                 controller: email,
                                 context,
                                 keyboardType: TextInputType.emailAddress,
-                                validate: (value) {
+                                textDirection: TextDirection.rtl,
+                                validator: (value) {
                                   if (value == null || value == '') {
-                                    return AppLocalizations.of(context)!.translate("Do not leave this field blank.");
+                                    return AppLocalizations.of(context)?.translate("Do not leave this field blank.");
                                   }
                                   return null;
                                 },
-                                label: AppLocalizations.of(context)!.translate("write_email"),
+                                label: AppLocalizations.of(context)?.translate("write_email"),
                                 onTap: () {},
                                 prefix: Icon(
                                   Icons.email,
@@ -257,8 +296,9 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                                   ? defaultTextFormFeild(
                                       controller: password,
                                       context,
+                                textDirection: TextDirection.rtl,
                                       keyboardType: TextInputType.text,
-                                      validate: (value) {
+                                      validator: (value) {
                                         if (value == null || value == '') {
                                           return AppLocalizations.of(context)!.translate("Do not leave this field blank.");
                                         }
@@ -275,20 +315,21 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               SizedBox(height: 16.h),
                               !widget.isEdit
                                   ? defaultTextFormFeild(
+                                textDirection: TextDirection.rtl,
                                       controller: verifyPassword,
                                       context,
                                       keyboardType: TextInputType.text,
-                                      validate: (value) {
+                                      validator: (value) {
                                         if (value == null || value == '') {
-                                          return AppLocalizations.of(context)!.translate("Do not leave this field blank.");
+                                          return AppLocalizations.of(context)?.translate("Do not leave this field blank.");
                                         }
                                         if (password.text !=
                                             verifyPassword.text) {
-                                          return AppLocalizations.of(context)!.translate("Password does not match");
+                                          return AppLocalizations.of(context)?.translate("Password does not match");
                                         }
                                         return null;
                                       },
-                                      label: AppLocalizations.of(context)!.translate("password_confirmation"),
+                                      label: AppLocalizations.of(context)?.translate("password_confirmation"),
                                       onTap: () {},
                                       prefix: Icon(
                                         Icons.lock_outline_rounded,
@@ -439,13 +480,14 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               defaultTextFormFeild(
                                 context,
                                 keyboardType: TextInputType.phone,
-                                validate: (value) {
+                                validator: (value) {
                                   if (value == null || value == '') {
                                     return 'لا تترك هذا الحقل فارغا';
                                   }
                                   return null;
                                 },
                                 label: 'أكتب رقم الهاتف',
+                                textDirection: TextDirection.rtl,
                                 onTap: () {},
                                 controller: phone1,
                                 prefix: Icon(
@@ -455,9 +497,10 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               ),
                               SizedBox(height: 16.h),
                               defaultTextFormFeild(
+                                textDirection: TextDirection.rtl,
                                 context,
                                 keyboardType: TextInputType.phone,
-                                validate: (value) {},
+                                validator: (value) {},
                                 controller: phone2,
                                 label: 'أكتب رقم الهاتف البديل',
                                 onTap: () {},
@@ -468,10 +511,11 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               ),
                               SizedBox(height: 16.h),
                               defaultTextFormFeild(
+                                textDirection: TextDirection.rtl,
                                 controller: whatsApp,
                                 context,
                                 keyboardType: TextInputType.phone,
-                                validate: (value) {},
+                                validator: (value) {},
                                 label: 'أكتب رقم الواتساب',
                                 onTap: () {},
                                 prefix: Padding(
@@ -490,10 +534,11 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               ),
                               SizedBox(height: 16.h),
                               defaultTextFormFeild(
+                                textDirection: TextDirection.rtl,
                                 context,
                                 controller: emailEmp,
                                 keyboardType: TextInputType.emailAddress,
-                                validate: (value) {},
+                                validator: (value) {},
                                 label: 'أكتب البريد الالكترونى الخاص',
                                 onTap: () {},
                                 prefix: Icon(
@@ -503,9 +548,10 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               ),
                               SizedBox(height: 16.h),
                               defaultTextFormFeild(
+                                textDirection: TextDirection.rtl,
                                 context,
                                 keyboardType: TextInputType.text,
-                                validate: (value) {},
+                                validator: (value) {},
                                 controller: address,
                                 label: 'أكتب عنوان الأقامة الحالى',
                                 onTap: () {},
@@ -538,6 +584,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                             _selectedItem2 != null &&
                             _selectedItemRole != null) {
                           EmployeeCubit.get(context).uploadFile(
+
                               idUser: employeeUserId.toString(),
                               selectedImage!,
                               employeeId: employeeId.toString(),
@@ -612,6 +659,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                             _selectedItem2 != null &&
                             _selectedItemRole != null) {
                           EmployeeCubit.get(context).adduserFun(
+                            companies: companyId,
                             firstName: firstName,
                             lastName: lastName,
                             status: _selectedItem2 == 'نشط' ? 'active' : 'hold',

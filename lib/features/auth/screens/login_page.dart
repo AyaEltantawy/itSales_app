@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/constants/navigation.dart';
+import 'package:itsale/core/utils/token.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/states.dart';
 
@@ -17,7 +18,10 @@ import '../components/login_header.dart';
 import '../components/login_page_form.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final TextEditingController? initialEmail;
+  final TextEditingController? initialPassword;
+
+  LoginPage({super.key, this.initialEmail, this.initialPassword});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +37,8 @@ class LoginPage extends StatelessWidget {
         Utils.showSnackBar(context,
             AppLocalizations.of(context)!.translate("login_done_successfuly"));
 
-        navigateTo(context, AppRoutes.entryPoint);
-        print('success');
+
+
       }
     }, builder: (context, state) {
       if (state is PostLoadingLoginSalesState) {
@@ -69,11 +73,14 @@ class LoginPage extends StatelessWidget {
               AppLocalizations.of(context)!.translate('login'),
               style: TextStyles.font20Weight500BaseBlack,
             ),
-            const Column(
+            Column(
                 //mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LoginPageHeader(),
-                  LoginPageForm(),
+                  const LoginPageHeader(),
+                  LoginPageForm(
+                    emailController: initialEmail,
+                    passwordController: initialPassword,
+                  ),
                 ]),
           ])));
     });
