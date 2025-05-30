@@ -28,12 +28,11 @@ var globalDark = false;
 
 class MyApp extends StatefulWidget {
   final String defaultLocale;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-
-  const MyApp({
+  MyApp({
     super.key,
     required this.defaultLocale,
-
   });
 
   @override
@@ -66,7 +65,7 @@ class _MyAppState extends State<MyApp> {
 
   void _handleIncomingAppLinks() {
     _sub = _appLinks.uriLinkStream.listen(
-          (Uri uri) => _processUri(uri),
+      (Uri uri) => _processUri(uri),
       onError: (err) => debugPrint('Deep link error: $err'),
     );
   }
@@ -80,20 +79,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _processUri(Uri uri) async{
+  void _processUri(Uri uri) async {
     debugPrint('Processing deep link: $uri');
 
     if (uri.path == '/reset-password') {
       final resetToken = uri.queryParameters['token'];
- await CacheHelper.saveData(key: "reset_token", value: resetToken);
-      debugPrint("resetToken: $resetToken");
-print("MainResetToken$resetToken");
+      await CacheHelper.saveData(key: "reset_token", value: resetToken);
+
       if (resetToken != null && resetToken.isNotEmpty) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ResetPasswordPage(resetToken: resetToken),
-          ),
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+
         );
       } else {
         // No navigation — just show a simple message
@@ -107,12 +105,12 @@ print("MainResetToken$resetToken");
       debugPrint('Unknown deep link: ${uri.toString()}');
     }
   }
+
   void _updateLocale(Locale newLocale) {
     setState(() {
       locale = newLocale;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +160,6 @@ print("MainResetToken$resetToken");
                     Locale('en'),
                   ],
                   title: 'itSales',
-
                   initialRoute: AppRoutes.splash,
                   localizationsDelegates: [
                     AppLocalizations.delegate,
@@ -173,8 +170,8 @@ print("MainResetToken$resetToken");
                   localeResolutionCallback: (deviceLocale, supportedLocales) {
                     if (deviceLocale != null) {
                       for (var supportedLocale in supportedLocales) {
-                        if (supportedLocale.languageCode == deviceLocale
-                            .languageCode) {
+                        if (supportedLocale.languageCode ==
+                            deviceLocale.languageCode) {
                           return supportedLocale;
                         }
                       }

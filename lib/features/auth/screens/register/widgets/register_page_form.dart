@@ -6,13 +6,17 @@ import 'package:itsale/core/routes/app_routes.dart';
 import '../../../../../core/components/app_buttons.dart';
 import '../../../../../core/components/app_text_form_field.dart';
 import '../../../../../core/constants/app_icons.dart';
-import '../../../../../core/utils/snack_bar.dart' show Utils, warningMotionToast;
+import '../../../../../core/utils/snack_bar.dart'
+    show Utils, warningMotionToast;
 import '../../../../../core/utils/validators.dart';
 import '../../../data/cubit.dart' show AppCubit;
 
 class RegisterPageForm extends StatelessWidget {
   final void Function() onPassShowClicked;
+  final void Function() onPassShowClickedConfirm;
   final bool isPasswordShown;
+  final bool isPasswordShownConfirm;
+
   final GlobalKey<FormState> formKey;
   final TextEditingController emailController;
   final TextEditingController passwordController;
@@ -22,7 +26,7 @@ class RegisterPageForm extends StatelessWidget {
 
   final VoidCallback onSubmit;
 
-  const RegisterPageForm({
+  RegisterPageForm({
     super.key,
     required this.onPassShowClicked,
     required this.isPasswordShown,
@@ -32,8 +36,9 @@ class RegisterPageForm extends StatelessWidget {
     required this.confirmPasswordController,
     required this.firstNameController,
     required this.lastNameController,
-
     required this.onSubmit,
+    required this.isPasswordShownConfirm,
+    required this.onPassShowClickedConfirm,
   });
 
   @override
@@ -49,11 +54,12 @@ class RegisterPageForm extends StatelessWidget {
             controller: firstNameController,
             validator: Validators.requiredWithFieldName('الاسم الأول'),
             prefix: Icon(AppIcons.person_2_outlined),
-            label: "الاسم الأول", keyboardType:TextInputType.name ,
+            label: "الاسم الأول",
+            keyboardType: TextInputType.name,
           ),
           SizedBox(height: 15.h),
           defaultTextFormFeild(
-            keyboardType:TextInputType.name ,
+            keyboardType: TextInputType.name,
             context,
             controller: lastNameController,
             validator: Validators.requiredWithFieldName('الاسم الأخير'),
@@ -99,13 +105,13 @@ class RegisterPageForm extends StatelessWidget {
               return Validators.password(value);
             },
             onSubmit: (_) => onSubmit(),
-            secure: !isPasswordShown,
+            secure: !isPasswordShownConfirm,
             prefix: const Icon(AppIcons.lock),
             label: 'تأكيد كلمة المرور',
             suffix: IconButton(
-              onPressed: onPassShowClicked,
+              onPressed: onPassShowClickedConfirm,
               icon: Icon(
-                isPasswordShown ? AppIcons.eye : AppIcons.eyeNonVisible,
+                isPasswordShownConfirm ? AppIcons.eye : AppIcons.eyeNonVisible,
                 size: 24,
               ),
             ),
@@ -128,7 +134,8 @@ class RegisterPageForm extends StatelessWidget {
             height: 56.h,
             isColor: false,
             textSize: 17.sp,
-            toPage: () => navigateTo(context, AppRoutes.chooseLoginOrSignUpPage),
+            toPage: () =>
+                navigateTo(context, AppRoutes.chooseLoginOrSignUpPage),
           )
         ],
       ),

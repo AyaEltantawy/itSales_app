@@ -156,6 +156,8 @@ class RouteGenerator {
 
       case AppRoutes.settingsNotifications:
         return animatedNavigation(screen: const NotificationSettingsPage());
+      case AppRoutes.tasks_screen_for_employee:
+        return animatedNavigation(screen:  TasksScreenForEmployee(back: true));
 
       case AppRoutes.settings:
         return animatedNavigation(screen: const SettingsPage());

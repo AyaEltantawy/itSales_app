@@ -58,3 +58,6 @@ class PostLoadingDeleteFavouriteState extends AppStates {}
 class PostSuccessDeleteFavouriteState extends AppStates {}
 class PostErrorDeleteFavouriteState extends AppStates {}
 class GetSuccessCompanyState extends AppStates {}
+class PostLoadingAllNotificationState extends AppStates{}
+class PostSuccessAllNotificationState extends AppStates{}
+class PostErrorAllNotificationState extends AppStates{}

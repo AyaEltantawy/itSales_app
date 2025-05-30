@@ -58,15 +58,19 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
           GestureDetector(
             onTap: widget.onTap,
             child: Container(
+
+              width: 40.w,
+              height: 40.w,
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+
               child: Icon(
+
                 Icons.search,
                 color: Colors.white,
-                size: 26.sp,
+                size: 20.sp,
               ),
             ),
           ),
@@ -77,8 +81,8 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
                 _showFilterDialog(context);
               },
               child: Container(
-                width: 52.w,
-                height: 52.w,
+                width: 40.w,
+                height: 40.w,
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
@@ -98,8 +102,8 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
               onTap: widget.toggleViewMode,
               child: Container(
                   alignment: Alignment.center,
-                  width: 52.w,
-                  height: 52.w,
+                  width: 40.w,
+                  height: 40.w,
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     color: widget.isGrid
@@ -112,7 +116,7 @@ class _BuildSearchFilterState extends State<BuildSearchFilter> {
                   child: Center(
                     child: Icon(
                       Icons.grid_view,
-                      size: 40.sp,
+                      size: 25.sp,
                       color: Colors.white,
                     ),
                   )),

@@ -18,3 +18,4 @@ class RegisterErrorState extends RegisterState {
 class LoadingRegister extends RegisterState{}
 class LoadingSuccess extends RegisterState{}
 class LoadingFailed extends RegisterState{}
+class PasswordShownConfirmState extends RegisterState{}

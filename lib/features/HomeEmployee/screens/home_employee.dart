@@ -24,6 +24,7 @@ import '../../../core/utils/token.dart';
 import '../../../core/utils/transition.dart';
 import '../../../generated/l10n.dart';
 import '../../Tasks_Screens/data/models/get_task_model.dart';
+import '../../Tasks_Screens/data/models/notifications_model.dart';
 import '../../Tasks_Screens/screens/task_details.dart';
 import '../../auth/data/cubit.dart';
 import '../../home/components/widgets_for_tasks_screen.dart';
@@ -44,22 +45,27 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
   @override
   void initState() {
     super.initState();
+    TasksCubit.get(context).clearNotificationBadge();
+    // also fetch actual notifications list
+    TasksCubit.get(context).getNotificationForOneUserFun();
 
-    // Wait until after the first frame to check cache and navigate
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final id = CacheHelper.getData(key: 'company_id');
+      final role = CacheHelper.getData(
+          key: 'role'); // make sure you get it from cache if needed
 
-      debugPrint('Fetched companyId: $id');
+      debugPrint('Fetched companyId: $id (type: ${id.runtimeType})');
+      debugPrint('Fetched role: $role (type: ${role.runtimeType})');
 
-      if (id == null && role == 1) {
+      if ((id == null || id == '' || id == 'null') && role.toString() == '1') {
+        debugPrint('❌ companyId is null. Navigating to company page...');
         navigateTo(context, AppRoutes.companyPage);
         return;
       }
 
       companyId = id;
 
-      // Load tasks based on role
-      if (role == '1') {
+      if (role.toString() == '1') {
         await TasksCubit.get(context).getAllTasksFun();
       } else {
         await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
@@ -73,6 +79,8 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final notificationsList =
+        TasksCubit.get(context).getNotificationsForOneUserList ?? [];
     Future<void> _refreshData() async {
       if (role == '1') {
         await TasksCubit.get(context).getAllTasksFun();
@@ -125,17 +133,39 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                             children: [
                               Text(AppLocalizations.of(context)!
                                   .translate("main_page")),
-                              InkWell(
-                                onTap: () => navigateTo(
-                                    context, AppRoutes.notifications),
-                                child: badges.Badge(
-                                  position: badges.BadgePosition.topEnd(
-                                      top: -25, end: 10),
-                                  showBadge: true,
-                                  badgeContent: const Text("3",
-                                      textAlign: TextAlign.center),
-                                  child: Image.asset("assets/images/bell.png"),
-                                ),
+                              BlocBuilder<TasksCubit, TasksStates>(
+                                buildWhen: (previous, current) =>
+                                    current is NewNotificationState ||
+                                    current is ClearNotificationState,
+                                builder: (context, state) {
+                                  final count = TasksCubit.get(context)
+                                      .newNotificationCount;
+
+                                  return InkWell(
+                                    onTap: () {
+                                      navigateTo(
+                                              context, AppRoutes.notifications)
+                                          .then((_) {
+                                        // Clear badge when page is opened
+                                        TasksCubit.get(context)
+                                            .clearNotificationBadge();
+                                      });
+                                    },
+                                    child: badges.Badge(
+                                      position: badges.BadgePosition.topEnd(
+                                          top: -25, end: 10),
+                                      showBadge: count > 0,
+                                      badgeContent: Text(
+                                        "$count",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                      child:
+                                          Image.asset("assets/images/bell.png"),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),

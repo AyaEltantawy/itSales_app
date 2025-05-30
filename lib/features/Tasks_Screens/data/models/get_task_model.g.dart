@@ -22,17 +22,17 @@ DataUserTask _$DataUserTaskFromJson(Map<String, dynamic> json) => DataUserTask(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
       sort: json['sort'] as String?,
-      owner: json['owner'] == null
-          ? null
-          : Owner.fromJson(json['owner'] as Map<String, dynamic>),
+      owner: json['owner'],
       created_on: json['created_on'] as String?,
-      modified_by: json['modified_by'] == null
-          ? null
-          : Owner.fromJson(json['modified_by'] as Map<String, dynamic>),
+      modified_by: json['modified_by'],
       modified_on: json['modified_on'] as String?,
       assigned_to: json['assigned_to'] == null
           ? null
-          : AssignedTo.fromJson(json['assigned_to']),
+          : (json['assigned_to'] is int
+          ? AssignedTo(id: json['assigned_to'] as int)
+          : AssignedTo.fromJson(json['assigned_to'] as Map<String, dynamic>)),
+
+
       due_date: json['due_date'] as String?,
       title: json['title'] as String?,
       description: json['description'] as String?,
@@ -46,9 +46,7 @@ DataUserTask _$DataUserTaskFromJson(Map<String, dynamic> json) => DataUserTask(
           json['location'] == null ? null : Location.fromJson(json['location']),
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
-      files: (json['files'] as List<dynamic>?)
-          ?.map((e) => FilesResponseModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      files: json['files'] as List<dynamic>?,
     );
 
 Map<String, dynamic> _$DataUserTaskToJson(DataUserTask instance) =>
@@ -90,12 +88,10 @@ AddTaskRequestModel _$AddTaskRequestModelFromJson(Map<String, dynamic> json) =>
       cancelled_date: json['cancelled_date'] as String?,
       description: json['description'] as String?,
       notes: json['notes'] as String?,
-      assigned_to: json['assigned_to'] as String?,
-      files: json['files'],  //(json['files'] as List<dynamic>?)
-       //   ?.map((e) => Files.fromJson(e as Map<String, dynamic>))
-         // .toList(),
-      location: json['location'], // (json['location'] as num?)?.toInt(),
-      company: json['company'] //( as num?)?.toInt(),
+      assigned_to: json['assigned_to'],
+      files: json['files'],
+      location: json['location'],
+      company: (json['company'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$AddTaskRequestModelToJson(
@@ -324,7 +320,9 @@ OwnerLocation _$OwnerLocationFromJson(Map<String, dynamic> json) =>
       timezone: json['timezone'] as String?,
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
-      avatar: json['avatar'],
+      avatar: json['avatar'] == null
+          ? null
+          : Avatar.fromJson(json['avatar'] as Map<String, dynamic>),
       company: json['company'] as String?,
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
@@ -359,9 +357,7 @@ Map<String, dynamic> _$OwnerLocationToJson(OwnerLocation instance) =>
 AssignedTo _$AssignedToFromJson(Map<String, dynamic> json) => AssignedTo(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
-      role: json['role'] == null
-          ? null
-          : Role.fromJson(json['role'] as Map<String, dynamic>),
+      role: json['role'],
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
       email: json['email'] as String?,
@@ -411,13 +407,9 @@ Location _$LocationFromJson(Map<String, dynamic> json) => Location(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
       sort: json['sort'] as String?,
-      owner: json['owner'] == null
-          ? null
-          : OwnerLocation.fromJson(json['owner'] as Map<String, dynamic>),
+      owner: json['owner'],
       created_on: json['created_on'] as String?,
-      modified_by: json['modified_by'] == null
-          ? null
-          : OwnerLocation.fromJson(json['modified_by'] as Map<String, dynamic>),
+      modified_by: json['modified_by'],
       modified_on: json['modified_on'] as String?,
       latitude: json['latitude'] as String?,
       longitude: json['longitude'] as String?,

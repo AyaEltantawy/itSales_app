@@ -3,10 +3,13 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/auth/data/models/login_model.dart'
     as login_model;
 
 import '../../../core/cache_helper/cache_helper.dart';
+import '../../../core/constants/navigation.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../../core/routes/magic_router.dart';
 import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/token.dart';
@@ -72,6 +75,7 @@ class AppCubit extends Cubit<AppStates> {
         debugPrint('✅ Login successful with data: ${loginResponse.data}');
         getUserDataFun(context);
         emit(PostSuccessLoginSalesState());
+
       } else {
        Utils.showSnackBar(context, 'عفوا البيانات غير صحيحة');
         emit(PostErrorLoginSalesState());
@@ -176,31 +180,27 @@ class AppCubit extends Cubit<AppStates> {
       }
     }
 
-    // List<Data>? companyData;
+}
+  markNotificationAsRead({
+    required int notificationId,
+  }) async {
+    emit(PostLoadingAllNotificationState());
 
-  // Future<void> getCompanyFun() async {
-  //   if (!await InternetConnectionChecker().hasConnection) {
-  //     Utils.showSnackBar(MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
-  //     emit(NoInternetConnectionState());
-  //     return;
-  //   }
-  //   emit(GetLoadingCompanyState());
-  //
-  //   try {
-  //     final response = await repo.getCompany();
-  //     print("rrrrrrrrrrrrr${response}");
-  //     companyData = response.data!;
-  //
-  //     emit(GetSuccessCompanyState()); // use consistent naming
-  //   } catch (onError) {
-  //     if (!await InternetConnectionChecker().hasConnection) {
-  //       Utils.showSnackBar(
-  //           MagicRouter.currentContext!, 'أنت غير متصل بالانترنت');
-  //       emit(NoInternetConnectionState());
-  //     } else {
-  //       emit(GetErrorCompanyState());
-  //       debugPrint('Error in getCompanyFun: ${onError.toString()}');
-  //     }
-  //   }
-  // }
-}}
+    try {
+      await TasksCubit.get(MagicRouter.currentContext).postNotificationFun();
+      emit(PostSuccessAllNotificationState());
+    } catch (e) {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
+        emit(NoInternetAppState());
+      }
+      emit(PostErrorAllNotificationState());
+      debugPrint('Error marking notification as read: $e');
+    }
+  }
+
+}
+

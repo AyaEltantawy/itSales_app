@@ -17,25 +17,6 @@ import 'forget_password_state.dart';
 class ForgetPasswordPage extends StatelessWidget {
   ForgetPasswordPage({super.key});
 
-  final String resetUrl = "https://eby-itsales.guessitt.com/reset-password";
-
-  Future<void> _launchResetUrl(BuildContext context) async {
-    final Uri url = Uri.parse(resetUrl);
-
-    try {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.inAppWebView);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('لا يمكن فتح رابط إعادة تعيين كلمة المرور')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('حدث خطأ أثناء محاولة فتح الرابط')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,19 +76,7 @@ class ForgetPasswordPage extends StatelessWidget {
                        toPage: () {    cubit.forgetPassword(context);},
                       ),
                       SizedBox(height: 25.h),
-                      Center(
-                        child: InkWell(
-                          onTap: () => _launchResetUrl(context),
-                          child: Text(
-                            "أو اضغط هنا لإعادة تعيين كلمة المرور يدويًا",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 14.sp,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                      ),
+
                     ],
                   ),
                 ),

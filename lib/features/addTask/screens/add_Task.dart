@@ -694,10 +694,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             deadlineController.text != '' &&
                             !widget.isEdit) {
                           TasksCubit.get(context).addTaskFun(
-                            company: companyId,
+                            company: companyId ??0,
                             status: 'published',
-                            assigned_to:
-                                role == '1' ? selectedId : userId.toString(),
+                            assigned_to: role == '1'
+                                ? int.parse(selectedId)
+                                : int.parse(userId!),
+
+
                             due_date: deadlineController.text,
                             description: details.text,
                             mapUrl: location.text,
@@ -723,7 +726,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           }
                           TasksCubit.get(context).getLocationFun(
                             taskId: widget.taskId.toString(),
-                            assigned_to: selectedId,
+                            assigned_to: int.parse(selectedId),
                             due_date: deadlineController.text,
                             description: details.text,
                             map_url: location.text,

@@ -118,5 +118,8 @@ class AppIcons {
     matchTextDirection: true,
   );
   static const IconData fillter = IconData(0xe26f, fontFamily: 'MaterialIcons');
-
+  static const IconData home_rounded = IconData(0xf7f5, fontFamily: 'MaterialIcons');
+  static const IconData task_rounded = IconData(0xf021b, fontFamily: 'MaterialIcons');
+  static const IconData menu_rounded = IconData(0xf8b6, fontFamily: 'MaterialIcons');
+  static const IconData people_rounded = IconData(0xf005e, fontFamily: 'MaterialIcons');
 }

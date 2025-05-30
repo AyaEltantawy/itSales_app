@@ -44,11 +44,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           child: BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
             listener: (context, state) {
               if (state is LoadingSuccess) {
-                Navigator.pushReplacementNamed(context, AppRoutes.login);
+                navigateTo(context, AppRoutes.login);
               } else if (state is LoadingError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
+
               }
             },
             builder: (context, state) {
@@ -150,7 +148,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       toPage: () {
                         if (_formKey.currentState!.validate()) {
                           cubit.resetPassword(
-
+                            context: context,
                             newPassword: _passwordController.text,
                           );
                         }

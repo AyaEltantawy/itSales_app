@@ -51,15 +51,16 @@ class RegisterPage extends StatelessWidget {
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
                 children: [
-                  Text(AppLocalizations.of(context)!.translate("register"),
-                      style: TextStyles.font20Weight500BaseBlack),
-                  SizedBox(height: 80.h),
+
+
                   Column(
                     children: [
-                      Text(AppLocalizations.of(context)!.translate("hello"),
-                          style: AppFonts.style36medium),
-                      Text(AppLocalizations.of(context)!.translate("write_your_data_to_register"),
-                          style: AppFonts.style20Light),
+                      SizedBox(height: 40.h),
+                      Text(
+                          textAlign: TextAlign.center,
+                          AppLocalizations.of(context)!.translate("register"),
+                          style: TextStyles.font20Weight500BaseBlack),
+                      SizedBox(height: 20.h),
                       RegisterPageForm(
                           formKey: controller.formKey,
                           emailController: controller.emailController,
@@ -72,7 +73,7 @@ class RegisterPage extends StatelessWidget {
                           onPassShowClicked: controller.onPassShowClicked,
                           onSubmit: () {
                           controller.register(context);
-                          }, ),
+                          }, isPasswordShownConfirm:controller.isPasswordShownConfirm, onPassShowClickedConfirm: controller.onPassShowClickedConFirm ),
                       if (state is RegisterLoadingState)
                         const CircularProgressIndicator(),
                     ],

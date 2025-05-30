@@ -217,7 +217,7 @@ class DataUserResponse {
   String? locale;
   String? locale_options;
   int? avatar;
-  String? companies;
+  dynamic? companies;
   String? title;
   bool? email_notifications;
   String? last_accessOn;

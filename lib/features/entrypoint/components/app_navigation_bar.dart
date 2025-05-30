@@ -36,14 +36,14 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
               outlinedIcon: AppIcons.menu_outlined,
               icon: AppIcons.menu_outlined,
               isActive: widget.currentIndex == 4,
-              onTap: () => widget.onNavTap(4), filledIcon: AppIcons.menu_outlined,
+              onTap: () => widget.onNavTap(4), filledIcon: AppIcons.menu_rounded,
             ),
             BottomAppBarItem(
                outlinedIcon:AppIcons.people_outline ,
            icon: AppIcons.people_outline,
 
               isActive: widget.currentIndex == 3,
-              onTap: () => widget.onNavTap(3), filledIcon: AppIcons.people,
+              onTap: () => widget.onNavTap(3), filledIcon: AppIcons.people_rounded,
             ),
             const Padding(
               padding: EdgeInsets.all(AppDefaults.padding * 1.5),
@@ -52,13 +52,13 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
             BottomAppBarItem(
               icon: AppIcons.task_outlined,
               isActive: widget.currentIndex == 1,
-              onTap: () => widget.onNavTap(1), filledIcon: AppIcons.tasks,
+              onTap: () => widget.onNavTap(1), filledIcon: AppIcons.task_rounded,
               outlinedIcon: AppIcons.task_outlined,
             ),
             BottomAppBarItem(
-              outlinedIcon:AppIcons.home_outlined ,
-              icon: AppIcons.home_outlined,
-              filledIcon:AppIcons.home,
+              outlinedIcon:AppIcons.home_rounded ,
+              icon: AppIcons.home_rounded,
+              filledIcon:AppIcons.home_rounded,
               isActive: widget.currentIndex == 0,
               onTap: () { widget.onNavTap(0);
 

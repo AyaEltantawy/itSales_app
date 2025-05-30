@@ -13,6 +13,8 @@ import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/utils/token.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
+import 'package:itsale/features/auth/screens/forget_password/forget_password_view.dart';
+import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
 import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/features/profile/widgets/color_of_the_app/color_of_the_app_view.dart';
 import 'package:itsale/features/profile/widgets/language_show_dialog/language_show_dialog_view.dart';
@@ -81,14 +83,14 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
                   height: 90.h,
                   width: 90.w, // wider width for image container
                   child: NetworkImageWithLoader(
-                    fit: BoxFit.fill,
+                      fit: BoxFit.fill,
                       AppCubit.get(context)
-                          .getInfoLogin
-                          ?.avatar
-                          ?.data
-                          ?.full_url
-                          ?.toString() ??""
-                  ),
+                              .getInfoLogin
+                              ?.avatar
+                              ?.data
+                              ?.full_url
+                              ?.toString() ??
+                          ""),
                 ),
               ),
               SizedBox(
@@ -118,35 +120,40 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
               navigateTo(context, AppRoutes.editDataPage);
             },
           ),
-          SizedBox(height: 20.h,),
+          SizedBox(
+            height: 20.h,
+          ),
           CustomRowInSettings(
             text: "تعديل كلمة السر",
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                  builder: (context) =>
-                  ChangePasswordPage()));
+                      builder: (context) => ForgetPasswordPage()));
             },
-          ) , SizedBox(height: 20.h,),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
           CustomRowInSettings(
             text: "اللغة",
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                  builder: (context) =>
-                  LanguageShowDialogPage()));
+                      builder: (context) => LanguageShowDialogPage()));
             },
-          ), SizedBox(height: 20.h,),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
           CustomRowInSettings(
             text: "لون التطبيق",
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                  builder: (context) =>
-                  Color_of_the_appPage()));
+                      builder: (context) => Color_of_the_appPage()));
             },
           )
         ],

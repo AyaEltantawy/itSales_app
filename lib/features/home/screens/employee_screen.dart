@@ -53,9 +53,9 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
       role == '1'
           ? TasksCubit.get(context).getAllTasksFunWithFilter(text: value)
           : TasksCubit.get(context).getAllTasksFunWithFilter(
-              textEmp: value,
-              employee: userId,
-            );
+        textEmp: value,
+        employee: userId,
+      );
     } else {
       EmployeeCubit.get(context).getAdmins(search: value);
     }
@@ -106,7 +106,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                       Text(
                         widget.admin
                             ? AppLocalizations.of(context)!
-                                .translate("managers")
+                            .translate("managers")
                             : AppLocalizations.of(context)!.translate("users"),
                         style: AppFonts.style18medium,
                       ),
@@ -141,7 +141,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 10.w, vertical: 10.h),
                             child: Icon(Icons.add,
-                                color: Colors.white, size: 30.sp),
+                                color: Colors.white, size: 20.sp),
                           ),
                         ),
                     ],
@@ -170,24 +170,24 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                         onFieldSubmitted: (value) {
                           widget.task!
                               ? (role == '1'
-                                  ? TasksCubit.get(context)
-                                      .getAllTasksFunWithFilter(text: value)
-                                  : TasksCubit.get(context)
-                                      .getAllTasksFunWithFilter(
-                                          textEmp: value, employee: userId))
+                              ? TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(text: value)
+                              : TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(
+                              textEmp: value, employee: userId))
                               : EmployeeCubit.get(context)
-                                  .getAdmins(search: value.toString());
+                              .getAdmins(search: value.toString());
                         },
                         onChanged: (value) {
                           widget.task!
                               ? (role == '1'
-                                  ? TasksCubit.get(context)
-                                      .getAllTasksFunWithFilter(text: value)
-                                  : TasksCubit.get(context)
-                                      .getAllTasksFunWithFilter(
-                                          textEmp: value, employee: userId))
+                              ? TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(text: value)
+                              : TasksCubit.get(context)
+                              .getAllTasksFunWithFilter(
+                              textEmp: value, employee: userId))
                               : EmployeeCubit.get(context)
-                                  .getAdmins(search: value.toString());
+                              .getAdmins(search: value.toString());
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -196,9 +196,9 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                             child: SvgPicture.asset(AppIcons.searchIcon),
                           ),
                           contentPadding:
-                              EdgeInsets.symmetric(horizontal: 20.w),
+                          EdgeInsets.symmetric(horizontal: 20.w),
                           prefixIconConstraints:
-                              const BoxConstraints(minWidth: 20, minHeight: 20),
+                          const BoxConstraints(minWidth: 20, minHeight: 20),
                           labelText: 'ابحث هنا',
                           labelStyle: AppFonts.style14normal,
                         )))
@@ -222,42 +222,42 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
 
         if (state is NoInternetState) return const NoInternet();
         if (state is GetLoadingSearchEmployeeFilterState)
-          return const LinearProgressIndicator();
+          return const SizedBox.shrink();
         if (state is GetSuccessSearchEmployeeFilterState) {
           return RefreshIndicator(
             onRefresh: _refreshData,
             child: (cubit.searchUser?.isNotEmpty ?? false)
                 ? buildEmployeeList(4)
                 : SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      child: nothing(context,
-                          button: 'مسؤولين',
-                          text: 'لا يوجد',
-                          route: AppRoutes.addEmployee),
-                    ),
-                  ),
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: nothing(context,
+                    button: 'مسؤولين',
+                    text: 'لا يوجد',
+                    route: AppRoutes.addEmployee),
+              ),
+            ),
           );
         }
         if (state is GetErrorAdminsState)
           return Center(child: Text("للاسف حدث خطا"));
-        if (state is GetLoadingAdminsState) return AppLottie.loader;
+        if (state is GetLoadingAdminsState) return const SizedBox.shrink();
 
         return RefreshIndicator(
           onRefresh: _refreshData,
           child: (cubit.usersAdmin?.isNotEmpty ?? false)
               ? buildEmployeeList(1)
               : SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    child: nothing(context,
-                        button: 'مسؤولين',
-                        text: 'لا يوجد مسؤولين',
-                        route: AppRoutes.addEmployee),
-                  ),
-                ),
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: nothing(context,
+                  button: 'مسؤولين',
+                  text: 'لا يوجد مسؤولين',
+                  route: AppRoutes.addEmployee),
+            ),
+          ),
         );
       },
     );
@@ -272,40 +272,40 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
         if (state is GetErrorSalesState)
           return Center(child: Text("للاسف حدث خطأ"));
         if (state is GetLoadingSearchEmployeeFilterState)
-          return const LinearProgressIndicator();
+          return const SizedBox.shrink();
         if (state is GetSuccessSearchEmployeeFilterState) {
           return RefreshIndicator(
             onRefresh: _refreshData,
             child: (cubit.searchUser?.isNotEmpty ?? false)
                 ? buildEmployeeList(4)
                 : SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      child: nothing(context,
-                          button: 'مستخدمين',
-                          text: 'لا يوجد',
-                          route: AppRoutes.addEmployee),
-                    ),
-                  ),
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: nothing(context,
+                    button: 'مستخدمين',
+                    text: 'لا يوجد',
+                    route: AppRoutes.addEmployee),
+              ),
+            ),
           );
         }
-        if (state is GetLoadingSalesState) return AppLottie.loader;
+        if (state is GetLoadingSalesState) return const SizedBox.shrink();
 
         return RefreshIndicator(
           onRefresh: _refreshData,
           child: (cubit.users?.isNotEmpty ?? false)
               ? buildEmployeeList(theRole)
               : SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    child: nothing(context,
-                        button: 'مستخدمين',
-                        text: 'لا يوجد مستخدمين',
-                        route: AppRoutes.addEmployee),
-                  ),
-                ),
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: nothing(context,
+                  button: 'مستخدمين',
+                  text: 'لا يوجد مستخدمين',
+                  route: AppRoutes.addEmployee),
+            ),
+          ),
         );
       },
     );
@@ -337,31 +337,31 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
         separatorBuilder: (_, __) => SizedBox(height: 8.h),
         itemBuilder: (context, index) => InkWell(
             onTap: () => Navigator.push(context, MaterialPageRoute(
-                  builder: (_) {
-                    final employeeInfo = usersList[index].employee_info;
-                    final info =
-                        (employeeInfo != null && employeeInfo.isNotEmpty)
-                            ? employeeInfo[0]
-                            : null;
+              builder: (_) {
+                final employeeInfo = usersList[index].employee_info;
+                final info =
+                (employeeInfo != null && employeeInfo.isNotEmpty)
+                    ? employeeInfo[0]
+                    : null;
 
-                    return EmployeeDetailsScreen(
-                      name:
-                          '${usersList[index].first_name} ${usersList[index].last_name}',
-                      role: usersList[index].role?.id == 1 ? 'مدير' : 'موظف',
-                      avatar:
-                          usersList[index].avatar?.data?.full_url ?? 'لا يوجد',
-                      phone1: info?.phone_1 ?? 'لا يوجد',
-                      phone2: info?.phone_2 ?? 'لا يوجد',
-                      empEmail: info?.email ?? 'لا يوجد',
-                      whatsapp: info?.whatsapp ?? 'لا يوجد',
-                      passwordToken:
-                          usersList[index].passwordResetToken?.toString() ?? '',
-                      id: usersList[index].id?.toString() ?? '',
-                      email: usersList[index].email ?? 'لا يوجد',
-                      address: info?.address ?? 'لا يوجد',
-                    );
-                  },
-                )),
+                return EmployeeDetailsScreen(
+                  name:
+                  '${usersList[index].first_name} ${usersList[index].last_name}',
+                  role: usersList[index].role?.id == 1 ? 'مدير' : 'موظف',
+                  avatar:
+                  usersList[index].avatar?.data?.full_url ?? 'لا يوجد',
+                  phone1: info?.phone_1 ?? 'لا يوجد',
+                  phone2: info?.phone_2 ?? 'لا يوجد',
+                  empEmail: info?.email ?? 'لا يوجد',
+                  whatsapp: info?.whatsapp ?? 'لا يوجد',
+                  passwordToken:
+                  usersList[index].passwordResetToken?.toString() ?? '',
+                  id: usersList[index].id?.toString() ?? '',
+                  email: usersList[index].email ?? 'لا يوجد',
+                  address: info?.address ?? 'لا يوجد',
+                );
+              },
+            )),
             child: buildEmployeeListItem(usersList[index])));
   }
 }

@@ -10,9 +10,8 @@ class GetUserTaskModel {
 
   GetUserTaskModel({this.data});
 
- factory GetUserTaskModel.fromJson(Map<String, dynamic> json) =>
-     _$GetUserTaskModelFromJson(json);
-
+  factory GetUserTaskModel.fromJson(Map<String, dynamic> json) =>
+      _$GetUserTaskModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$GetUserTaskModelToJson(this);
 }
@@ -22,11 +21,11 @@ class DataUserTask {
   int? id;
   String? status;
   String? sort;
-  Owner? owner;
+  dynamic? owner;
   String? created_on;
-  Owner? modified_by;
+  dynamic? modified_by;
   String? modified_on;
-  AssignedTo? assigned_to;
+  dynamic? assigned_to;
   String? due_date;
   String? title;
   String? description;
@@ -85,9 +84,9 @@ class AddTaskRequestModel {
   String? cancelled_date;
   String? description;
   String? notes;
-  String? assigned_to;
+  int? assigned_to;
   dynamic? files;
-  int? location;
+  dynamic? location;
   int? company;
 
   AddTaskRequestModel(
@@ -132,17 +131,8 @@ class FilesResponseModel {
 
   FilesResponseModel({this.id, this.directus_files_id});
 
-  factory FilesResponseModel.fromJson(Map<String, dynamic> json) {
-    final raw = json['directus_files_id'];
-    return FilesResponseModel(
-      id: json['id'] as int?,
-      directus_files_id: raw is Map<String, dynamic>
-          ? DirectusFilesId.fromJson(raw)
-          : raw is int
-              ? DirectusFilesId(id: raw)
-              : null,
-    );
-  }
+  factory FilesResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$FilesResponseModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$FilesResponseModelToJson(this);
 }
@@ -163,31 +153,33 @@ class DirectusFilesId {
   int? width;
   int? height;
   int? duration;
+
   String? description;
   String? location;
+
   String? checksum;
+
   Data? data;
 
-  DirectusFilesId({
-    this.id,
-    this.storage,
-    this.privateHash,
-    this.filenameDisk,
-    this.filenameDownload,
-    this.title,
-    this.type,
-    this.uploadedBy,
-    this.uploaded_on,
-    this.charset,
-    this.filesize,
-    this.width,
-    this.height,
-    this.duration,
-    this.description,
-    this.location,
-    this.checksum,
-    this.data,
-  });
+  DirectusFilesId(
+      {this.id,
+      this.storage,
+      this.privateHash,
+      this.filenameDisk,
+      this.filenameDownload,
+      this.title,
+      this.type,
+      this.uploadedBy,
+      this.uploaded_on,
+      this.charset,
+      this.filesize,
+      this.width,
+      this.height,
+      this.duration,
+      this.description,
+      this.location,
+      this.checksum,
+      this.data});
 
   factory DirectusFilesId.fromJson(Map<String, dynamic> json) =>
       _$DirectusFilesIdFromJson(json);
@@ -239,7 +231,7 @@ class DataAllTasks {
   String? created_on;
   dynamic? modified_by;
   String? modified_on;
-  AssignedTo? assigned_to;
+  dynamic? assigned_to;
   String? due_date;
   String? title;
   String? description;
@@ -285,11 +277,14 @@ class DataAllTasks {
       id: json['id'] as int?,
       status: json['status'] as String?,
       sort: json['sort'],
-      owner:json['owner'],
+      owner: json['owner'],
       created_on: json['created_on'] as String?,
       modified_by: json['modified_by'],
       modified_on: json['modified_on'] as String?,
-      assigned_to: json['assigned_to'] != null ? AssignedTo.fromJson(json['assigned_to']) : null, //json['assigned_to'],
+      assigned_to: json['assigned_to'] != null
+          ? AssignedTo.fromJson(json['assigned_to'])
+          : null,
+      //json['assigned_to'],
       due_date: json['due_date'] as String?,
       title: json['title'] as String?,
       description: json['description'] as String?,
@@ -299,7 +294,11 @@ class DataAllTasks {
       task_status: json['task_status'] as String?,
       priority: json['priority'] as String?,
       start_date: json['start_date'] as String?,
-      location: json['location'],
+      location: json['location'] is Map<String, dynamic>
+          ? Location.fromJson(json['location'])
+          : json['location'] is int
+              ? Location(id: json['location'])
+              : null,
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
       files: json['files'],
@@ -455,7 +454,7 @@ class OwnerLocation {
   String? timezone;
   String? locale;
   String? locale_options;
-  dynamic? avatar;
+  Avatar? avatar;
   String? company;
   String? title;
   bool? email_notifications;
@@ -495,7 +494,7 @@ class OwnerLocation {
 class AssignedTo {
   int? id;
   String? status;
-  Role? role;
+  dynamic role;  // remove '?'
   String? first_name;
   String? last_name;
   String? email;
@@ -537,30 +536,48 @@ class AssignedTo {
     this.last_page,
   });
 
-  AssignedTo.fromJson(Map<String, dynamic> json) {
-    avatar = json['avatar'] != null ? Avatar.fromJson(json['avatar']) : null;
+  factory AssignedTo.fromJson(Map<String, dynamic> json) {
+    return AssignedTo(
+      id: json['id'] as int?,
+      status: json['status'] as String?,
+      role: json['role'],
+      first_name: json['first_name'] as String?,
+      last_name: json['last_name'] as String?,
+      email: json['email'] as String?,
+      token: json['token'] as String?,
+      external_id: json['external_id'] as String?,
+      theme: json['theme'] as String?,
+      n2fa_secret: json['n2fa_secret'] as String?,
+      password_resetToken: json['password_resetToken'] as String?,
+      timezone: json['timezone'] as String?,
+      locale: json['locale'] as String?,
+      locale_options: json['locale_options'] as String?,
+      avatar: json['avatar'] == null
+          ? null
+          : (json['avatar'] is int
+          ? Avatar(id: json['avatar'] as int)
+          : Avatar.fromJson(json['avatar'] as Map<String, dynamic>)),
+      company: json['company'] as String?,
+      title: json['title'] as String?,
+      email_notifications: json['email_notifications'] as bool?,
+      last_access_on: json['last_access_on'] as String?,
+      last_page: json['last_page'] as String?,
+    );
   }
-  // factory AssignedTo.fromJson(dynamic json) {
-  //
-  //     this.avatar = json['a?vatar'] != null ? Avatar.fromJson(json['avatar']) : null;
-  //
-  //   // if (json == null) return AssignedTo();
-  //   // if (json is int) return AssignedTo(id: json);
-  //   // if (json is Map<String, dynamic>) return _$AssignedToFromJson(json);
-  //   // throw Exception('Invalid type for AssignedTo: ${json.runtimeType}');
-  // }
 
   Map<String, dynamic> toJson() => _$AssignedToToJson(this);
 }
+
+
 
 @JsonSerializable()
 class Location {
   int? id;
   String? status;
   String? sort;
-  OwnerLocation? owner;
+  dynamic owner;
   String? created_on;
-  OwnerLocation? modified_by;
+  dynamic? modified_by;
   String? modified_on;
   String? latitude;
   String? longitude;

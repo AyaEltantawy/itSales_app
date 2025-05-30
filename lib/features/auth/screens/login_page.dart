@@ -7,6 +7,7 @@ import 'package:itsale/core/utils/token.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/auth/data/states.dart';
 
+import '../../../core/cache_helper/cache_helper.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/themes/styles.dart';
 import '../components/checkbox_and_text.dart';
@@ -20,26 +21,38 @@ import '../components/login_page_form.dart';
 class LoginPage extends StatelessWidget {
   final TextEditingController? initialEmail;
   final TextEditingController? initialPassword;
+  final int? companyId;
 
-  LoginPage({super.key, this.initialEmail, this.initialPassword});
+  LoginPage(
+      {super.key, this.initialEmail, this.initialPassword, this.companyId});
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
-      if (state is PostErrorLoginSalesState) {
-        Utils.showSnackBar(
-            context,
-            AppLocalizations.of(context)!
-                .translate("sorry data is in correct"));
-      }
-
+    return BlocConsumer<AppCubit, AppStates>(listener: (context, state) async {
       if (state is PostSuccessLoginSalesState) {
-        Utils.showSnackBar(context,
-            AppLocalizations.of(context)!.translate("login_done_successfuly"));
+        await AppCubit.get(context).getUserDataFun(context);
 
+        final cachedCompanyId = CacheHelper.getData(key: 'company_id');
+        final role = CacheHelper.getData(key: 'role');
 
+        print("📦 Cached companyId after login: $cachedCompanyId (${cachedCompanyId.runtimeType})");
+        print("👤 Role: $role (${role.runtimeType})");
 
+        if ((cachedCompanyId == null || cachedCompanyId == '' || cachedCompanyId == 'null') &&
+            role.toString() == '1') {
+          print("❌ companyId is null or empty. Navigating to companyPage.");
+          await navigateTo(context, AppRoutes.companyPage);
+        } else {
+          print("✅ companyId is valid. Navigating to entryPoint.");
+          await navigateTo(context, AppRoutes.entryPoint);
+        }
+
+        Utils.showSnackBar(
+          context,
+          AppLocalizations.of(context)!.translate("login_done_successfuly"),
+        );
       }
+
     }, builder: (context, state) {
       if (state is PostLoadingLoginSalesState) {
         return Scaffold(

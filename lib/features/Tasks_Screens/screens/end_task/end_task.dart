@@ -378,7 +378,7 @@ class _CompleteTaskState extends State<CompleteTask> {
                                         description: widget.description,
                                         client_phone: widget.clientPhone,
                                         notes: widget.notes,
-                                        assigned_to: widget.assign_to,
+                                        assigned_to:int.parse( widget.assign_to),
                                         client_name: widget.clientName,
                                         complete_date:
                                             DateFormat('yyyy-MM-dd', 'en')

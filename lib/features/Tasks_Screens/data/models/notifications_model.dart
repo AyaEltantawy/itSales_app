@@ -24,12 +24,12 @@ class DataNotificationUser {
   int? id;
   String? status;
   String? sort;
-  int? owner;
+  dynamic? owner;
   String? created_on;
   int? modified_by;
   String? modified_on;
   String? message;
-  int? user;
+  dynamic? user;
   String? title;
   bool? is_read;
 

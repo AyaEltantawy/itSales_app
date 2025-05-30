@@ -25,6 +25,7 @@ class RegisterCubit extends Cubit<RegisterState> {
   final formKey = GlobalKey<FormState>();
 
   bool isPasswordShown = false;
+  bool isPasswordShownConfirm = false;
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -48,34 +49,10 @@ class RegisterCubit extends Cubit<RegisterState> {
     isPasswordShown = !isPasswordShown;
     emit(PasswordShownState());
   }
-
-  // Future<void> addUser(BuildContext context) async {
-  //   final isFormValid = formKey.currentState?.validate() ?? false;
-  //   if (!isFormValid) {
-  //     Utils.showSnackBar(context, 'يرجى تعبئة كافة الحقول بشكل صحيح');
-  //     return;
-  //   }
-  //
-  //   emit(RegisterLoadingState());
-  //
-  //   final addUserRequest = AddUserRequestModel(
-  //     email: emailController.text,
-  //     password: passwordController.text,
-  //     first_name: firstNameController.text,
-  //     last_name: lastNameController.text,
-  //   );
-  //
-  //   try {
-  //     final result = await repo.addUser(addUserRequest,);
-  //     await CacheHelper.saveData(key: 'token', value: token);
-  //     emit(RegisterSuccessState(result));
-  //     Utils.showSnackBar(context, 'تمت إضافة المستخدم بنجاح');
-  //     MagicRouter.navigateTo(EntryPointUI());
-  //   } catch (error) {
-  //     Utils.showSnackBar(context, 'فشل في إضافة المستخدم');
-  //     emit(RegisterErrorState(error.toString()));
-  //   }
-  // }
+  void onPassShowClickedConFirm() {
+    isPasswordShownConfirm = !isPasswordShownConfirm;
+    emit(PasswordShownConfirmState());
+  }
 
   Future<void> register(BuildContext context) async {
     if (!formKey.currentState!.validate()) return;
@@ -116,12 +93,13 @@ class RegisterCubit extends Cubit<RegisterState> {
         );
 
         emit(LoadingSuccess());
-
+        await CacheHelper.clearAll();
         if (context.mounted) {
           Utils.showSnackBar(
             context,
             responseData['message'] ?? 'تم التسجيل بنجاح',
           );
+
 
           Navigator.push(
             context,
@@ -167,8 +145,4 @@ class RegisterCubit extends Cubit<RegisterState> {
     timezoneController.dispose();
     return super.close();
   }
-
-
-
-  }
-
+}

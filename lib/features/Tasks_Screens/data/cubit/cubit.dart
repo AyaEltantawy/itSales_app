@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'dart:math';
+import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
 import 'package:itsale/main.dart';
 import 'package:path/path.dart';
@@ -45,131 +48,124 @@ class TasksCubit extends Cubit<TasksStates> {
       emit(GetLoadingUserTaskState());
       Map<String, String> queryParams = {};
       if (status != null) {
-        // 'filter[companies.id]':getUserTaskList?[1].companies?.,
         queryParams['filter[task_status][eq]'] = status;
       }
+
       await repo.getUserTask(userId, queryParams).then((value) {
         if (status != null) {
           emit(GetLoadingUserTaskStateForEmpScreens());
-
           getUserTaskListWithStatus = value.data;
           emit(GetSuccessUserTaskState());
-        } else if (status == null) {
+        } else {
           getUserTaskList = value.data;
-
           emit(GetSuccessUserTaskState());
         }
-      }).catchError((onError) async {
+      }).catchError((error, stackTrace) async {
+        // Enhanced error logging with stack trace
+        debugPrint('Error in getUserTaskFun: $error');
+        debugPrint('Stack trace:\n$stackTrace');
+
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
             MagicRouter.currentContext!,
             'أنت غير متصل بالانترنت',
           );
-
           emit(NoInternetState());
         }
         emit(GetErrorUserTaskState());
-        debugPrint('error get task user ${onError.toString()}');
       });
     }
   }
 
-  // Create New Task Function
-  addTaskFun(
-      {required String status,
-      required String title,
-      required String description,
-      required String client_phone,
-      required String notes,
-      required String assigned_to,
-      String? cancelled_date,
-      required String client_name,
-      String? complete_date,
-      required String due_date,
-      required String address,
-      required String mapUrl,
-      String? priority,
-      String? start_date,
-      required String task_status,
-      int? company}) async {
-
-      print({
-                "status": status,
-                "title": title,
-                "description": description,
-                "client_phone": client_phone,
-                "notes": notes,
-                "assigned_to": assigned_to,
-                "cancelled_date": cancelled_date,
-                "client_name": client_name,
-                "complete_date": complete_date,
-                "due_date": due_date,
-                "priority": priority,
-                "start_date": start_date,
-                "task_status": task_status,
-                "company": company
-      });
+  Future<void> addTaskFun({
+    required String status,
+    required String title,
+    required String description,
+    required String client_phone,
+    required String notes,
+    required int assigned_to,
+    String? cancelled_date,
+    required String client_name,
+    String? complete_date,
+    required String due_date,
+    required String address,
+    required String mapUrl,
+    String? priority,
+    String? start_date,
+    required String task_status,
+    required int company, // FIXED: Made required
+  }) async {
     emit(AddLoadingUserTaskState());
 
-    await repo.addTask(AddTaskRequestModel(
-            status: status,
-            title: title,
-            description: description,
-            client_phone: client_phone,
-            notes: notes,
-            assigned_to: assigned_to,
-            cancelled_date: cancelled_date,
-            client_name: client_name,
-            complete_date: complete_date,
-            due_date: due_date,
-            priority: priority,
-            start_date: start_date,
-            task_status: task_status,
-            company: company))
-        .then((response) {
+    try {
+      final taskRequest = AddTaskRequestModel(
+        status: status,
+        title: title,
+        description: description,
+        client_phone: client_phone,
+        notes: notes,
+        assigned_to: assigned_to,
+        cancelled_date: cancelled_date,
+        client_name: client_name,
+        complete_date: complete_date,
+        due_date: due_date,
+        priority: priority,
+        start_date: start_date,
+        task_status: task_status,
+        company: company,
+      );
+
+      final value = await repo.addTask(taskRequest);
+
       emit(AddSuccessUserTaskState());
 
-      print("response===");
-      print(response);
 
-    //   // print("companyIdForTasks$companyId");
-    //   // postLocationFun(
-    //   //     title: title,
-    //   //     description: description,
-    //   //     client_phone: client_phone,
-    //   //     notes: notes,
-    //   //     assigned_to: assigned_to,
-    //   //     client_name: client_name,
-    //   //     due_date: due_date,
-    //   //     priority: 'high',
-    //   //     task_status: task_status,
-    //   //     address: address,
-    //   //     map_url: mapUrl,
-    //   //     taskId: value.data!.id.toString()
-    //   // );
-    //   //
-    //   // postNotificationFun(
-    //   //     isRead: false,
-    //   //     message: ' راجع مهماتك الواردة:  ${value.data?.title.toString()}',
-    //   //     title: 'هناك مهمة جديدة',
-    //   //     user: value.data!.assigned_to!.id!.toInt()
-    //   // );
-    //   // getAllTasksFun();
 
-    }).catchError((onError) async {
-      // if (await InternetConnectionChecker().hasConnection == false) {
-      //   Utils.showSnackBar(
-      //     MagicRouter.currentContext!,
-      //     'أنت غير متصل بالانترنت',
-      //   );
-      //
-      //   emit(NoInternetState());
-      // }
+
+
+      await postLocationFun(
+        title: title,
+        description: description,
+        client_phone: client_phone,
+        notes: notes,
+        assigned_to: assigned_to.toString(), // send as string if needed
+        client_name: client_name,
+        due_date: due_date,
+        priority: priority ?? 'high',
+        task_status: task_status,
+        address: address,
+        map_url: mapUrl,
+        taskId: value.data!.id.toString(),
+      );
+
+      // Send notification
+      await postNotificationFun(
+        isRead: true,
+        message: 'راجع مهماتك الواردة: ${value.data!.title}',
+        title: 'هناك مهمة جديدة',
+        user: assigned_to,
+      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        navigateTo(context, AppRoutes.tasks_screen_for_employee);
+      }
+
+    } catch (e, stackTrace) {
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
+        emit(NoInternetState());
+      }
 
       emit(AddErrorUserTaskState());
-      debugPrint('errrrrror ${onError.toString()}');
-    });
+
+      debugPrint('🔴 ERROR: $e');
+      debugPrint('📍 SOURCE: $stackTrace');
+    }
   }
+
 
   Future editTaskFun({
     required String taskId,
@@ -178,7 +174,7 @@ class TasksCubit extends Cubit<TasksStates> {
     String? description,
     String? client_phone,
     String? notes,
-    String? assigned_to,
+    int? assigned_to,
     String? cancelled_date,
     String? client_name,
     String? complete_date,
@@ -271,15 +267,19 @@ class TasksCubit extends Cubit<TasksStates> {
 
     try {
       final filters = {'fields': '*.*', 'filter[company.id]': companyId};
-      print("CommmmmmmmpanyId$companyId");
+      print("CompanyId: $companyId");
+
       final value = await repo.getAllTasks(filters);
 
-
       getAllTaskList = value.data;
-      print("getAllTaskList");
-      print(getAllTaskList?[0].assigned_to);
+
+      print("getAllTaskList length: ${getAllTaskList?.length}");
+
+      // Loop through each task to find problematic assigned_to field
+
+
       emit(GetSuccessAllTaskState());
-    } catch (error) {
+    } catch (error, stackTrace) {
       final stillHasInternet = await InternetConnectionChecker().hasConnection;
       if (!stillHasInternet) {
         Utils.showSnackBar(
@@ -291,7 +291,9 @@ class TasksCubit extends Cubit<TasksStates> {
       }
 
       emit(GetErrorAllTaskState());
-      debugPrint('❌ Error getting tasks: $error');
+
+      print('❌ Error getting tasks: $error');
+      print(stackTrace);
     }
   }
 
@@ -447,12 +449,25 @@ class TasksCubit extends Cubit<TasksStates> {
       });
     }
   }
+  int newNotificationCount = 0;
+
+  /// Call this after you successfully post a notification
+  void notifyNew() {
+    newNotificationCount = 1;
+    emit(NewNotificationState());
+  }
+
+  /// Call this when user opens notifications screen
+  void clearNotificationBadge() {
+    newNotificationCount = 0;
+    emit(ClearNotificationState());
+  }
 
   postNotificationFun({
-    required bool isRead,
-    required String message,
-    required String title,
-    required int user,
+    bool? isRead,
+     String? message,
+     String? title,
+     int? user,
   }) async {
     emit(PostLoadingAllNotificationState());
 
@@ -466,6 +481,7 @@ class TasksCubit extends Cubit<TasksStates> {
     ))
         .then((value) {
       emit(PostSuccessAllNotificationState());
+      notifyNew();
     }).catchError((onError) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
@@ -489,7 +505,7 @@ class TasksCubit extends Cubit<TasksStates> {
     required String description,
     required String client_phone,
     required String notes,
-    required String assigned_to,
+    required dynamic assigned_to,
     required String client_name,
     required String due_date,
     required String priority,
@@ -545,7 +561,7 @@ class TasksCubit extends Cubit<TasksStates> {
     String? description,
     String? client_phone,
     String? notes,
-    String? assigned_to,
+    int? assigned_to,
     String? cancelled_date,
     String? client_name,
     String? complete_date,
@@ -609,7 +625,7 @@ class TasksCubit extends Cubit<TasksStates> {
     required String description,
     required String client_phone,
     required String notes,
-    required String assigned_to,
+    required int assigned_to,
 //  required String cancelled_date,
     required String client_name,
     // required String complete_date,

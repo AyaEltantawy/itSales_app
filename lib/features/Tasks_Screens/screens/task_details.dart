@@ -216,7 +216,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                 description: widget.description,
                                 client_phone: widget.phoneClient,
                                 notes: widget.notes,
-                                assigned_to: x,
+                                assigned_to: int.parse(x!),
                                 client_name: widget.nameClient,
 
                                 due_date: widget.deadline,

@@ -148,4 +148,5 @@ class Repository {
     return await webServices.getNotificationsForOneUser('Bearer $token', id);
   }
 
-}
+  }
+

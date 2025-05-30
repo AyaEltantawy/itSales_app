@@ -22,7 +22,8 @@ class LoginPageForm extends StatefulWidget {
   final TextEditingController? emailController;
   final TextEditingController? passwordController;
 
-  const LoginPageForm({super.key, this.emailController, this.passwordController});
+  const LoginPageForm(
+      {super.key, this.emailController, this.passwordController});
 
   @override
   State<LoginPageForm> createState() => _LoginPageFormState();
@@ -60,13 +61,8 @@ class _LoginPageFormState extends State<LoginPageForm> {
   }
 
   void onLogin(BuildContext context) async {
+
     final isFormOkay = _key.currentState?.validate() ?? false;
-    if (companyId == null ) {
-      print("Invalid companyId: $companyId");
-      await navigateTo(context, AppRoutes.companyPage);
-    } else {
-      navigateTo(context, AppRoutes.entryPoint);
-    }
 
     if (isFormOkay) {
       AppCubit.get(context).postLoginSales(
@@ -74,98 +70,94 @@ class _LoginPageFormState extends State<LoginPageForm> {
         email: emailController.text.trim(),
         password: passController.text.trim(),
       );
-
     } else {
-      Future.delayed(Duration.zero, () {
-        if (context.mounted) {
-          Utils.showSnackBar(
-            context,
-            AppLocalizations.of(context)!
-                .translate("Please follow the instructions."),
-          );
-        }
-
-      });
-
+      Utils.showSnackBar(
+        context,
+        AppLocalizations.of(context)!
+            .translate("Please follow the instructions."),
+      );
     }
+
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final cubit = AppCubit.get(context);
-    final local = AppLocalizations.of(context)!;
 
-    return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Form(
-          key: _key,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 15.h),
-              defaultTextFormFeild(
-                context,
-                keyboardType: TextInputType.emailAddress,
-                controller: emailController,
-                validator: Validators.requiredWithFieldName(
-                  local.translate("Please follow the instructions."),
-                ).call,
-                prefix: const Icon(AppIcons.email),
-                label: local.translate("write_email"),
-              ),
-              SizedBox(height: 15.h),
-              defaultTextFormFeild(
-                context,
-                keyboardType: TextInputType.text,
-                controller: passController,
-                validator: Validators.password.call,
-                onSubmit: (v) => onLogin(context),
-                secure: !isPasswordShown,
-                prefix: const Icon(AppIcons.lock),
-                label: local.translate("write_password"),
-                suffix: IconButton(
-                  onPressed: onPassShowClicked,
-                  icon: Icon(
-                    isPasswordShown ? AppIcons.eye : AppIcons.eyeNonVisible,
-                    size: 24,
-                  ),
+@override
+Widget build(BuildContext context) {
+  final cubit = AppCubit.get(context);
+  final local = AppLocalizations.of(context)!;
+
+  return BlocConsumer<AppCubit, AppStates>(
+    listener: (context, state) {},
+    builder: (context, state) {
+      return Form(
+        key: _key,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 15.h),
+            defaultTextFormFeild(
+              context,
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+              validator: Validators
+                  .requiredWithFieldName(
+                local.translate("Please follow the instructions."),
+              )
+                  .call,
+              prefix: const Icon(AppIcons.email),
+              label: local.translate("write_email"),
+            ),
+            SizedBox(height: 15.h),
+            defaultTextFormFeild(
+              context,
+              keyboardType: TextInputType.text,
+              controller: passController,
+              validator: Validators.password.call,
+              onSubmit: (v) => onLogin(context),
+              secure: !isPasswordShown,
+              prefix: const Icon(AppIcons.lock),
+              label: local.translate("write_password"),
+              suffix: IconButton(
+                onPressed: onPassShowClicked,
+                icon: Icon(
+                  isPasswordShown ? AppIcons.eye : AppIcons.eyeNonVisible,
+                  size: 24,
                 ),
               ),
-              CheckBoxAndText(
-                isChecked: cubit.isChecked,
-                toggleCheckbox: cubit.toggleCheckbox,
-              ),
-              SizedBox(height: 40.h),
-              defaultButton(
-                isColor: true,
-                height: 56.h,
-                width: double.infinity,
-                text: local.translate("login"),
-                context: context,
-                textSize: 17.sp,
-                toPage: () {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    onLogin(context);
-                  });
-                },
-              ),
-              SizedBox(height: 20.h),
-              defaultButton(
-                context: context,
-                text: local.translate("back"),
-                width: double.infinity,
-                height: 56.h,
-                isColor: false,
-                textSize: 17.sp,
-                toPage: () {
-                  navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+            ),
+            CheckBoxAndText(
+              isChecked: cubit.isChecked,
+              toggleCheckbox: cubit.toggleCheckbox,
+            ),
+            SizedBox(height: 40.h),
+            defaultButton(
+              isColor: true,
+              height: 56.h,
+              width: double.infinity,
+              text: local.translate("login"),
+              context: context,
+              textSize: 17.sp,
+              toPage: () {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  onLogin(context);
+                });
+              },
+            ),
+            SizedBox(height: 20.h),
+            defaultButton(
+              context: context,
+              text: local.translate("back"),
+              width: double.infinity,
+              height: 56.h,
+              isColor: false,
+              textSize: 17.sp,
+              toPage: () {
+                navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}}

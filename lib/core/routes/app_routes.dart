@@ -10,6 +10,7 @@ class AppRoutes {
   static const successPage = '/successPage';
   static const companyPage = '/companyPage';
   static const changePasswordPage = '/changePasswordPage';
+  static const tasks_screen_for_employee = '/tasks_screen_for_employee';
   /* <---- Login, Signup -----> */
   static const login = '/login';
   static const signup = '/signup';

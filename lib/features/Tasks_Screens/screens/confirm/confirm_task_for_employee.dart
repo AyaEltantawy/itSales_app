@@ -150,7 +150,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                           status: 'published',
                           title: cubit.title.toString(),
                           notes: cubit.notes.toString(),
-                          assigned_to: cubit.assigned_to!.id.toString(),
+                          assigned_to: int.parse(cubit.assigned_to!.id.toString(),),
                           description: cubit.description.toString(),
                           locationId: cubit.location?.id!.toInt(),
                           client_phone: cubit.client_phone.toString(),

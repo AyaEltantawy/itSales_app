@@ -65,7 +65,6 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         print("Unable to show snackbar: context is null");
       }
 
-
       emit(NoInternetState());
     } else {
       emit(GetLoadingSalesState());
@@ -101,7 +100,6 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       } else {
         print("Unable to show snackbar: context is null");
       }
-
 
       emit(NoInternetState());
     } else {
@@ -185,26 +183,21 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     String? address,
     String? phone2,
     String? whatsapp,
-
   }) async {
     emit(AddLoadingEmployeeInfoState());
 
-
-
     await repo
         .addEmployee(
-            AddEmployeeRequestModel(
-              user: employeeId,
-              status: status,
-              email: email,
-              address: address,
-              phone_1: phone1,
-              phone_2: phone2,
-              whatsapp: whatsapp,
-
-
-            ),
-         )
+      AddEmployeeRequestModel(
+        user: employeeId,
+        status: status,
+        email: email,
+        address: address,
+        phone_1: phone1,
+        phone_2: phone2,
+        whatsapp: whatsapp,
+      ),
+    )
         .then((value) {
       emit(AddSuccessEmployeeInfoState());
 
@@ -236,49 +229,55 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     String? phone2,
     String? whatsapp,
     int? avatar,
-    int? companies
+    int? companies,
   }) async {
     emit(AddLoadingUserState());
-    print("tokenForAddUsers$token");
+    print("🔐 tokenForAddUsers: $token");
+
     await repo
         .addUser(
-
-        AddUserRequestModel(
-      email: email,
-      first_name: firstName,
-      last_name: lastName,
-      role: role,
-      password: password,
-          companies: companyId
-    ),)
+      AddUserRequestModel(
+        email: email,
+        first_name: firstName,
+        last_name: lastName,
+        role: role,
+        password: password,
+        companies: companyId,
+      ),
+    )
         .then((value) {
       emit(AddSuccessUserState());
 
       getAllSales();
-      print("companyIdForUser$companyId");
+
+      print("🏢 companyIdForUser: $companyId");
+
       final context = MagicRouter.currentContext;
       if (context != null) {
-      navigateTo(context, AppRoutes.entryPoint);}
-      // MagicRouter.navigateTo(EntryPointUI());
-      addEmployeeFun(
-          employeeId: value.data?.id?.toString()??'',
-          status: 'published',
-          email: emailEmp,
-          address: address,
-          phone2: phone2,
-          whatsapp: whatsapp,
+        navigateTo(context, AppRoutes.entryPoint);
+      }
 
-          phone1: '');
-    }).catchError((onError) async {
+      addEmployeeFun(
+        employeeId: value.data?.id?.toString() ?? '',
+        status: 'published',
+        email: emailEmp,
+        address: address,
+        phone2: phone2,
+        whatsapp: whatsapp,
+        phone1: '',
+      );
+    }).catchError((error, stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         final context = MagicRouter.currentContext;
         if (context != null) {
           Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
         }
         emit(NoInternetState());
+        return;
       }
       emit(AddErrorUserState());
-      debugPrint('errrrrror ${onError.toString()}');
+      debugPrint('🔴 ERROR: $error');
+      debugPrint('📍 STACK TRACE:\n$stackTrace');
     });
   }
 
@@ -382,27 +381,25 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     });
   }
 
-
-
   Future<void> uploadFile(
-      File file, {
-        required String firstName,
-        required bool edit,
-        required String lastName,
-        required String status,
-        required String email,
-        required String role,
-        required String password,
-        required String phone1,
-        required String employeeId,
-        required String idUser,
-        String? emailEmp,
-        String? empStatus,
-        String? address,
-        String? phone2,
-        String? whatsapp,
-        int? companyId,
-      }) async {
+    File file, {
+    required String firstName,
+    required bool edit,
+    required String lastName,
+    required String status,
+    required String email,
+    required String role,
+    required String password,
+    required String phone1,
+    required String employeeId,
+    required String idUser,
+    String? emailEmp,
+    String? empStatus,
+    String? address,
+    String? phone2,
+    String? whatsapp,
+    int? companyId,
+  }) async {
     Dio dio = Dio();
     try {
       emit(PostLoadingFileState());
@@ -414,12 +411,9 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         "data": await MultipartFile.fromFile(file.path, filename: fileName),
       });
 
-
-
       Response response = await dio.post(
         "$baseUrl$endpoint",
         data: formData,
-
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
@@ -452,20 +446,19 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
           );
         } else {
           adduserFun(
-            firstName: firstName,
-            avatar: response.data['data']['id'],
-            lastName: lastName,
-            status: status,
-            email: email,
-            role: role,
-            password: password,
-            emailEmp: emailEmp,
-            address: address,
-            phone1: phone1,
-            phone2: phone2,
-            whatsapp: whatsapp,
-
-          companies: companyId);
+              firstName: firstName,
+              avatar: response.data['data']['id'],
+              lastName: lastName,
+              status: status,
+              email: email,
+              role: role,
+              password: password,
+              emailEmp: emailEmp,
+              address: address,
+              phone1: phone1,
+              phone2: phone2,
+              whatsapp: whatsapp,
+              companies: companyId);
         }
       } else {
         emit(PostErrorFileState());
@@ -483,5 +476,4 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       print("Error during file upload: $e");
     }
   }
-
 }

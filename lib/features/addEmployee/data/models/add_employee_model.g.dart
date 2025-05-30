@@ -210,7 +210,7 @@ DataUserResponse _$DataUserResponseFromJson(Map<String, dynamic> json) =>
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
       avatar: (json['avatar'] as num?)?.toInt(),
-      companies: json['companies'] as String?,
+      companies: json['companies'],
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,

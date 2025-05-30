@@ -25,7 +25,7 @@ Future<void> main() async {
     await getInit();
     sharedPreferences = await SharedPreferences.getInstance();
     await CacheHelper.init();
-resetToken=CacheHelper.getData(key: "reset_token");
+    resetToken=CacheHelper.getData(key: "reset_token");
     token = CacheHelper.getData(key: 'token');
     role = CacheHelper.getData(key: 'role');
     userId = CacheHelper.getData(key: 'userId');

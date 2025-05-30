@@ -481,54 +481,54 @@ class _CompletedTasksSectionForOneUserState
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) => InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  animatedNavigation(
-                                      screen: TaskDetailsScreen(
-                                    file: data![index].files!.isNotEmpty ||
-                                            data![index].files != null
-                                        ? data![index].files
-                                        : [],
-                                    task_status:
-                                        data![index].task_status.toString(),
-                                    id: data![index].id!.toInt(),
-                                    locationId: data![index].location != null
-                                        ? data![index].location!.id.toString()
-                                        : '10',
-                                    nameTask: data![index].title.toString(),
-                                    nameEmployee:
-                                        '${data![index].assigned_to!.first_name.toString()} ${data![index].assigned_to!.last_name.toString()}',
-                                    nameClient:
-                                        data![index].client_name.toString(),
-                                    phoneClient:
-                                        data![index].client_phone.toString(),
-                                    notes: data![index].notes.toString(),
-                                    address: data![index].location != null
-                                        ? data![index]
-                                            .location!
-                                            .address
-                                            .toString()
-                                        : 'لا يوجد',
-                                    link: data![index].location != null
-                                        ? data![index]
-                                            .location!
-                                            .map_url
-                                            .toString()
-                                        : 'لا يوجد',
-                                    deadline: data![index].due_date.toString(),
-                                    description:
-                                        data![index].description.toString(),
-                                  )));
-                            },
-                            child: TaskListItem(
-                                index: index + 1,
-                                taskName: data![index].title.toString(),
-                                location: data![index].location != null
-                                    ? data![index].location!.address.toString()
-                                    : 'لا يوجد',
-                                time: data![index].complete_date!.toString()),
-                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                animatedNavigation(
+                                    screen: TaskDetailsScreen(
+                                  file: data![index].files!.isNotEmpty ||
+                                          data![index].files != null
+                                      ? data![index].files
+                                      : [],
+                                  task_status:
+                                      data![index].task_status.toString(),
+                                  id: data![index].id!.toInt(),
+                                  locationId: data![index].location != null
+                                      ? data![index].location!.id.toString()
+                                      : '10',
+                                  nameTask: data![index].title.toString(),
+                                  nameEmployee:
+                                      '${data![index].assigned_to!.first_name.toString()} ${data![index].assigned_to!.last_name.toString()}',
+                                  nameClient:
+                                      data![index].client_name.toString(),
+                                  phoneClient:
+                                      data![index].client_phone.toString(),
+                                  notes: data![index].notes.toString(),
+                                  address: data![index].location != null
+                                      ? data![index]
+                                          .location!
+                                          .address
+                                          .toString()
+                                      : 'لا يوجد',
+                                  link: data![index].location != null
+                                      ? data![index]
+                                          .location!
+                                          .map_url
+                                          .toString()
+                                      : 'لا يوجد',
+                                  deadline: data![index].due_date.toString(),
+                                  description:
+                                      data![index].description.toString(),
+                                )));
+                          },
+                          child: TaskListItem(
+                            index: index + 1,
+                            taskName: data![index].title.toString(),
+                            location: data![index].location != null
+                                ? data![index].location!.address.toString()
+                                : 'لا يوجد',
+                            time: data?[index].complete_date?.toString() ?? "",
+                          )),
                       separatorBuilder: (context, index) => Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20.w),
                             child: Divider(

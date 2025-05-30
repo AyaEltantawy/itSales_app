@@ -88,7 +88,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ),
                     ),
-                    InkWell(onTap: (){navigateTo(context,AppRoutes.editDataPage);},
+                    InkWell(
+                      onTap: () {
+                        navigateTo(context, AppRoutes.editDataPage);
+                      },
                       child: Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: AppDefaults.padding),
@@ -271,7 +274,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                 MaterialPageRoute(
                                     builder: (context) => MainSettingsPage())),
                           ),
-
                           AppSettingsListTile(
                             style: AppFonts.style16semiBold,
                             widget: Icon(AppIcons.help_outline,
@@ -282,21 +284,17 @@ class _SettingsPageState extends State<SettingsPage> {
                                 AppLocalizations.of(context)!.translate("help"),
                             onTap: () => navigateTo(context, AppRoutes.helpPge),
                           ),
-
-
                           SizedBox(height: 20.h),
                           AppSettingsListTile(
-                            style: AppFonts.style16semiBoldError,
-                            widget: const Icon(AppIcons.logOut,
-                                color: AppColors.errorColor),
-                            label: AppLocalizations.of(context)!
-                                .translate("sign_out"),
-                            onTap: () async {
-                              await CacheHelper.clearAll().then((value) {
-                                if (value) navigateTo(context, AppRoutes.login);
-                              });
-                            },
-                          ),
+                              style: AppFonts.style16semiBoldError,
+                              widget: const Icon(AppIcons.logOut,
+                                  color: AppColors.errorColor),
+                              label: AppLocalizations.of(context)!
+                                  .translate("sign_out"),
+                              onTap: () async {
+                                await CacheHelper.clearAll();
+                                navigateTo(context, AppRoutes.login);
+                              }),
                           SizedBox(height: 30.h),
                           Image.asset(AppImages.company),
                         ],
