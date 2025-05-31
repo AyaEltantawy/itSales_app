@@ -55,11 +55,18 @@ class RegisterPage extends StatelessWidget {
 
                   Column(
                     children: [
-                      SizedBox(height: 40.h),
-                      Text(
-                          textAlign: TextAlign.center,
-                          AppLocalizations.of(context)!.translate("register"),
-                          style: TextStyles.font20Weight500BaseBlack),
+
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+
+                              AppLocalizations.of(context)!.translate("register"),
+                              style: TextStyles.font20Weight500BaseBlack),
+                          InkWell(
+                            onTap: (){ navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);},
+                              child: Icon(Icons.arrow_forward))
+                        ],
+                      ),
                       SizedBox(height: 20.h),
                       RegisterPageForm(
                           formKey: controller.formKey,

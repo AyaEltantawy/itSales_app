@@ -7,6 +7,7 @@ import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/auth/screens/choose_login_or_sign_up/widgets/choose_container.dart';
 
 import '../../../../core/constants/app_images.dart';
+import '../../../../core/themes/styles.dart';
 import '../../data/cubit.dart' show AppCubit;
 import 'choose_login_or_sign_up_cubit.dart';
 import 'choose_login_or_sign_up_state.dart';
@@ -25,9 +26,10 @@ class ChooseLoginOrSignUpPage extends StatelessWidget {
                 children: [
                   Container(
                       width: double.infinity,
+                      height: 300.h,
                       child: Image.asset(
                         "assets/images/workers.png",
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       )),
                   Image.asset(
                     AppCubit.get(context).isDarkMode
@@ -39,7 +41,15 @@ class ChooseLoginOrSignUpPage extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                height: 70.h,
+                height: 20.h,
+              ),
+              Text(
+                "مرحبا بك",
+                style: TextStyles.font25WeightBoldBlack,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 20.h,
               ),
               Center(
                 child: Padding(

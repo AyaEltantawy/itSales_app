@@ -6,10 +6,13 @@ import 'package:itsale/core/themes/colors.dart';
 class TextStyles {
   static TextStyle font20Weight500Primary = TextStyle(
       fontSize: 20.sp, fontWeight: FontWeight.w500, color: AppColors.primary);
+
   static TextStyle font20Weight500White = TextStyle(
       fontSize: 20.sp, fontWeight: FontWeight.w500, color: Colors.white);
   static TextStyle font16Weight300Black = TextStyle(
       fontSize: 16.sp, fontWeight: FontWeight.w300, color: ColorsManager.black);
+  static TextStyle font25WeightBoldBlack = TextStyle(
+      fontSize: 25.sp, fontWeight: FontWeight.bold,color: ColorsManager.black);
   static TextStyle font20Weight400BaseBlack = TextStyle(
       fontSize: 20.sp,
       fontWeight: FontWeight.w400,

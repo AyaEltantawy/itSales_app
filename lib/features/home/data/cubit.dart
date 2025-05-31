@@ -92,7 +92,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     }
   }
 
-  getAdmins({int? role, String? search}) async {
+  Future<void> getAdmins({int? role, String? search}) async {
     if (await InternetConnectionChecker().hasConnection == false) {
       final context = MagicRouter.currentContext;
       if (context != null) {
@@ -100,43 +100,61 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
       } else {
         print("Unable to show snackbar: context is null");
       }
-
       emit(NoInternetState());
-    } else {
-      emit(GetLoadingAdminsState());
-      Map<String, String> queryParams = {};
+      return;
+    }
+
+    emit(GetLoadingAdminsState());
+
+    Map<String, dynamic> queryParams = {};
+
+    // Add role filter if provided
+    if (role != null) {
+      queryParams['filter[role]'] = role.toString();
+    }
+
+    if (companyId != null) {
+      queryParams['filter[companies]'] = companyId;
+    }
+
+    if (search != null && search.isNotEmpty) {
+      queryParams['q'] = search;
+      emit(GetLoadingSearchEmployeeFilterState());
+    }
+
+    try {
+      final value = await repo.allUsers(queryParams);
+
       if (role != null) {
-        queryParams['filter[role.id][eq]'] = role.toString();
+        if (role == 1) {
+          usersAdmin = value.data;
+        } else {
+          usersEmployee = value.data;
+        }
       }
-      if (search != null) {
-        queryParams['q'] = search;
-        emit(GetLoadingSearchEmployeeFilterState());
+
+      emit(GetSuccessAdminsState());
+
+      if (search != null && search.isNotEmpty) {
+        searchUser = value.data;
+        emit(GetSuccessSearchEmployeeFilterState());
       }
-      await repo.allUsers(queryParams).then((value) {
-        if (role != null) {
-          role == 1 ? usersAdmin = value.data : usersEmployee = value.data;
-        }
-        emit(GetSuccessAdminsState());
+    } catch (onError,stackTrace) {
+      if (search != null && search.isNotEmpty) {
+        emit(GetErrorSearchEmployeeFilterState());
+      }
 
-        if (search != null) {
-          searchUser = value.data;
-          emit(GetSuccessSearchEmployeeFilterState());
-        }
-      }).catchError((onError) async {
-        if (search != null) {
-          emit(GetErrorSearchEmployeeFilterState());
-        }
-        if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(
-            MagicRouter.currentContext!,
-            'أنت غير متصل بالانترنت',
-          );
+      if (await InternetConnectionChecker().hasConnection == false) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
+        emit(NoInternetState());
+      }
 
-          emit(NoInternetState());
-        }
-        emit(GetErrorAdminsState());
-        debugPrint('errrrrror ${onError.toString()}');
-      });
+      emit(GetErrorAdminsState());
+      debugPrint('Error in getAdmins: ${onError.toString()}');
+      debugPrint('Stack trace:\n$stackTrace');
     }
   }
 

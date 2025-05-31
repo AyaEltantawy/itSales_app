@@ -129,32 +129,48 @@ class LocationSection extends StatelessWidget {
           Divider(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor),
           SizedBox(height: 8.h),
           InkWell(
-              onTap: ()
+            onTap: () async {
+              if (link == null || link.isEmpty || link == 'لا يوجد') {
+                // Optionally show a message to the user that the link is invalid
+                print('Invalid or empty link, cannot open.');
+                return;
+              }
 
-              {
-                final Uri url =
-                Uri.parse(link.toString());
+              final Uri url = Uri.parse(link);
 
-                launchUrl(url);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child:
-                  _buildRow(label: 'رابط الموقع', value: link ?? 'لا يوجد')),
-                  Container(
-                      height: 40.h,
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url);
+              } else {
+                print('Cannot launch URL: $link');
+                // Optionally show a toast/snackbar informing the user
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: _buildRow(label: 'رابط الموقع', value: link ?? 'لا يوجد'),
+                ),
+                Container(
+                  height: 40.h,
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    borderRadius: AppDefaults.borderRadius,
+                    color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
+                    border: Border.all(color: AppColors.primary),
+                  ),
+                  child: Text(
+                    "اذهب للموقع",
+                    style: TextStyle(
+                      color: globalDark ? AppColors.textWhite : AppColors.textBlack,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                          borderRadius: AppDefaults.borderRadius,
-                          color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
-                          border: Border.all(color: AppColors.primary)),
-                      child:  Text("اذهب للموقع",
-                        style: TextStyle(color:globalDark ?   AppColors.textWhite : AppColors.textBlack ,fontSize: 14.sp),)),
-
-                ],
-              )),
         ],
       ),
     );

@@ -347,7 +347,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                 return EmployeeDetailsScreen(
                   name:
                   '${usersList[index].first_name} ${usersList[index].last_name}',
-                  role: usersList[index].role?.id == 1 ? 'مدير' : 'موظف',
+                  role: usersList[index].role == 1 ? 'مدير' : 'موظف',
                   avatar:
                   usersList[index].avatar?.data?.full_url ?? 'لا يوجد',
                   phone1: info?.phone_1 ?? 'لا يوجد',

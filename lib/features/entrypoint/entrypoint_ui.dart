@@ -47,7 +47,8 @@ class _EntryPointUIState extends State<EntryPointUI> {
         : TasksCubit.get(context).getAllTasksFun();
     role == '3'
         ? TasksCubit.get(context).getAllTasksFunWithFilter(
-            sort: 'complete_date', status: 'completed', employee: userId)
+
+    sort: 'complete_date', status: 'completed', employee: userId)
         : TasksCubit.get(context).getAllTasksFunWithFilter(
             sort: 'complete_date', status: 'completed');
     EmployeeCubit.get(context).getAllSales();

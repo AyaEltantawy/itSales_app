@@ -10,8 +10,7 @@ import '../../../core/utils/token.dart';
 import '../../../generated/l10n.dart';
 import '../../Tasks_Screens/data/cubit/cubit.dart';
 
-
-int theRole   = 0;
+int theRole = 0;
 
 class FilterDialog extends StatefulWidget {
   const FilterDialog({super.key});
@@ -33,134 +32,128 @@ class _FilterDialogState extends State<FilterDialog> {
   Set<String> locationSet = {};
   Set<String> employeeSet = {};
 
-
   Map<String, String> employeeMap = {};
 
   @override
   Widget build(BuildContext context) {
-    states =['قيد الانتظار','ملغي','مكتمل','تم الاستلام'];
+    states = ['قيد الانتظار', 'ملغي', 'مكتمل', 'تم الاستلام'];
 
-    for(int i = 0 ; i < TasksCubit.get(context).getUserTaskList!.length ; i ++) {
-      for (int i = 0; i < TasksCubit
-          .get(context)
-          .getUserTaskList!
-          .length; i++) {
-        var taskLocation = TasksCubit
-            .get(context)
-            .getUserTaskList![i].location?.address;
-        if (taskLocation != null) {
-          locationSet.add(taskLocation);
-          print('taskLocation ,,,,,,,,,,,,,,,,, $taskLocation');
-        }
+    // Build locations from user tasks
+    for (int i = 0; i < TasksCubit.get(context).getUserTaskList!.length; i++) {
+      var taskLocation = TasksCubit.get(context).getUserTaskList![i].location?.address;
+      if (taskLocation != null) {
+        locationSet.add(taskLocation);
+        print('taskLocation ,,,,,,,,,,,,,,,,, $taskLocation');
       }
-
-      locations = locationSet.toList();
     }
-      for(int i = 0 ; i < TasksCubit.get(context).getAllTaskList!.length ; i ++)
-    {
-      for (int i = 0; i < TasksCubit.get(context).getAllTaskList!.length; i++) {
-        var taskLocation = TasksCubit.get(context).getAllTaskList![i].location?.address;
-        if (taskLocation != null) {
-          locationSet.add(taskLocation);
-        }
+    locations = locationSet.toList();
+
+    // Build locations from all tasks
+    for (int i = 0; i < TasksCubit.get(context).getAllTaskList!.length; i++) {
+      var taskLocation = TasksCubit.get(context).getAllTaskList![i].location?.address;
+      if (taskLocation != null) {
+        locationSet.add(taskLocation);
       }
-
-      locations = locationSet.toList();
-
-      for (int i = 0; i < EmployeeCubit.get(context).users!.length; i++) {
-        var user = EmployeeCubit.get(context).users![i];
-        String fullName = '${user.first_name} ${user.last_name}';  // Combine first and last name
-        employeeSet.add(fullName);  // Avoid duplicates
-
-        employeeMap[user.id!.toString()] = fullName;
-      }
-
-      employees = employeeSet.toList();
-
     }
+    locations = locationSet.toList();
+
+    // Build employees list and map
+    for (int i = 0; i < EmployeeCubit.get(context).users!.length; i++) {
+      var user = EmployeeCubit.get(context).users![i];
+      String fullName = '${user.first_name} ${user.last_name}'; // Combine first and last name
+      employeeSet.add(fullName); // Avoid duplicates
+      employeeMap[user.id!.toString()] = fullName;
+    }
+    employees = employeeSet.toList();
+
     return Dialog(
-      backgroundColor:
-      globalDark ? AppColors.cardColorDark : AppColors.textWhite,
+      backgroundColor: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       child: Container(
-        padding:  EdgeInsets.all(10.h),
+        padding: EdgeInsets.all(10.h),
         height: 340.h,
-
         child: Column(
-
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
-                  onTap: ()
-              {
-
-                role == '3' ? TasksCubit.get(context).getUserTaskFun(userId: userId.toString())  :  TasksCubit.get(context).getAllTasksFun();
-                Navigator.pop(context);
-              }, child: Row(
-                children: [
-                 const Icon(Icons.cancel_presentation_outlined, size: 20,),
-                  SizedBox(width: 8.w,),
-                   Text("الغي الفلتر ", style: TextStyle(
-                    decoration: TextDecoration.underline,
-                  ),),
-                ],
-              )),
+                onTap: () {
+                  role == '3'
+                      ? TasksCubit.get(context).getUserTaskFun(userId: userId.toString())
+                      : TasksCubit.get(context).getAllTasksFun();
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  children: [
+                    const Icon(Icons.cancel_presentation_outlined, size: 20),
+                    SizedBox(width: 8.w),
+                    Text(
+                      "الغي الفلتر ",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Center(child: Text("خيارات الفلتر",style: AppFonts.style20BoldColored,)),
+            Center(child: Text("خيارات الفلتر", style: AppFonts.style20BoldColored)),
             SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildTabButton(context, "الحالة", 0),
-                  Container(),
+                Container(),
                 _buildTabButton(context, "التاريخ", 1),
-             role == '1' ?   _buildTabButton(context, "الموظف", 2)
-                 : Container(),
+                role == '1' ? _buildTabButton(context, "الموظف", 2) : Container(),
                 _buildTabButton(context, "الموقع", 3),
               ],
             ),
             SizedBox(height: 16.h),
 
             // Tab Content
-           _buildTabContent(),
+            _buildTabContent(),
 
             SizedBox(height: 20.h),
+
             // Accept Button
             Center(
               child: defaultButton(
-                width: 243.w ,
+                width: 243.w,
                 height: 48.h,
                 text: 'موافق',
-                toPage: (){
-              switch(selectedState)
-              {
-                case 'قيد الانتظار' :
-                  selectedState = 'inbox';
-                case 'مكتمل' :
-                  selectedState = 'completed';
-                case 'تم الاستلام' :
-                  selectedState = 'progress';
-                case 'ملغي' :
-                  selectedState = 'cancelled';
-                default:
-                  selectedState = null;
-
-              }
+                toPage: () {
+                  switch (selectedState) {
+                    case 'قيد الانتظار':
+                      selectedState = 'inbox';
+                      break;
+                    case 'مكتمل':
+                      selectedState = 'completed';
+                      break;
+                    case 'تم الاستلام':
+                      selectedState = 'progress';
+                      break;
+                    case 'ملغي':
+                      selectedState = 'cancelled';
+                      break;
+                    default:
+                      selectedState = null;
+                  }
                   String? employee = selectedEmployee;
                   String? location = selectedLocation;
                   String? date = selectedDate != null ? selectedDate!.toLocal().toString().split(' ')[0] : null;
 
                   TasksCubit.get(context).getAllTasksFunWithFilter(
                     status: selectedState,
-                    employee: role == '3' ?
-                    userId :(selectedEmployee != null ? employeeMap.keys.firstWhere((id) => employeeMap[id] == employee) : null),
+                    employee: role == '3'
+                        ? userId
+                        : (selectedEmployee != null
+                        ? employeeMap.keys.firstWhere((id) => employeeMap[id] == employee)
+                        : null),
                     location: location,
                     date: date,
                   );
@@ -170,7 +163,6 @@ class _FilterDialogState extends State<FilterDialog> {
                 textSize: 18.sp,
                 context: context,
                 isColor: true,
-
               ),
             ),
           ],
@@ -190,7 +182,11 @@ class _FilterDialogState extends State<FilterDialog> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: _selectedTabIndex == index ? AppColors.primary :  globalDark ? AppColors.darkBackground : AppColors.textWhite,
+          color: _selectedTabIndex == index
+              ? AppColors.primary
+              : globalDark
+              ? AppColors.darkBackground
+              : AppColors.textWhite,
           border: Border.all(
             color: _selectedTabIndex == index ? AppColors.primary : Colors.grey,
           ),
@@ -200,7 +196,11 @@ class _FilterDialogState extends State<FilterDialog> {
           title,
           style: TextStyle(
             fontSize: 14.sp,
-            color: _selectedTabIndex == index ? AppColors.textWhite :  globalDark ? AppColors.gray : AppColors.textBlack,
+            color: _selectedTabIndex == index
+                ? AppColors.textWhite
+                : globalDark
+                ? AppColors.gray
+                : AppColors.textBlack,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -251,7 +251,6 @@ class _FilterDialogState extends State<FilterDialog> {
     }
   }
 
-
   // Widget for Dropdown Fields
   Widget _buildDropdown({
     required String title,
@@ -264,19 +263,17 @@ class _FilterDialogState extends State<FilterDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style:  TextStyle(fontSize: 16.sp)),
+          Text(title, style: TextStyle(fontSize: 16.sp)),
           SizedBox(height: 8.h),
           Container(
-            padding: EdgeInsets.symmetric(horizontal:  10.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.h),
             height: 50.h,
             width: double.infinity,
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.placeholder),
               borderRadius: BorderRadius.circular(8.h),
-
             ),
             child: DropdownButton<String>(
-
               borderRadius: BorderRadius.circular(8.h),
               isExpanded: true,
               underline: Container(),
@@ -284,16 +281,11 @@ class _FilterDialogState extends State<FilterDialog> {
               hint: Text("اختار عنوان"),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
-
                   value: item,
                   child: Text(item),
                 );
               }).toList(),
               onChanged: onChanged,
-              // underline: Container(
-              //   height: 1,
-              //   color: Colors.grey,
-              // ),
             ),
           ),
         ],
@@ -318,24 +310,26 @@ class _FilterDialogState extends State<FilterDialog> {
                 firstDate: DateTime(2000),
                 lastDate: DateTime(2101),
               );
-              if (pickedDate != null) {
+              if (pickedDate != null && pickedDate != selectedDate) {
                 setState(() {
                   selectedDate = pickedDate;
                 });
               }
             },
             child: Container(
-              width:  double.infinity,
-              padding:const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+              height: 50.h,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 12.h),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.placeholder),
+                borderRadius: BorderRadius.circular(8.h),
               ),
+              alignment: Alignment.centerLeft,
               child: Text(
-                selectedDate != null
-                    ? "${selectedDate!.toLocal()}".split(' ')[0]
-                    : 'حدد التاريخ',
-                style: const TextStyle(fontSize: 16),
+                selectedDate == null
+                    ? 'اختار التاريخ'
+                    : '${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}',
+                style: TextStyle(fontSize: 16),
               ),
             ),
           ),
@@ -344,8 +338,6 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 }
-
-
 
 
 class RoleDialog extends StatefulWidget {
@@ -568,9 +560,9 @@ class _RoleDialogState extends State<RoleDialog> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Text(
+              child: const Text(
                  'حدد التاريخ',
-                style: const TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16),
               ),
             ),
           ),

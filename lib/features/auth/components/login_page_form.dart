@@ -10,6 +10,7 @@ import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/constants.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/themes/app_themes.dart';
+import '../../../core/themes/styles.dart';
 import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/token.dart';
 import '../../../core/utils/validators.dart';
@@ -129,6 +130,16 @@ Widget build(BuildContext context) {
               isChecked: cubit.isChecked,
               toggleCheckbox: cubit.toggleCheckbox,
             ),
+
+            InkWell(
+              child: Text(
+                AppLocalizations.of(context)!.translate("forget_password"),
+                style: TextStyles.font16Weight300Emerald,
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.forgotPassword);
+              },
+            ),
             SizedBox(height: 40.h),
             defaultButton(
               isColor: true,
@@ -143,18 +154,11 @@ Widget build(BuildContext context) {
                 });
               },
             ),
-            SizedBox(height: 20.h),
-            defaultButton(
-              context: context,
-              text: local.translate("back"),
-              width: double.infinity,
-              height: 56.h,
-              isColor: false,
-              textSize: 17.sp,
-              toPage: () {
-                navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);
-              },
-            ),
+
+
+
+
+
           ],
         ),
       );

@@ -97,7 +97,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         if (context.mounted) {
           Utils.showSnackBar(
             context,
-            responseData['message'] ?? 'تم التسجيل بنجاح',
+            'تم انشاء حساب جديد بنجاح',
           );
 
 

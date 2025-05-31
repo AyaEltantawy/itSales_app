@@ -12,49 +12,53 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_defaults.dart';
 import '../data/cubit.dart';
 
-
-
 Widget buildEmployeeListItem(DataUser user) {
   return Container(
     width: 344.w,
     padding: const EdgeInsets.all(AppDefaults.padding / 5),
     decoration: BoxDecoration(
       color: globalDark ? AppColors.cardColorDark : AppColors.cardColor,
-      border: Border.all(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor, width: 0.5),
+      border: Border.all(
+          color: globalDark ? AppColors.borderColorDark : AppColors.borderColor,
+          width: 0.5),
       borderRadius: BorderRadius.circular(8.0.r),
     ),
     child: Row(
       children: [
         Padding(
-          padding:  EdgeInsets.only(right: 8.0.h),
-          child: user.avatar != null ?  Container(
-            height: 42.h,
-            width: 42.w,
-            decoration: BoxDecoration(
-            //  color: AppColors.lightGreenColor,
-              borderRadius: BorderRadius.circular(5.r),
-            ),
-            child: NetworkImageWithLoader(user.avatar!.data!.full_url.toString()),
-          ) :  Container(
-            height: 42.h,
-            width: 42.w,
-            decoration: BoxDecoration(
-              color: AppColors.lightGreenColor,
-              borderRadius: BorderRadius.circular(5.r),
-            ),
-          ),
+          padding: EdgeInsets.only(right: 8.0.h),
+          child: user.avatar != null
+              ? Container(
+                  height: 42.h,
+                  width: 42.w,
+                  decoration: BoxDecoration(
+                    //  color: AppColors.lightGreenColor,
+                    borderRadius: BorderRadius.circular(5.r),
+                  ),
+                  child: NetworkImageWithLoader(
+                      user.avatar!.data!.full_url.toString()),
+                )
+              : Container(
+                  height: 42.h,
+                  width: 42.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.lightGreenColor,
+                    borderRadius: BorderRadius.circular(5.r),
+                  ),
+                ),
         ),
-        SizedBox(width: 10.w,),
+        SizedBox(
+          width: 10.w,
+        ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   ' ${user.first_name.toString()} ${user.last_name.toString()}',
-                //  'هنا اسم الموظف',
+                  //  'هنا اسم الموظف',
                   style: AppFonts.style16semiBold,
                 ),
                 Text(
@@ -63,7 +67,7 @@ Widget buildEmployeeListItem(DataUser user) {
                   textAlign: TextAlign.right,
                 ),
                 Text(
-                  user.role?.id == 3 ? 'موظف' : 'مدير',
+                  user.role == 3 ? 'موظف' : 'مدير',
                   style: AppFonts.style12light,
                   textAlign: TextAlign.right,
                 ),
@@ -72,12 +76,11 @@ Widget buildEmployeeListItem(DataUser user) {
           ),
         ),
         InkWell(
-          onTap: () async
-          {
-          await launchUrl(Uri(
-            scheme: 'tel',
-            path: user.employee_info![0].phone_1.toString(),
-          ));
+          onTap: () async {
+            await launchUrl(Uri(
+              scheme: 'tel',
+              path: user.employee_info![0].phone_1.toString(),
+            ));
           },
           child: Padding(
             padding: EdgeInsets.all(8.w),
@@ -91,11 +94,9 @@ Widget buildEmployeeListItem(DataUser user) {
                 borderRadius: BorderRadius.circular(5.r),
               ),
               child: Icon(
-
                 Icons.local_phone_outlined,
                 color: AppColors.greenColor,
                 size: 25.w,
-
               ),
             ),
           ),
@@ -104,16 +105,15 @@ Widget buildEmployeeListItem(DataUser user) {
           padding: EdgeInsets.only(left: 8.w),
           child: const ForwardArrow(),
         ),
-
       ],
     ),
   );
 }
 
-Widget buildAdminsListItem( DataUser user) {
+Widget buildAdminsListItem(DataUser user) {
   return Container(
     width: 344.w,
-   // height: 65.h,
+    // height: 65.h,
     decoration: BoxDecoration(
       color: AppColors.textWhite,
       borderRadius: BorderRadius.circular(5.r),
@@ -122,35 +122,39 @@ Widget buildAdminsListItem( DataUser user) {
     child: Row(
       children: [
         Padding(
-          padding:  EdgeInsets.only(right: 8.0.h),
-          child: user.avatar != null ?  Container(
-            height: 42.h,
-            width: 42.w,
-            decoration: BoxDecoration(
-            //  color: AppColors.lightGreenColor,
-              borderRadius: BorderRadius.circular(5.r),
-            ),
-            child: NetworkImageWithLoader(user.avatar!.data!.full_url.toString()),
-          ) :  Container(
-            height: 42.h,
-            width: 42.w,
-            decoration: BoxDecoration(
-              color: AppColors.lightGreenColor,
-              borderRadius: BorderRadius.circular(5.r),
-            ),
-          ),
+          padding: EdgeInsets.only(right: 8.0.h),
+          child: user.avatar != null
+              ? Container(
+                  height: 42.h,
+                  width: 42.w,
+                  decoration: BoxDecoration(
+                    //  color: AppColors.lightGreenColor,
+                    borderRadius: BorderRadius.circular(5.r),
+                  ),
+                  child: NetworkImageWithLoader(
+                      user.avatar!.data!.full_url.toString()),
+                )
+              : Container(
+                  height: 42.h,
+                  width: 42.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.lightGreenColor,
+                    borderRadius: BorderRadius.circular(5.r),
+                  ),
+                ),
         ),
-        SizedBox(width: 10.w,),
+        SizedBox(
+          width: 10.w,
+        ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
             child: Column(
-crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   ' ${user.first_name.toString()} ${user.last_name.toString()} ${user.id.toString()}',
-                //  'هنا اسم الموظف',
+                  //  'هنا اسم الموظف',
                   style: AppFonts.style16semiBold,
                 ),
                 Text(
@@ -158,7 +162,6 @@ crossAxisAlignment: CrossAxisAlignment.start,
                   style: AppFonts.style12light,
                   textAlign: TextAlign.right,
                 ),
-
                 Text(
                   user.role!.id == 3 ? 'موظف' : 'مدير',
                   style: AppFonts.style12light,
@@ -178,19 +181,16 @@ crossAxisAlignment: CrossAxisAlignment.start,
               borderRadius: BorderRadius.circular(5.r),
             ),
             child: Icon(
-
               Icons.local_phone_outlined,
               color: AppColors.greenColor,
               size: 25.w,
-
             ),
           ),
         ),
         Padding(
-          padding:  EdgeInsets.only(left: 8.w),
+          padding: EdgeInsets.only(left: 8.w),
           child: const ForwardArrow(),
         ),
-
       ],
     ),
   );

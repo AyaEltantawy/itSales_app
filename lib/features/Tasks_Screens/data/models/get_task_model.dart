@@ -84,7 +84,7 @@ class AddTaskRequestModel {
   String? cancelled_date;
   String? description;
   String? notes;
-  int? assigned_to;
+  dynamic? assigned_to;
   dynamic? files;
   dynamic? location;
   int? company;

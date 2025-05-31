@@ -101,8 +101,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             },
           ),
         ),
-        const Spacer(),
-
         if (currentPage == 0)
           Expanded(
             flex: 1,
@@ -118,7 +116,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   context: context),
             ),
           ),
-        SizedBox(height: AppDefaults.padding.h),
         if (currentPage == 1)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -147,11 +144,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: AppDefaults.padding.h),
               ],
             ),
           ),
-
         if (currentPage == 2)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -165,7 +160,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                   isColor: true,
                   textSize: 15.sp,
                   toPage: () {
-                    navigateTo(context,AppRoutes.chooseLoginOrSignUpPage);
+                    navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);
                   },
                   context: context,
                 ),
@@ -181,7 +176,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               ],
             ),
           ),
-        SizedBox(height: AppDefaults.padding.h),
+        SizedBox(
+          height: 20.h,
+        )
       ]),
     ));
   }

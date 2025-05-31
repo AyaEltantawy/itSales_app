@@ -126,17 +126,7 @@ class RegisterPageForm extends StatelessWidget {
             textSize: 17.sp,
             toPage: onSubmit,
           ),
-          SizedBox(height: 20.h),
-          defaultButton(
-            context: context,
-            text: "رجوع",
-            width: double.infinity,
-            height: 56.h,
-            isColor: false,
-            textSize: 17.sp,
-            toPage: () =>
-                navigateTo(context, AppRoutes.chooseLoginOrSignUpPage),
-          )
+
         ],
       ),
     );

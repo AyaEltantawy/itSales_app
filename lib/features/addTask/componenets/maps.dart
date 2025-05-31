@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:itsale/core/components/default_app_bar.dart';
-import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -16,79 +13,69 @@ class LocationPickerScreen extends StatefulWidget {
 }
 
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
-  LatLng _currentPosition = LatLng(30.0444, 31.2357); // Default to Cairo
+  LatLng _currentPosition = LatLng(30.0444, 31.2357); // Default Cairo
   final MapController _mapController = MapController();
-  String _address = "ابحث او حدد المكان";
+  String _address = "ابحث أو حدد المكان";
   double _zoom = 15.0;
   final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Optionally enable getting device's current location here
-    // _getCurrentLocation();
-  }
+  int? _locationId;
 
   Future<void> _searchPlace(String place) async {
     try {
       List<Location> locations = await locationFromAddress(place);
       if (locations.isNotEmpty) {
         setState(() {
-          _currentPosition = LatLng(locations.first.latitude, locations.first.longitude);
+          _currentPosition =
+              LatLng(locations.first.latitude, locations.first.longitude);
           _mapController.move(_currentPosition, _zoom);
-          _getAddressFromLatLng(_currentPosition.latitude, _currentPosition.longitude);
         });
+        _getAddressAndLocationId(
+            locations.first.latitude, locations.first.longitude);
       }
     } catch (e) {
       print("Error fetching location: $e");
     }
   }
 
-  // Optional: Enable current location
-  // Future<void> _getCurrentLocation() async {
-  //   Position position = await Geolocator.getCurrentPosition(
-  //     desiredAccuracy: LocationAccuracy.high,
-  //   );
-  //   setState(() {
-  //     _currentPosition = LatLng(position.latitude, position.longitude);
-  //     _mapController.move(_currentPosition, _zoom);
-  //     _getAddressFromLatLng(position.latitude, position.longitude);
-  //   });
-  // }
+  Future<void> _getAddressAndLocationId(double lat, double lng) async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _address = data['display_name'] ?? 'عنوان غير متوفر';
+        });
+      }
 
-  Future<void> _getAddressFromLatLng(double lat, double lng) async {
-    final url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng';
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        _address = data["display_name"] ?? "عنوان غير متوفر";
-      });
-    } else {
-      setState(() {
-        _address = "تعذر الحصول على العنوان";
-      });
+      // Call your backend to get locationId
+      final locationRes = await http.post(
+        Uri.parse("https://your-api.com/api/location-lookup"),
+        body: jsonEncode({"latitude": lat, "longitude": lng}),
+        headers: {"Content-Type": "application/json"},
+      );
+      if (locationRes.statusCode == 200) {
+        final locData = json.decode(locationRes.body);
+        _locationId = locData["id"];
+      }
+    } catch (e) {
+      print("Error getting locationId or address: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 0.0,
-        leading: Container(),
-        title: const CustomAppBar(back: true, title: 'اختر مكان المهمة'),
-      ),
+      appBar: AppBar(title: const Text('اختر مكان المهمة')),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
-              onSubmitted: (text) => _searchPlace(text),
-              onEditingComplete: () => _searchPlace(_searchController.text),
+              onSubmitted: _searchPlace,
               decoration: InputDecoration(
-                labelText: 'Search for a place',
+                labelText: 'ابحث عن المكان',
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () => _searchPlace(_searchController.text),
@@ -106,13 +93,14 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                   setState(() {
                     _currentPosition = point;
                   });
-                  _getAddressFromLatLng(point.latitude, point.longitude);
+                  _getAddressAndLocationId(point.latitude, point.longitude);
                 },
               ),
               children: [
                 TileLayer(
-                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  userAgentPackageName: 'com.example.yourapp', // replace with actual package name
+                  urlTemplate:
+                  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  userAgentPackageName: 'com.example.yourapp',
                 ),
                 MarkerLayer(
                   markers: [
@@ -120,11 +108,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                       point: _currentPosition,
                       width: 40.0,
                       height: 40.0,
-                      child: const Icon(
-                        Icons.location_pin,
-                        color: Colors.red,
-                        size: 40,
-                      ),
+                      child: const Icon(Icons.location_pin,
+                          color: Colors.red, size: 40),
                     ),
                   ],
                 ),
@@ -135,10 +120,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const Text(
-                  "العنوان:",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                const Text("العنوان:", style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_address, textAlign: TextAlign.center),
                 const SizedBox(height: 10),
                 ElevatedButton(
@@ -147,9 +129,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                       "latitude": _currentPosition.latitude,
                       "longitude": _currentPosition.longitude,
                       "address": _address,
+                      "locationId": _locationId,
                     });
                   },
-                  child: Text("تأكيد الموقع", style: AppFonts.style14normal),
+                  child: const Text("تأكيد الموقع"),
                 ),
               ],
             ),

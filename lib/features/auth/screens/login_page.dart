@@ -81,10 +81,17 @@ class LoginPage extends StatelessWidget {
                   padding:
                       EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
                   children: [
-            Text(
-              textAlign: TextAlign.start,
-              AppLocalizations.of(context)!.translate('login'),
-              style: TextStyles.font20Weight500BaseBlack,
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  textAlign: TextAlign.start,
+                  AppLocalizations.of(context)!.translate('login'),
+                  style: TextStyles.font20Weight500BaseBlack,
+                ),
+                InkWell(
+                    onTap: (){ navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);},
+                    child: Icon(Icons.arrow_forward))
+              ],
             ),
             Column(
                 //mainAxisAlignment: MainAxisAlignment.center,

@@ -22,6 +22,8 @@ import '../../Tasks_Screens/data/models/get_task_model.dart';
 import '../../Tasks_Screens/screens/task_details.dart';
 import '../../Tasks_Screens/screens/tasks.dart';
 import '../../addEmployee/components/no_data_screen.dart';
+import '../../auth/data/cubit.dart';
+import '../../auth/data/states.dart';
 import '../../home/components/widgets_for_tasks_screen.dart';
 
 class EmployeeDetailsScreen extends StatefulWidget {
@@ -62,64 +64,80 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
   @override
   void initState() {
     TasksCubit.get(context).getUserTaskFun(userId: widget.id);
-
+    final loginInfo = AppCubit.get(context).getInfoLogin;
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(10.0.h),
-                child: const CustomAppBar(back: true, title: 'تفاصيل الموظف'),
-              ),
-              ProfileHeader(
-                id: int.parse(widget.id),
-                name: widget.name,
-                role: widget.role,
-                avatar: widget.avatar,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: AppDefaults.padding.w / 1.6),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color:
-                        globalDark ? AppColors.cardColorDark : AppColors.gray,
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: TabSelector(
-                    selectedTab: selectedTab,
-                    onTabSelected: (int index) {
-                      setState(() {
-                        selectedTab = index;
-                      });
-                    },
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return BlocBuilder<AppCubit, AppStates>(
+          builder: (context, state) {
+            final loginInfo = AppCubit.get(context).getInfoLogin;
+            return Scaffold(
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(10.0.h),
+                        child: const CustomAppBar(
+                            back: true, title: 'تفاصيل الموظف'),
+                      ),
+                      ProfileHeader(
+                        id: int.parse(widget.id),
+                        name: widget.name,
+                        role: widget.role,
+                        avatar: widget.avatar,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppDefaults.padding.w / 1.6),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: globalDark
+                                ? AppColors.cardColorDark
+                                : AppColors.gray,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: TabSelector(
+                            selectedTab: selectedTab,
+                            onTabSelected: (int index) {
+                              setState(() {
+                                selectedTab = index;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      _buildContentForSelectedTab(
+                        id: widget.id,
+                        phone1: widget.phone1 ?? 'لا يوجد',
+                        phone2: widget.phone2 != '' ? widget.phone2 : 'لا يوجد',
+                        whatsapp:
+                            widget.whatsapp != '' ? widget.whatsapp : 'لا يوجد',
+                        empEmail:
+                            widget.empEmail != '' ? widget.empEmail : 'لا يوجد',
+                        password: widget.passwordToken != ''
+                            ? widget.passwordToken
+                            : 'لا يوجد',
+                        address:
+                            widget.address != '' ? widget.address : 'لا يوجد',
+                        name: widget.name != '' ? widget.name : 'لا يوجد',
+                        emailLogin:
+                            widget.email != '' ? widget.email : 'لا يوجد',
+                      ),
+                    ],
                   ),
                 ),
               ),
-              _buildContentForSelectedTab(
-                id: widget.id,
-                phone1: widget.phone1 ?? 'لا يوجد',
-                phone2: widget.phone2 != '' ? widget.phone2 : 'لا يوجد',
-                whatsapp: widget.whatsapp != '' ? widget.whatsapp : 'لا يوجد',
-                empEmail: widget.empEmail != '' ? widget.empEmail : 'لا يوجد',
-                password: widget.passwordToken != ''
-                    ? widget.passwordToken
-                    : 'لا يوجد',
-                address: widget.address != '' ? widget.address : 'لا يوجد',
-                name: widget.name != '' ? widget.name : 'لا يوجد',
-                emailLogin: widget.email != '' ? widget.email : 'لا يوجد',
-              ),
-            ],
-          ),
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -709,34 +727,49 @@ class EmployeeInfo extends StatelessWidget {
           ),
 
           SizedBox(height: 16.h),
-          Container(
-            padding: EdgeInsets.all(16.h),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "بيانات الشركه",
-                  style: AppFonts.style16semiBold,
+          BlocBuilder<AppCubit, AppStates>(
+            builder: (context, state) {
+              final loginInfo = AppCubit.get(context).getInfoLogin;
+              return Container(
+                padding: EdgeInsets.all(16.h),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: Colors.grey.shade300),
                 ),
-                SizedBox(height: 8.h),
-                _buildRow(label: 'الاسم', value: "Guessit"),
-                SizedBox(height: 16.h),
-                _buildRow(label: 'رقم الهاتف', value: "232143145"),
-                SizedBox(height: 16.h),
-                _buildRow(label: 'رقم الهاتف البديل', value: "3674388998"),
-                SizedBox(height: 16.h),
-                _buildDescription(
-                    label: 'البريد الالكتروني الخاص',
-                    value: "guessit@gmail.com"),
-                SizedBox(height: 16.h),
-                _buildDescription(label: 'عنوان الشركه', value: address),
-              ],
-            ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "بيانات الشركه",
+                      style: AppFonts.style16semiBold,
+                    ),
+                    SizedBox(height: 8.h),
+                    _buildRow(
+                      label: 'الاسم',
+                      value: loginInfo?.companies?.name ?? '',
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildRow(
+                      label: 'رقم الهاتف',
+                      value: loginInfo?.companies?.whatsapp ?? "",
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildRow(
+                      label: 'رقم الهاتف البديل',
+                      value: loginInfo?.companies?.whatsapp ?? "",
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildDescription(
+                      label: 'البريد الالكتروني الخاص',
+                      value: loginInfo?.companies?.email ?? '',
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildDescription(label: 'عنوان الشركه', value: address),
+                  ],
+                ),
+              );
+            },
           ),
           //  AttachmentsSection(files: [],),
         ],

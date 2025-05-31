@@ -145,6 +145,7 @@ class ConfirmTaskCardList extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         TasksCubit.get(context).editTaskFun(
+                          company: companyId,
                           taskId: id.toString(),
                           task_status: 'progress',
                           status: 'published',

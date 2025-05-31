@@ -31,13 +31,14 @@ class AddTaskScreen extends StatefulWidget {
       {super.key,
       required this.back,
       required this.isEdit,
-      required this.taskId});
+      required this.taskId, this.locationId});
 
   final bool back;
 
   final bool isEdit;
 
   final int taskId;
+  final String? locationId;
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -172,6 +173,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int? _locationId;
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -179,12 +181,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           listener: (context, state) {
             if (state is AddErrorUserTaskState ||
                 state is EditErrorUserTaskState) {
-             Utils.showSnackBar(context,  'عفوا حاول مرة اخرى');
+              Utils.showSnackBar(context, 'عفوا حاول مرة اخرى');
             } else if (state is AddSuccessUserTaskState ||
                 state is EditSuccessUserTaskState) {
               widget.isEdit
-                  ? Utils.showSnackBar(context,  'تم تعديل المهمة بنجاح')
-                  : Utils.showSnackBar(context,  'تم اضافة المهمة بنجاح');
+                  ? Utils.showSnackBar(context, 'تم تعديل المهمة بنجاح')
+                  : Utils.showSnackBar(context, 'تم اضافة المهمة بنجاح');
               navigateTo(context, AppRoutes.entryPoint);
             }
           },
@@ -482,6 +484,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           SizedBox(height: 24.h),
                           const SectionHeader(title: 'الموقع الجغرافي'),
                           SizedBox(height: 8.h),
+
                           defaultTextFormFeild(
                             context,
                             keyboardType: TextInputType.text,
@@ -499,100 +502,105 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               color: AppColors.placeholder,
                             ),
                           ),
+
                           SizedBox(height: 16.h),
 
-// Inside your build method
-              defaultTextFormFeild(
-              context,
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'لا تترك هذا الحقل فارغا';
-                }
+                          defaultTextFormFeild(
+                            context,
+                            keyboardType: TextInputType.text,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'لا تترك هذا الحقل فارغا';
+                              }
 
-                final uri = Uri.tryParse(value);
-                if (uri == null || !uri.isAbsolute) {
-                  return 'Please enter a valid URL';
-                }
-                return null;
-              },
-              label: 'الصق رابط Google Map الخاص بموقع المهمة',
-              onTap: () {},
-              controller: location,
-              prefix: Icon(
-                Icons.link,
-                color: AppColors.placeholder,
-              ),
-            ),
+                              final uri = Uri.tryParse(value);
+                              if (uri == null || !uri.isAbsolute) {
+                                return 'رابط غير صالح';
+                              }
+                              return null;
+                            },
+                            label: 'الصق رابط Google Map الخاص بموقع المهمة',
+                            onTap: () {},
+                            controller: location,
+                            prefix: Icon(
+                              Icons.link,
+                              color: AppColors.placeholder,
+                            ),
+                          ),
 
-            SizedBox(height: 10.h),
+                          SizedBox(height: 10.h),
 
-// Copy Button
-            Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-            onPressed: () {
-            if (location.text.isNotEmpty) {
-            Clipboard.setData(ClipboardData(text: location.text));
-            ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('تم نسخ الرابط')),
-            );
-            }
-            },
-            icon: Icon(Icons.copy, size: 18, color: AppColors.primary),
-            label: Text(
-            'نسخ الرابط',
-            style: TextStyle(color: AppColors.primary),
-            ),
-            ),
-            ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton.icon(
+                              onPressed: () {
+                                if (location.text.isNotEmpty) {
+                                  Clipboard.setData(ClipboardData(text: location.text));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('تم نسخ الرابط')),
+                                  );
+                                }
+                              },
+                              icon: Icon(Icons.copy, size: 18, color: AppColors.primary),
+                              label: Text(
+                                'نسخ الرابط',
+                                style: TextStyle(color: AppColors.primary),
+                              ),
+                            ),
+                          ),
 
-            SizedBox(height: 16.h),
+                          SizedBox(height: 16.h),
 
-// Location Picker Button
-            Center(
-            child: InkWell(
-            onTap: () async {
-            final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-            builder: (context) => const LocationPickerScreen(),
-            ),
-            );
+                          Center(
+                            child: InkWell(
+                              onTap: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LocationPickerScreen(),
+                                  ),
+                                );
 
-            if (result != null) {
-            final latitude = result['latitude'];
-            final longitude = result['longitude'];
+                                if (result != null) {
+                                  final latitude = result['latitude'];
+                                  final longitude = result['longitude'];
+                                  final pickedAddress = result['address'];
+                                  final locationId = result['locationId'];
 
-            setState(() {
-            address.text = result['address'];
-            location.text =
-            'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-            });
-            }
-            },
-            child: Container(
-            height: 40.h,
-            width: 180.w,
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(12.w),
-            decoration: BoxDecoration(
-            borderRadius: AppDefaults.borderRadius,
-            color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
-            border: Border.all(color: AppColors.primary),
-            ),
-            child: Text(
-            AppLocalizations.of(context)!.translate("location_on_map"),
-            style: TextStyle(
-            color: globalDark ? AppColors.textWhite : AppColors.textBlack,
-            fontSize: 14.sp,
-            ),
-            ),
-            ),
-            ),
-            ),
+                                  setState(() {
+                                    address.text = pickedAddress;
+                                    location.text =
+                                    'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                                    _locationId = locationId is int
+                                        ? locationId
+                                        : int.tryParse(locationId.toString());
 
-            SizedBox(height: 24.h),
+                                    print("Picked Location ID: $_locationId");
+                                  });
+                                }
+                              },
+                              child: Container(
+                                height: 40.h,
+                                width: 180.w,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(12.w),
+                                decoration: BoxDecoration(
+                                  borderRadius: AppDefaults.borderRadius,
+                                  color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
+                                  border: Border.all(color: AppColors.primary),
+                                ),
+                                child: Text(
+                                  AppLocalizations.of(context)!.translate("location_on_map"),
+                                  style: TextStyle(
+                                    color: globalDark ? AppColors.textWhite : AppColors.textBlack,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: 24.h),
                           const SectionHeader(title: 'بيانات العميل'),
                           SizedBox(height: 16.h),
                           defaultTextFormFeild(
@@ -694,13 +702,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             deadlineController.text != '' &&
                             !widget.isEdit) {
                           TasksCubit.get(context).addTaskFun(
-                            company: companyId ??0,
+                            company: companyId ?? 0,
                             status: 'published',
                             assigned_to: role == '1'
                                 ? int.parse(selectedId)
                                 : int.parse(userId!),
-
-
                             due_date: deadlineController.text,
                             description: details.text,
                             mapUrl: location.text,
@@ -710,6 +716,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             notes: notes.text,
                             title: taskTitle.text,
                             address: address.text,
+                            location: address.text,
                           );
                         }
 

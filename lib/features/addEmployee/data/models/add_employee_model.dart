@@ -79,7 +79,7 @@ class AllUsersModel {
 class DataUser {
   int? id;
   String? status;
-  Role? role;
+  dynamic? role;
   String? first_name;
   String? last_name;
   String? email;
@@ -92,7 +92,7 @@ class DataUser {
   String? locale;
   String? locale_options;
   Avatar? avatar;
-  Company? companies; // <-- Added
+  dynamic? companies; // <-- Added
   String? title;
   bool? email_notifications;
   String? last_accessOn;

@@ -77,9 +77,7 @@ Map<String, dynamic> _$AllUsersModelToJson(AllUsersModel instance) =>
 DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
-      role: json['role'] == null
-          ? null
-          : Role.fromJson(json['role'] as Map<String, dynamic>),
+      role: json['role'] ,
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
       email: json['email'] as String?,
@@ -94,9 +92,7 @@ DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       avatar: json['avatar'] == null
           ? null
           : Avatar.fromJson(json['avatar'] as Map<String, dynamic>),
-      companies: json['companies'] == null
-          ? null
-          : Company.fromJson(json['companies'] as Map<String, dynamic>),
+      companies: json['companies'] ,
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,

@@ -118,7 +118,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                             child: TextFormField(
                                 textDirection: TextDirection.rtl,
                                 onFieldSubmitted: (value) {
-                                  widget.task!
+                                  (widget.task == true)
                                       ? (role == '1'
                                           ? TasksCubit.get(context)
                                               .getAllTasksFunWithFilter(
@@ -131,7 +131,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                                           .getAdmins(search: value.toString());
                                 },
                                 onChanged: (value) {
-                                  widget.task!
+                                  (widget.task == true)
                                       ? (role == '1'
                                           ? TasksCubit.get(context)
                                               .getAllTasksFunWithFilter(
@@ -307,28 +307,24 @@ class TaskList extends StatelessWidget {
                             notes: role == "3"
                                 ? cubit.getUserTaskList![index].notes.toString()
                                 : cubit.getAllTaskList![index].notes.toString(),
+                            // Address
                             address: role != '3'
-                                ? (cubit.getAllTaskList![index].location != null
-                                    ? cubit.getAllTaskList![index].location!
-                                        .address
-                                        .toString()
-                                    : 'لا يوجد')
-                                : (cubit.getUserTaskList![index].location !=
-                                        null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .toString()
-                                    : 'لا يوجد'),
+                                ? (cubit.getAllTaskList![index].location
+                                        ?.address ??
+                                    'لا يوجد')
+                                : (cubit.getUserTaskList![index].location
+                                        ?.address ??
+                                    'لا يوجد'),
+
+// Map URL
                             link: role != '3'
-                                ? (cubit.getAllTaskList![index].location != null
-                                    ? cubit.getAllTaskList![index].location!
-                                        .map_url
-                                        .toString()
-                                    : 'لا يوجد')
-                                : (cubit.getUserTaskList![index].location !=
-                                        null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .toString()
-                                    : 'لا يوجد'),
+                                ? (cubit.getAllTaskList![index].location
+                                        ?.map_url ??
+                                    'لا يوجد')
+                                : (cubit.getUserTaskList![index].location
+                                        ?.map_url ??
+                                    'لا يوجد'),
+
                             deadline: role == "3"
                                 ? cubit.getUserTaskList![index].due_date
                                     .toString()
@@ -742,13 +738,11 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                             task_status: cubit
                                 .getUserTaskList![index].task_status
                                 .toString(),
-                            locationId: role == "3"
-                                ? (cubit.getUserTaskList![index].location !=
-                                        null
+                            locationId:
+                                (cubit.getUserTaskList![index].location != null
                                     ? cubit.getUserTaskList![index].location!.id
                                         .toString()
-                                    : '10')
-                                : '',
+                                    : '10'),
                             id: cubit.getUserTaskList![index].id!.toInt(),
                             nameTask:
                                 cubit.getUserTaskList![index].title.toString(),

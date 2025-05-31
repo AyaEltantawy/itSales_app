@@ -83,7 +83,7 @@ class TasksCubit extends Cubit<TasksStates> {
     required String description,
     required String client_phone,
     required String notes,
-    required int assigned_to,
+    required dynamic assigned_to,
     String? cancelled_date,
     required String client_name,
     String? complete_date,
@@ -93,7 +93,8 @@ class TasksCubit extends Cubit<TasksStates> {
     String? priority,
     String? start_date,
     required String task_status,
-    required int company, // FIXED: Made required
+    required int company,
+    String? location,
   }) async {
     emit(AddLoadingUserTaskState());
 
@@ -113,6 +114,7 @@ class TasksCubit extends Cubit<TasksStates> {
         start_date: start_date,
         task_status: task_status,
         company: company,
+        location: location
       );
 
       final value = await repo.addTask(taskRequest);
@@ -128,7 +130,7 @@ class TasksCubit extends Cubit<TasksStates> {
         description: description,
         client_phone: client_phone,
         notes: notes,
-        assigned_to: assigned_to.toString(), // send as string if needed
+        assigned_to: assigned_to.toString() , // send as string if needed
         client_name: client_name,
         due_date: due_date,
         priority: priority ?? 'high',
@@ -184,6 +186,7 @@ class TasksCubit extends Cubit<TasksStates> {
     String? task_status,
     int? locationId,
     List<Files>? files,
+    int? company
   }) async {
     emit(EditLoadingUserTaskState());
 
@@ -206,6 +209,8 @@ class TasksCubit extends Cubit<TasksStates> {
               priority: priority,
               start_date: start_date,
               task_status: task_status,
+              company: company
+
             ))
         .then((value) {
       emit(EditSuccessUserTaskState());
@@ -297,7 +302,7 @@ class TasksCubit extends Cubit<TasksStates> {
     }
   }
 
-  getAllTasksFunWithFilter({
+  Future<void> getAllTasksFunWithFilter({
     String? status,
     String? date,
     String? employee,
@@ -307,7 +312,9 @@ class TasksCubit extends Cubit<TasksStates> {
     String? textEmp,
   }) async {
     getUserTaskList = [];
-    if (await InternetConnectionChecker().hasConnection == false) {
+
+    final hasInternet = await InternetConnectionChecker().hasConnection;
+    if (!hasInternet) {
       final context = MagicRouter.currentContext;
       if (context != null) {
         Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
@@ -317,68 +324,77 @@ class TasksCubit extends Cubit<TasksStates> {
 
       emit(NoInternetState());
       return;
-    } else {
-      emit(GetLoadingAllTaskFilterState());
+    }
 
-      Map<String, String> queryParams = {};
+    emit(GetLoadingAllTaskFilterState());
 
-      if (status != null) {
-        queryParams['filter[task_status][eq]'] = status;
-      }
-      if (date != null) {
-        queryParams['filter[created_on][contains]'] = date;
-      }
-      if (employee != null) {
-        queryParams['filter[assigned_to.id][eq]'] = employee;
-      }
-      if (location != null) {
-        queryParams['filter[location.address][eq]'] = location;
-      }
-      if (sort != null) {
-        queryParams['limit=3&sort'] = '-$sort';
-      }
-      if (textEmp != null) {
-        queryParams['q'] = textEmp;
-        emit(GetLoadingSearchTaskFilterState());
-      }
-      if (text != null) {
-        queryParams['q'] = text;
-        emit(GetLoadingSearchTaskFilterState());
-      }
-      await repo.getAllTasks(queryParams).then((value) {
-        if (textEmp != null && employee != null) {
-          getTaskListForOneUserSearch = value.data;
-          emit(GetSuccessSearchTaskFilterState());
-        } else if (text != null) {
-          getAllTaskListFilter = value.data;
-          emit(GetSuccessSearchTaskFilterState());
-        } else {
-          getAllTaskListFilter = value.data;
-          emit(GetSuccessAllTaskFilterState());
-        }
-        if (sort != null) {
-          getLastTaskList = value.data;
-        }
+    Map<String, dynamic> queryParams = {
+      'filter[company]': companyId,
+      'fields': '*.*',
+    };
 
-        if (sort != null && employee != null) {
-          getLastTaskListForOneUser = value.data;
-        }
+    if (status != null) {
+      queryParams['filter[task_status][eq]'] = status;
+    }
+    if (date != null) {
+      queryParams['filter[created_on][contains]'] = date;
+    }
+    if (employee != null) {
+      queryParams['filter[assigned_to.id][eq]'] = employee;
+    }
+    if (location != null) {
+      queryParams['filter[location.address][eq]'] = location;
+    }
+    if (sort != null) {
+      queryParams['sort'] = '-$sort';
+      queryParams['limit'] = 3;
+    }
+    if (textEmp != null) {
+      queryParams['q'] = textEmp;
+      emit(GetLoadingSearchTaskFilterState());
+    }
+    if (text != null) {
+      queryParams['q'] = text;
+      emit(GetLoadingSearchTaskFilterState());
+    }
+
+    try {
+      final value = await repo.getAllTasks(queryParams);
+
+      if (textEmp != null && employee != null) {
+        getTaskListForOneUserSearch = value.data;
+        emit(GetSuccessSearchTaskFilterState());
+      } else if (text != null) {
+        getAllTaskListFilter = value.data;
+        emit(GetSuccessSearchTaskFilterState());
+      } else {
+        getAllTaskListFilter = value.data;
         emit(GetSuccessAllTaskFilterState());
-      }).catchError((onError) async {
-        if (await InternetConnectionChecker().hasConnection == false) {
-          Utils.showSnackBar(
-            MagicRouter.currentContext!,
-            'أنت غير متصل بالانترنت',
-          );
-          emit(NoInternetState());
+      }
+
+      if (sort != null) {
+        getLastTaskList = value.data;
+      }
+
+      if (sort != null && employee != null) {
+        getLastTaskListForOneUser = value.data;
+      }
+
+    } catch (onError) {
+      if (!await InternetConnectionChecker().hasConnection) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
+        emit(NoInternetState());
+      } else {
+        if (text != null || textEmp != null) {
+          emit(GetErrorSearchTaskFilterState());
         } else {
-          if (text != null) {
-            emit(GetErrorSearchTaskFilterState());
-          }
           emit(GetErrorAllTaskFilterState());
-          debugPrint('Error: ${onError.toString()}');
         }
-      });
+        debugPrint('Error: ${onError.toString()}');
+      }
     }
   }
 
@@ -505,7 +521,7 @@ class TasksCubit extends Cubit<TasksStates> {
     required String description,
     required String client_phone,
     required String notes,
-    required dynamic assigned_to,
+    required dynamic? assigned_to,
     required String client_name,
     required String due_date,
     required String priority,
@@ -536,9 +552,9 @@ class TasksCubit extends Cubit<TasksStates> {
         due_date: due_date,
         priority: priority,
         task_status: task_status,
-        locationId: value.data!.id!.toInt(),
+        locationId: value.data?.id
       );
-    }).catchError((onError) async {
+    }).catchError((onError,stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
           MagicRouter.currentContext!,
@@ -549,6 +565,8 @@ class TasksCubit extends Cubit<TasksStates> {
       }
       emit(PostErrorLocationState());
       debugPrint('error add location ${onError.toString()}');
+
+      debugPrint('Stack trace: $stackTrace');
     });
   }
 
@@ -586,6 +604,7 @@ class TasksCubit extends Cubit<TasksStates> {
         .then((value) {
       emit(UpdateSuccessLocationState());
       editTaskFun(
+        company: companyId,
         status: 'published',
         taskId: taskId.toString(),
         title: title,

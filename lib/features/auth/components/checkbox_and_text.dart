@@ -46,18 +46,8 @@ class CheckBoxAndText extends StatelessWidget {
                     style: TextStyles.font16Weight300Black),
               ],
             ),
-            SizedBox(
-              width: 10.w,
-            ),
-            InkWell(
-              child: Text(
-                AppLocalizations.of(context)!.translate("forget_password"),
-                style: TextStyles.font16Weight300Emerald,
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.forgotPassword);
-              },
-            )
+
+
           ],
         ),
       ],
