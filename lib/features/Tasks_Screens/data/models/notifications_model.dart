@@ -95,9 +95,9 @@ class LocationModel {
 
 @JsonSerializable()
 class GetLocationModel {
- List<DataLocationModel>? data;
+ List<DataLocationModel>? location_data;
 
-  GetLocationModel({this.data});
+  GetLocationModel({this.location_data});
 
 
   factory GetLocationModel.fromJson(Map<String, dynamic> json) => _$GetLocationModelFromJson(json);

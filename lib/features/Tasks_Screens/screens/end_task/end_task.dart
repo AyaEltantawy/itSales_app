@@ -1,410 +1,278 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:intl/src/intl/date_format.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:itsale/core/components/app_buttons.dart';
-import 'package:itsale/core/components/default_app_bar.dart';
-import 'package:itsale/core/constants/app_fonts.dart';
-import 'package:itsale/core/constants/constants.dart';
-import 'package:itsale/core/routes/app_routes.dart';
-import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
-import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
-
-import '../../../../core/constants/app_animation.dart';
-import '../../../../core/utils/snack_bar.dart';
-import '../../data/models/get_task_model.dart';
 
 class CompleteTask extends StatefulWidget {
-  const CompleteTask(
-      {super.key,
-      required this.taskId,
-      required this.locationId,
-      required this.title,
-      required this.description,
-      required this.assign_to,
-      required this.clientName,
-      required this.clientPhone,
-      required this.notes,
-      required this.due_date,
-      required this.link,
-      required this.address});
-
   final int taskId;
   final String locationId;
   final String title;
   final String description;
   final String assign_to;
-  final String link;
-  final String address;
-
   final String clientName;
   final String clientPhone;
   final String notes;
   final String due_date;
+  final String link; // رابط Google Maps مع إحداثيات
+  final String address;
+
+  const CompleteTask({
+    super.key,
+    required this.taskId,
+    required this.locationId,
+    required this.title,
+    required this.description,
+    required this.assign_to,
+    required this.clientName,
+    required this.clientPhone,
+    required this.notes,
+    required this.due_date,
+    required this.link,
+    required this.address,
+  });
 
   @override
   State<CompleteTask> createState() => _CompleteTaskState();
 }
 
 class _CompleteTaskState extends State<CompleteTask> {
-  String? _currentAddress;
-  String? address;
   Position? _currentPosition;
-  bool check = false;
+  String? _currentAddress;
+  bool isLoadingLocation = false;
+  bool isLocationMatched = false;
 
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  File? selectedImage;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<bool> _checkLocationPermission() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
+      _showMessage('يرجى تفعيل خدمات الموقع');
       return false;
     }
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
+        _showMessage('تم رفض صلاحية الموقع');
         return false;
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
+      _showMessage(
+          'تم رفض صلاحية الموقع نهائيًا، الرجاء تعديل الإعدادات يدويًا');
       return false;
     }
-    print('true');
     return true;
   }
 
   Future<void> _getCurrentPosition() async {
-    print('enter');
-    final hasPermission = await _handleLocationPermission();
+    if (!await _checkLocationPermission()) return;
 
-    if (!hasPermission) {
-      // Handle case when permission is not granted
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Location permission is required to access the current location')),
-      );
-      return;
-    }
+    setState(() {
+      isLoadingLocation = true;
+    });
 
     try {
-      setState(() {
-        check = true;
-      });
-      // Check location permission
-      LocationPermission permission = await Geolocator.checkPermission();
-
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          print('Location permissions are denied');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')),
-          );
-          return;
-        }
-      }
-
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        log('Location services are disabled');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location services are disabled')),
-        );
-        return;
-      }
-
-      // Get the current position
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      print('enter 2222');
-
       setState(() {
         _currentPosition = position;
       });
-
-      print('enter 4');
-      _getAddressFromLatLng(_currentPosition!);
-      print('enter 5');
+      await _updateAddressAndCheckMatch(position);
     } catch (e) {
-      print('Error getting current position: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to get the current location')),
-      );
+      _showMessage('فشل في الحصول على الموقع الحالي');
+      log(e.toString());
+    } finally {
+      setState(() {
+        isLoadingLocation = false;
+      });
     }
-
-    print('enter ...');
   }
 
-  bool isLocationMatched = false;
+  /// تحلل إحداثيات من رابط Google Maps بالشكل:
+  /// https://www.google.com/maps/search/?api=1&query=lat,lng
+  LatLng? _parseLatLngFromGoogleMapsLink(String link) {
+    try {
+      Uri uri = Uri.parse(link);
+      String? query = uri.queryParameters['query'];
+      if (query == null) return null;
+      List<String> parts = query.split(',');
+      if (parts.length != 2) return null;
+      return LatLng(double.parse(parts[0]), double.parse(parts[1]));
+    } catch (e) {
+      log('Failed to parse latlng: $e');
+      return null;
+    }
+  }
 
-  Future<void> _getAddressFromLatLng(Position position) async {
-    await placemarkFromCoordinates(
-            _currentPosition!.latitude, _currentPosition!.longitude)
-        .then((List<Placemark> placemarks) {
-      Placemark place = placemarks[0];
-      setState(() {
-        _currentAddress =
-            '${place.street}, ${place.name}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.country}';
-      });
+  Future<void> _updateAddressAndCheckMatch(Position position) async {
+    try {
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
 
-      Utils.showSnackBar(
-        context,
-        _currentAddress.toString(),
-      );
-
-      isLocationMatched = widget.address.contains(place.street ?? '') ||
-          widget.link.contains(place.street ?? '') ||
-          widget.address.contains(place.name ?? '') ||
-          widget.link.contains(place.name ?? '');
-
-      if (isLocationMatched) {
-        Utils.showSnackBar(
-          context,
-          ' الموقع مطابق${place.street}',
-        );
-      } else {
-        Utils.showSnackBar(
-          context,
-          ' ${place.street} الموقع غير مطابق ',
-        );
+      if (placemarks.isEmpty) {
+        _showMessage('لم يتم العثور على العنوان من الموقع الحالي');
+        setState(() => isLocationMatched = false);
+        return;
       }
 
+      Placemark place = placemarks.first;
+      String addressString =
+      '${place.street ?? ''}, ${place.name ?? ''}, ${place.subLocality ?? ''}, ${place.subAdministrativeArea ?? ''}, ${place.country ?? ''}'
+          .replaceAll(RegExp(r',\s*,*'), ',')
+          .trim();
+
       setState(() {
-        check = false;
+        _currentAddress = addressString;
       });
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
 
-  File? selectedImage;
-  int? filesId;
-  List<Files> filesIdReady = [];
+      // احصل على إحداثيات المهمة من الرابط
+      LatLng? taskLatLng = _parseLatLngFromGoogleMapsLink(widget.link);
 
-  Future<void> _pickImage() async {
-    final pickedFile;
+      if (taskLatLng == null) {
+        // fallback to textual matching (اختياري)
+        bool textMatch = widget.address
+            .toLowerCase()
+            .contains(place.street?.toLowerCase() ?? '') ||
+            widget.link.toLowerCase().contains(place.street?.toLowerCase() ?? '');
 
-    pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+        setState(() {
+          isLocationMatched = textMatch;
+        });
 
-    if (pickedFile != null) {
+        _showMessage(textMatch
+            ? 'تم التحقق بنجاح من الموقع (مطابقة نصية)'
+            : 'الموقع غير مطابق (مطابقة نصية)');
+      } else {
+        // حساب المسافة بالمتر
+        double distance = Geolocator.distanceBetween(position.latitude,
+            position.longitude, taskLatLng.latitude, taskLatLng.longitude);
+
+        // ضبط حد المسافة (مثلاً 500 متر)
+        const double maxDistanceMeters = 500;
+
+        setState(() {
+          isLocationMatched = distance <= maxDistanceMeters;
+        });
+
+        _showMessage(isLocationMatched
+            ? 'تم التحقق بنجاح من الموقع (المسافة: ${distance.toStringAsFixed(0)} متر)'
+            : 'الموقع غير مطابق (المسافة: ${distance.toStringAsFixed(0)} متر)');
+      }
+    } catch (e) {
+      _showMessage('خطأ أثناء التحقق من الموقع');
+      log(e.toString());
       setState(() {
-        selectedImage = File(pickedFile.path);
+        isLocationMatched = false;
+        _currentAddress = null;
       });
     }
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile =
+      await ImagePicker().pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        setState(() {
+          selectedImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      _showMessage('فشل في اختيار الصورة');
+      log(e.toString());
+    }
+  }
+
+  void _showMessage(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
   Widget build(BuildContext context) {
-    var cubit = TasksCubit.get(context);
+    // هنا بإمكانك استدعاء Cubit الخاص بك مثلاً TasksCubit
+    // final cubit = TasksCubit.get(context);
+
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(AppDefaults.padding.w),
-          child: SingleChildScrollView(
-            child: BlocConsumer<TasksCubit, TasksStates>(
-              listener: (context, state) {
-                if (state is EditErrorUserTaskState) {
-                  Utils.showSnackBar(context, 'error ');
-                }
-
-                if (state is EditSuccessUserTaskState) {
-                  Utils.showSnackBar(context, 'تم اكتمال المهمة بنجاح');
-                  navigateTo(context, AppRoutes.entryPoint);
-                }
-              },
-              builder: (context, state) {
-                if (state is EditLoadingUserTaskState) {
-                  return AppLottie.loader;
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(title: const Text('إكمال المهمة')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('1 - اضغط لتأكيد الموقع:', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 8),
+              if (_currentAddress != null) ...[
+                Text('موقعك الحالي: $_currentAddress'),
+                Row(
                   children: [
-                    const CustomAppBar(back: true, title: 'اكمال المهمة'),
-                    SizedBox(
-                      height: 20.h,
+                    Icon(
+                      isLocationMatched ? Icons.check_circle : Icons.cancel,
+                      color: isLocationMatched ? Colors.green : Colors.red,
                     ),
-                    // Text(S.of(context)!._1_-_قم_بكتابة_موقعك_الحالي_:) , style: AppFonts.style16semiBold,),
-                    // SizedBox(height: 20.h,),
-                    // defaultTextFormFeild(context,
-                    //     keyboardType: TextInputType.text,
-                    //     controller: location,
-                    //     validate: (v)
-                    //     {
-                    //       if (v != null )
-                    //       {
-                    //         return 'املأ الحقل';
-                    //       }
-                    //       return null ;
-                    //     }, label: 'الموقع الحالي' ),
-                    // SizedBox(height: 20.h,),
-                    Text(
-                      ' 1 - قم بالضغط على زر تأكيد الموقع : ',
-                      style: AppFonts.style16semiBold,
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    _currentAddress != null
-                        ? Text(
-                            ' موقعك : ${_currentAddress.toString()}',
-                            style: AppFonts.style14normal,
-                          )
-                        : Container(),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    _currentAddress != null
-                        ? Row(
-                            children: [
-                              isLocationMatched
-                                  ? Icon(
-                                      Icons.check_circle,
-                                      color: AppColors.greenColor,
-                                    )
-                                  : Icon(
-                                      Icons.cancel,
-                                      color: AppColors.errorColor,
-                                    ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                !isLocationMatched
-                                    ? 'موقعك لا يطابق موقع المهمة'
-                                    : 'تم التحقق بنجاح من الموقع',
-                                style: AppFonts.style14normal,
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Center(
-                      child: defaultButton(
-                          context: context,
-                          text: check ? 'انتظر قليلا ....' : 'تأكيد الموقع',
-                          width: 200.w,
-                          height: 48.h,
-                          isColor: true,
-                          textSize: 16.sp,
-                          toPage: () {
-                            _getCurrentPosition();
-                          }),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Text(
-                      ' 2 - قم برفع صور من وجودك في مكان المهمة: ',
-                      style: AppFonts.style16semiBold,
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    Center(
-                      child: defaultButton(
-                          context: context,
-                          text: 'اضغط لرفع صور',
-                          width: 200.w,
-                          height: 48.h,
-                          isColor: false,
-                          textSize: 16.sp,
-                          toPage: () {
-                            _pickImage().then((onValue) async {
-                              if (selectedImage != null) {
-                                filesId = await cubit
-                                    .uploadFileInTasks(selectedImage!);
-                                filesIdReady.add(Files(
-                                    directus_files_id:
-                                        DirectusFilesIdRequest(id: filesId)));
-                              }
-                            });
-                          }),
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    selectedImage != null
-                        ? Center(
-                            child: SizedBox(
-                              height: 180.h,
-                              child: Image.file(selectedImage!),
-                            ),
-                          )
-                        : Container(),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-
-                    isLocationMatched
-                        ? Center(
-                            child: defaultButton(
-                                context: context,
-                                text: 'اكمال المهمة',
-                                width: 200.w,
-                                height: 48.h,
-                                isColor: true,
-                                textSize: 16.sp,
-                                toPage: () {
-                                  // launchUrl(Uri.parse(
-                                  //      log('https://www.google.com/maps/search/?api=1&query=${_currentAddress.toString()}');
-                                  //
-                                  log(DateTime.now()
-                                      .toUtc()
-                                      .toIso8601String()
-                                      .replaceFirst('Z', '+00:00'));
-                                  if (_currentAddress != null &&
-                                      selectedImage != null) {
-                                    cubit.updateLocationFun(
-                                        files: filesIdReady,
-                                        title: widget.title,
-                                        description: widget.description,
-                                        client_phone: widget.clientPhone,
-                                        notes: widget.notes,
-                                        assigned_to:int.parse( widget.assign_to),
-                                        client_name: widget.clientName,
-                                        complete_date:
-                                            DateFormat('yyyy-MM-dd', 'en')
-                                                .format(DateTime.now()),
-                                        due_date: widget.due_date,
-                                        task_status: 'completed',
-                                        locationId:
-                                            widget.locationId == 'لا يوجد' ||
-                                                    widget.locationId == ''
-                                                ? '10'
-                                                : widget.locationId,
-                                        taskId: widget.taskId.toString(),
-                                        address: _currentAddress.toString(),
-                                        map_url:
-                                            'https://www.google.com/maps/search/?api=1&query=${_currentAddress.toString()}');
-                                  }
-                                }),
-                          )
-                        : Container(),
+                    const SizedBox(width: 8),
+                    Text(isLocationMatched
+                        ? 'تم التحقق من الموقع'
+                        : 'الموقع غير مطابق'),
                   ],
-                );
-              },
-            ),
+                ),
+              ],
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: isLoadingLocation ? null : _getCurrentPosition,
+                child: Text(isLoadingLocation ? 'جارٍ التحميل...' : 'تأكيد الموقع'),
+              ),
+              const Divider(height: 40),
+              Text('2 - قم برفع صورة من مكان المهمة:', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 8),
+              if (selectedImage != null)
+                Image.file(selectedImage!, height: 180)
+              else
+                const Text('لا توجد صورة مرفوعة'),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text('رفع صورة'),
+              ),
+              const Divider(height: 40),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (!isLocationMatched) {
+                      _showMessage('الرجاء تأكيد الموقع أولاً');
+                      return;
+                    }
+                    if (selectedImage == null) {
+                      _showMessage('الرجاء رفع صورة من مكان المهمة');
+                      return;
+                    }
+
+                    // هنا يمكنك تنفيذ دالة إكمال المهمة ورفع الصورة من خلال Cubit أو Bloc
+                    _showMessage('تم التحقق من جميع الشروط، يمكنك إكمال المهمة');
+                  },
+                  child: const Text('تأكيد اكتمال المهمة'),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
+
+class LatLng {
+  final double latitude;
+  final double longitude;
+  LatLng(this.latitude, this.longitude);
 }

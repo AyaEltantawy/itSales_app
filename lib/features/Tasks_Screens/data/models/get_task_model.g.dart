@@ -26,13 +26,7 @@ DataUserTask _$DataUserTaskFromJson(Map<String, dynamic> json) => DataUserTask(
       created_on: json['created_on'] as String?,
       modified_by: json['modified_by'],
       modified_on: json['modified_on'] as String?,
-      assigned_to: json['assigned_to'] == null
-          ? null
-          : (json['assigned_to'] is int
-          ? AssignedTo(id: json['assigned_to'] as int)
-          : AssignedTo.fromJson(json['assigned_to'] as Map<String, dynamic>)),
-
-
+      assigned_to: json['assigned_to'],
       due_date: json['due_date'] as String?,
       title: json['title'] as String?,
       description: json['description'] as String?,
@@ -47,6 +41,9 @@ DataUserTask _$DataUserTaskFromJson(Map<String, dynamic> json) => DataUserTask(
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
       files: json['files'] as List<dynamic>?,
+      loc: (json['loc'] as List<dynamic>?)
+          ?.map((e) => Loc.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$DataUserTaskToJson(DataUserTask instance) =>
@@ -72,6 +69,7 @@ Map<String, dynamic> _$DataUserTaskToJson(DataUserTask instance) =>
       'complete_date': instance.complete_date,
       'cancelled_date': instance.cancelled_date,
       'files': instance.files,
+      'loc': instance.loc,
     };
 
 AddTaskRequestModel _$AddTaskRequestModelFromJson(Map<String, dynamic> json) =>

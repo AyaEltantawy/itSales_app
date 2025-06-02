@@ -182,25 +182,30 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                               textSize: 18.sp,
                               toPage: () {
                                 Navigator.push(
-                                    context,
-                                    loginTransition(CompleteTask(
+                                  context,
+                                  loginTransition(
+                                    CompleteTask(
                                       taskId: widget.id,
                                       address: widget.address,
                                       link: widget.link,
                                       title: widget.nameTask,
                                       description: widget.description,
                                       due_date: widget.deadline,
-                                      locationId:
-                                          widget.locationId != 'لا يوجد' ||
-                                                  widget.locationId != ''
-                                              ? widget.locationId.toString()
-                                              : '10',
+                                      locationId: (widget.locationId != 'لا يوجد' && widget.locationId != '')
+                                          ? widget.locationId.toString()
+                                          : '10',
                                       notes: widget.notes,
                                       clientName: widget.nameClient,
                                       clientPhone: widget.phoneClient,
                                       assign_to: userId.toString(),
-                                    )));
-                              }),
+                                    ),
+
+                                  ),
+                                );
+                                print('Navigating with locationId: ${widget.locationId}');
+
+                              }
+                          ),
                         ))
                   : Container(),
               widget.task_status != 'completed'
@@ -277,7 +282,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                   locationId: widget.locationId == 'لا يوجد' ||
                                           widget.locationId == ''
                                       ? 10
-                                      : int.parse(widget.locationId),
+                                      :int.tryParse(widget.locationId),
                                   taskId: widget.id.toString(),
                                 )
                                     .then((onValue) {

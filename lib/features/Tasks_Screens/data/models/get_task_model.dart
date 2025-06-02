@@ -39,6 +39,7 @@ class DataUserTask {
   String? complete_date;
   String? cancelled_date;
   List<dynamic>? files;
+  List<Loc>?loc;
 
   DataUserTask({
     this.id,
@@ -62,6 +63,7 @@ class DataUserTask {
     this.complete_date,
     this.cancelled_date,
     this.files,
+    this.loc
   });
 
   factory DataUserTask.fromJson(Map<String, dynamic> json) =>
@@ -246,6 +248,8 @@ class DataAllTasks {
   String? cancelled_date;
   dynamic? files;
   dynamic? company;
+  List<Loc>? loc;
+
 
   DataAllTasks({
     this.id,
@@ -270,6 +274,7 @@ class DataAllTasks {
     this.cancelled_date,
     this.files,
     this.company,
+    this.loc
   });
 
   factory DataAllTasks.fromJson(Map<String, dynamic> json) {
@@ -294,15 +299,17 @@ class DataAllTasks {
       task_status: json['task_status'] as String?,
       priority: json['priority'] as String?,
       start_date: json['start_date'] as String?,
-      location: json['location'] is Map<String, dynamic>
-          ? Location.fromJson(json['location'])
-          : json['location'] is int
-              ? Location(id: json['location'])
-              : null,
+      location: json['address'] ,
       complete_date: json['complete_date'] as String?,
       cancelled_date: json['cancelled_date'] as String?,
       files: json['files'],
       company: json['company'],
+
+      loc: json['loc'] != null
+          ? (json['loc'] as List).map((e) => Loc.fromJson(e)).toList()
+          : null,
+
+
     );
   }
 
@@ -322,10 +329,12 @@ class DataAllTasks {
       'client_name': client_name,
       'client_phone': client_phone,
       'notes': notes,
+      'loc': loc != null ? loc!.map((e) => e.toJson()).toList() : null,
+
       'task_status': task_status,
       'priority': priority,
       'start_date': start_date,
-      'location': location?.toJson(),
+      'location': location,
       'complete_date': complete_date,
       'cancelled_date': cancelled_date,
       'files': files?.map((e) => e.toJson()).toList(),
@@ -494,7 +503,7 @@ class OwnerLocation {
 class AssignedTo {
   int? id;
   String? status;
-  dynamic role;  // remove '?'
+  dynamic role; // remove '?'
   String? first_name;
   String? last_name;
   String? email;
@@ -555,8 +564,8 @@ class AssignedTo {
       avatar: json['avatar'] == null
           ? null
           : (json['avatar'] is int
-          ? Avatar(id: json['avatar'] as int)
-          : Avatar.fromJson(json['avatar'] as Map<String, dynamic>)),
+              ? Avatar(id: json['avatar'] as int)
+              : Avatar.fromJson(json['avatar'] as Map<String, dynamic>)),
       company: json['company'] as String?,
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
@@ -567,8 +576,6 @@ class AssignedTo {
 
   Map<String, dynamic> toJson() => _$AssignedToToJson(this);
 }
-
-
 
 @JsonSerializable()
 class Location {
@@ -606,4 +613,63 @@ class Location {
   }
 
   Map<String, dynamic> toJson() => _$LocationToJson(this);
+}
+class Loc {
+  final int id;
+  final String status;
+  final dynamic sort; // can be null, so dynamic or nullable type
+  final dynamic owner;
+  final DateTime createdOn;
+  final dynamic modifiedBy;
+  final DateTime modifiedOn;
+  final String latitude;
+  final String longitude;
+  final String address;
+  final String mapUrl;
+  final dynamic task;
+
+  Loc({
+    required this.id,
+    required this.status,
+    this.sort,
+    required this.owner,
+    required this.createdOn,
+    required this.modifiedBy,
+    required this.modifiedOn,
+    required this.latitude,
+    required this.longitude,
+    required this.address,
+    required this.mapUrl,
+    required this.task,
+  });
+
+  factory Loc.fromJson(Map<String, dynamic> json) => Loc(
+    id: json['id'] as int,
+    status: json['status'] as String,
+    sort: json['sort'],
+    owner: json['owner'] ,
+    createdOn: DateTime.parse(json['created_on'] as String),
+    modifiedBy: json['modified_by'] ,
+    modifiedOn: DateTime.parse(json['modified_on'] as String),
+    latitude: json['latitude'] as String,
+    longitude: json['longitude'] as String,
+    address: json['address'] as String,
+    mapUrl: json['map_url'] as String,
+    task: json['task'] ,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'status': status,
+    'sort': sort,
+    'owner': owner,
+    'created_on': createdOn.toIso8601String(),
+    'modified_by': modifiedBy,
+    'modified_on': modifiedOn.toIso8601String(),
+    'latitude': latitude,
+    'longitude': longitude,
+    'address': address,
+    'map_url': mapUrl,
+    'task': task,
+  };
 }

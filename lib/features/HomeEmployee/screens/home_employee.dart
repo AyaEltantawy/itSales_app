@@ -513,7 +513,7 @@ class CompletedTasksSection extends StatelessWidget {
                                     data![index].task_status.toString(),
                                 id: data![index].id!.toInt(),
                                 locationId: data![index].location != null
-                                    ? data![index].location!.id.toString()
+                                    ? data![index].location!.toString()
                                     : '10',
                                 nameTask: data![index].title.toString(),
                                 nameEmployee:
@@ -523,10 +523,10 @@ class CompletedTasksSection extends StatelessWidget {
                                     data![index].client_phone.toString(),
                                 notes: data![index].notes.toString(),
                                 address: data![index].location != null
-                                    ? data![index].location!.address.toString()
+                                    ? data![index].location!.toString()
                                     : 'لا يوجد',
                                 link: data![index].location != null
-                                    ? data![index].location!.map_url.toString()
+                                    ? data![index].location!.toString()
                                     : 'لا يوجد',
                                 deadline: data![index].due_date.toString(),
                                 description:
@@ -537,7 +537,7 @@ class CompletedTasksSection extends StatelessWidget {
                             index: index + 1,
                             taskName: data![index].title.toString(),
                             location: data![index].location != null
-                                ? data![index].location!.address.toString()
+                                ? data![index].location!.toString()
                                 : 'لا يوجد',
                             time: data![index].complete_date!.toString()),
                       ),

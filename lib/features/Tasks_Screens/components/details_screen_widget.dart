@@ -104,78 +104,104 @@ class TaskDetailsSection extends StatelessWidget {
 class LocationSection extends StatelessWidget {
   final String address;
   final String link;
+
   const LocationSection({super.key, required this.address, required this.link});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor,),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'الموقع الجغرافي',
-            style:
-            AppFonts.style16semiBold,
-          ),
-          SizedBox(height: 16.h),
-          _buildRow(label: 'عنوان المهمة الحالي', value: address),
-          SizedBox(height: 8.h),
-          Divider(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor),
-          SizedBox(height: 8.h),
-          InkWell(
-            onTap: () async {
-              if (link == null || link.isEmpty || link == 'لا يوجد') {
-                // Optionally show a message to the user that the link is invalid
-                print('Invalid or empty link, cannot open.');
-                return;
-              }
+        width: double.infinity,
+        padding: EdgeInsets.all(16.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(
+            color: globalDark ? AppColors.borderColorDark : AppColors
+                .borderColor,),
+        ),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'الموقع الجغرافي',
+                style:
+                AppFonts.style16semiBold,
+              ),
+              SizedBox(height: 16.h),
+              _buildRow(label: 'عنوان المهمة الحالي', value: address),
+              SizedBox(height: 8.h),
+              Divider(color: globalDark ? AppColors.borderColorDark : AppColors
+                  .borderColor),
+              SizedBox(height: 8.h),
+              InkWell(
+                  onTap: () async {
+                    if (link == null || link!.isEmpty || link == 'لا يوجد') {
+                      print('Invalid or empty link, cannot open.');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('الرابط غير متوفر')),
+                      );
+                      return;
+                    }
 
-              final Uri url = Uri.parse(link);
+                    final Uri url = Uri.parse(link!);
 
-              if (await canLaunchUrl(url)) {
-                await launchUrl(url);
-              } else {
-                print('Cannot launch URL: $link');
-                // Optionally show a toast/snackbar informing the user
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: _buildRow(label: 'رابط الموقع', value: link ?? 'لا يوجد'),
-                ),
-                Container(
-                  height: 40.h,
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    borderRadius: AppDefaults.borderRadius,
-                    color: globalDark ? AppColors.cardColorDark : AppColors.textWhite,
-                    border: Border.all(color: AppColors.primary),
-                  ),
-                  child: Text(
-                    "اذهب للموقع",
-                    style: TextStyle(
-                      color: globalDark ? AppColors.textWhite : AppColors.textBlack,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-        ],
-      ),
-    );
+                    if (await canLaunchUrl(url)) {
+                      final bool success = await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      );
+                      if (!success) {
+                        print('Failed to launch URL externally');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('تعذر فتح الرابط')),
+                        );
+                      }
+                    } else {
+                      print('Cannot launch URL: $link');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('تعذر فتح الرابط')),
+                      );
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: _buildRow(
+                            label: 'رابط الموقع', value: link ?? 'لا يوجد'),
+                      ),
+                      Container(
+                        height: 40.h,
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: globalDark ? Colors.grey[800] : Colors.white,
+                          border: Border.all(color: Colors.blue),
+                        ),
+                        child: Text(
+                          "اذهب للموقع",
+                          style: TextStyle(
+                            color: globalDark ? Colors.white : Colors.black,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ))
+            ]));
   }
 
+  Widget _buildRow({required String label, required String value}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+        SizedBox(height: 4.h),
+        Text(value, style: TextStyle(fontSize: 12.sp)),
+      ],
+    );
+  }
+}
   Widget _buildRow({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +230,7 @@ class LocationSection extends StatelessWidget {
       ],
     );
   }
-}
+
 class ClientSection extends StatelessWidget {
   final String nameClient;
   final String phoneClient;
@@ -326,10 +352,10 @@ class AttachmentsSection extends StatelessWidget {
                   onTap: ()
                   {
 Navigator.push(context, MaterialPageRoute(builder: (context) =>
-    PhotoViewApp(files![index].directus_files_id!.data!.full_url.toString())) );
+    PhotoViewApp(files![index].directus_files_id!.location_data!.full_url.toString())) );
                   },
                   child: _buildAttachmentItem(
-                      fullUrl: files![index].directus_files_id!.data!.full_url.toString(),
+                      fullUrl: files![index].directus_files_id!.location_data!.full_url.toString(),
                       files![index].directus_files_id!.title.toString(), files![index].directus_files_id!.uploaded_on.toString(), Icons.file_present)),
           itemCount: files!.length,
           physics: const NeverScrollableScrollPhysics(),

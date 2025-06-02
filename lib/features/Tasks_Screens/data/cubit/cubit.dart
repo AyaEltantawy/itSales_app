@@ -100,37 +100,33 @@ class TasksCubit extends Cubit<TasksStates> {
 
     try {
       final taskRequest = AddTaskRequestModel(
-        status: status,
-        title: title,
-        description: description,
-        client_phone: client_phone,
-        notes: notes,
-        assigned_to: assigned_to,
-        cancelled_date: cancelled_date,
-        client_name: client_name,
-        complete_date: complete_date,
-        due_date: due_date,
-        priority: priority,
-        start_date: start_date,
-        task_status: task_status,
-        company: company,
-        location: location
-      );
+          status: status,
+          title: title,
+          description: description,
+          client_phone: client_phone,
+          notes: notes,
+          assigned_to: assigned_to,
+          cancelled_date: cancelled_date,
+          client_name: client_name,
+          complete_date: complete_date,
+          due_date: due_date,
+          priority: priority,
+          start_date: start_date,
+          task_status: task_status,
+          company: company,
+          location: location);
 
       final value = await repo.addTask(taskRequest);
 
       emit(AddSuccessUserTaskState());
-
-
-
-
 
       await postLocationFun(
         title: title,
         description: description,
         client_phone: client_phone,
         notes: notes,
-        assigned_to: assigned_to.toString() , // send as string if needed
+        assigned_to: assigned_to.toString(),
+        // send as string if needed
         client_name: client_name,
         due_date: due_date,
         priority: priority ?? 'high',
@@ -145,13 +141,12 @@ class TasksCubit extends Cubit<TasksStates> {
         isRead: true,
         message: 'راجع مهماتك الواردة: ${value.data!.title}',
         title: 'هناك مهمة جديدة',
-        user: assigned_to,
+        user: assigned_to.toString(),
       );
       final context = MagicRouter.currentContext;
       if (context != null) {
         navigateTo(context, AppRoutes.tasks_screen_for_employee);
       }
-
     } catch (e, stackTrace) {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
@@ -168,50 +163,46 @@ class TasksCubit extends Cubit<TasksStates> {
     }
   }
 
-
-  Future editTaskFun({
-    required String taskId,
-    String? status,
-    String? title,
-    String? description,
-    String? client_phone,
-    String? notes,
-    int? assigned_to,
-    String? cancelled_date,
-    String? client_name,
-    String? complete_date,
-    String? due_date,
-    String? priority,
-    String? start_date,
-    String? task_status,
-    int? locationId,
-    List<Files>? files,
-    int? company
-  }) async {
+  Future editTaskFun(
+      {required String taskId,
+      String? status,
+      String? title,
+      String? description,
+      String? client_phone,
+      String? notes,
+      int? assigned_to,
+      String? cancelled_date,
+      String? client_name,
+      String? complete_date,
+      String? due_date,
+      String? priority,
+      String? start_date,
+      String? task_status,
+      int? locationId,
+      List<Files>? files,
+      int? company}) async {
     emit(EditLoadingUserTaskState());
 
     await repo
         .editTask(
             taskId,
             AddTaskRequestModel(
-              status: status,
-              title: title,
-              files: files,
-              description: description,
-              client_phone: client_phone,
-              notes: notes,
-              assigned_to: assigned_to,
-              cancelled_date: cancelled_date,
-              client_name: client_name,
-              complete_date: complete_date ?? '2024-11-18',
-              due_date: due_date,
-              location: locationId,
-              priority: priority,
-              start_date: start_date,
-              task_status: task_status,
-              company: company
-
-            ))
+                status: status,
+                title: title,
+                files: files,
+                description: description,
+                client_phone: client_phone,
+                notes: notes,
+                assigned_to: assigned_to,
+                cancelled_date: cancelled_date,
+                client_name: client_name,
+                complete_date: complete_date ?? '2024-11-18',
+                due_date: due_date,
+                location: locationId,
+                priority: priority,
+                start_date: start_date,
+                task_status: task_status,
+                company: company))
         .then((value) {
       emit(EditSuccessUserTaskState());
       getAllTasksFun();
@@ -271,7 +262,7 @@ class TasksCubit extends Cubit<TasksStates> {
     emit(GetLoadingAllTaskState());
 
     try {
-      final filters = {'fields': '*.*', 'filter[company.id]': companyId};
+      final filters = {'fields': '*.*', 'filter[company]': companyId};
       print("CompanyId: $companyId");
 
       final value = await repo.getAllTasks(filters);
@@ -281,7 +272,6 @@ class TasksCubit extends Cubit<TasksStates> {
       print("getAllTaskList length: ${getAllTaskList?.length}");
 
       // Loop through each task to find problematic assigned_to field
-
 
       emit(GetSuccessAllTaskState());
     } catch (error, stackTrace) {
@@ -379,7 +369,6 @@ class TasksCubit extends Cubit<TasksStates> {
       if (sort != null && employee != null) {
         getLastTaskListForOneUser = value.data;
       }
-
     } catch (onError) {
       if (!await InternetConnectionChecker().hasConnection) {
         Utils.showSnackBar(
@@ -417,7 +406,7 @@ class TasksCubit extends Cubit<TasksStates> {
         getNotificationsList = value.data;
 
         emit(GetSuccessAllNotificationState());
-      }).catchError((onError) async {
+      }).catchError((onError, stackTrace) async {
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
             MagicRouter.currentContext!,
@@ -428,6 +417,7 @@ class TasksCubit extends Cubit<TasksStates> {
         }
         emit(GetErrorAllNotificationState());
         debugPrint('errrrrror ${onError.toString()}');
+        print(stackTrace);
       });
     }
   }
@@ -465,6 +455,7 @@ class TasksCubit extends Cubit<TasksStates> {
       });
     }
   }
+
   int newNotificationCount = 0;
 
   /// Call this after you successfully post a notification
@@ -481,9 +472,9 @@ class TasksCubit extends Cubit<TasksStates> {
 
   postNotificationFun({
     bool? isRead,
-     String? message,
-     String? title,
-     int? user,
+    String? message,
+    String? title,
+    dynamic? user,
   }) async {
     emit(PostLoadingAllNotificationState());
 
@@ -498,7 +489,7 @@ class TasksCubit extends Cubit<TasksStates> {
         .then((value) {
       emit(PostSuccessAllNotificationState());
       notifyNew();
-    }).catchError((onError) async {
+    }).catchError((onError, stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
           MagicRouter.currentContext!,
@@ -509,6 +500,7 @@ class TasksCubit extends Cubit<TasksStates> {
       }
       emit(PostErrorAllNotificationState());
       debugPrint('errrrrror ${onError.toString()}');
+      print("stackTrace:$StackTrace");
     });
   }
 
@@ -540,21 +532,20 @@ class TasksCubit extends Cubit<TasksStates> {
     ))
         .then((value) {
       emit(PostSuccessLocationState());
-      editTaskFun(
-        status: 'published',
-        taskId: taskId,
-        title: title,
-        description: description,
-        client_phone: client_phone,
-        notes: notes,
-        assigned_to: assigned_to,
-        client_name: client_name,
-        due_date: due_date,
-        priority: priority,
-        task_status: task_status,
-        locationId: value.data?.id
-      );
-    }).catchError((onError,stackTrace) async {
+      // editTaskFun(
+      //     status: 'published',
+      //     taskId: taskId,
+      //     title: title,
+      //     description: description,
+      //     client_phone: client_phone,
+      //     notes: notes,
+      //     assigned_to: assigned_to,
+      //     client_name: client_name,
+      //     due_date: due_date,
+      //     priority: priority,
+      //     task_status: task_status,
+      //     locationId: value.data?.id);
+    }).catchError((onError, stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
           MagicRouter.currentContext!,
@@ -664,7 +655,7 @@ class TasksCubit extends Cubit<TasksStates> {
       await repo.getOneLocation(taskId).then((value) {
         emit(GetSuccessLocationState());
         updateLocationFun(
-          locationId: value.data![0].id.toString(),
+          locationId: value.location_data![0].id.toString(),
           title: title,
           description: description,
           client_phone: client_phone,

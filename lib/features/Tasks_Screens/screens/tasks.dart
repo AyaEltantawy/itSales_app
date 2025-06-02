@@ -45,6 +45,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
 
   @override
   void initState() {
+    TasksCubit.get(context).data;
     role == "3"
         ? TasksCubit.get(context).getUserTaskFun(userId: userId.toString())
         : TasksCubit.get(context).getAllTasksFun();
@@ -279,9 +280,9 @@ class TaskList extends StatelessWidget {
                                 : cubit.getAllTaskList![index].task_status
                                     .toString(),
                             locationId: role == "3"
-                                ? (cubit.getUserTaskList![index].location !=
-                                        null
-                                    ? cubit.getUserTaskList![index].location!.id
+                                ? (cubit.getUserTaskList![index].loc != null
+                                    ? cubit
+                                        .getUserTaskList![index].loc![index].id
                                         .toString()
                                     : '10')
                                 : '',
@@ -309,8 +310,8 @@ class TaskList extends StatelessWidget {
                                 : cubit.getAllTaskList![index].notes.toString(),
                             // Address
                             address: role != '3'
-                                ? (cubit.getAllTaskList![index].location
-                                        ?.address ??
+                                ? (cubit.getAllTaskList![index].loc?[index]
+                                        .address ??
                                     'لا يوجد')
                                 : (cubit.getUserTaskList![index].location
                                         ?.address ??
@@ -318,11 +319,11 @@ class TaskList extends StatelessWidget {
 
 // Map URL
                             link: role != '3'
-                                ? (cubit.getAllTaskList![index].location
-                                        ?.map_url ??
-                                    'لا يوجد')
-                                : (cubit.getUserTaskList![index].location
-                                        ?.map_url ??
+                                ? (cubit.getAllTaskList![index].loc?[index]
+                                        ?.mapUrl ??
+                                    '')
+                                : (cubit.getUserTaskList![index].loc?[index]
+                                        ?.mapUrl ??
                                     'لا يوجد'),
 
                             deadline: role == "3"
@@ -373,7 +374,7 @@ class TaskList extends StatelessWidget {
                                   .getUserTaskList![index]
                                   .assigned_to!
                                   .avatar!
-                                  .data!
+                                  .location_data!
                                   .full_url
                                   .toString()
                               : 'null')
@@ -386,13 +387,13 @@ class TaskList extends StatelessWidget {
                                   .getAllTaskList![index]
                                   .assigned_to!
                                   .avatar!
-                                  .data!
+                                  .location_data!
                                   .full_url
                                   .toString()
                               : 'null'),
                       names: role == '3'
-                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}'
-                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to!.last_name.toString()}',
+                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context).getUserTaskList![index].assigned_to?.last_name ?? ''}'
+                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name ?? ''}',
                       statusColor: AppColors.inbox,
                       statusText: role == "3"
                           ? cubit.getUserTaskList![index].task_status.toString()
@@ -405,12 +406,13 @@ class TaskList extends StatelessWidget {
                           : cubit.getAllTaskList![index].notes.toString(),
                       index: index,
                       location: role != '3'
-                          ? (cubit.getAllTaskList![index].location != null
-                              ? cubit.getAllTaskList![index].location!.address
+                          ? (cubit.getAllTaskList![index].loc != null
+                              ? cubit.getAllTaskList![index].loc![index].address
                                   .toString()
                               : 'لا يوجد')
-                          : (cubit.getUserTaskList![index].location != null
-                              ? cubit.getUserTaskList![index].location!.address
+                          : (cubit.getUserTaskList![index].loc != null
+                              ? cubit
+                                  .getUserTaskList![index].loc![index].address
                                   .toString()
                               : 'لا يوجد'),
                     ),
@@ -447,9 +449,10 @@ class TaskList extends StatelessWidget {
                                 : cubit.getAllTaskList![index].task_status
                                     .toString(),
                             locationId: role == "3"
-                                ? (cubit.getUserTaskList![index].location !=
-                                        null
-                                    ? cubit.getUserTaskList![index].location!.id
+                                ? (cubit.getUserTaskList![index].loc != null &&
+                                        cubit.getUserTaskList![index].loc!
+                                            .isNotEmpty
+                                    ? cubit.getUserTaskList![index].loc![0].id
                                         .toString()
                                     : '10')
                                 : '',
@@ -460,8 +463,8 @@ class TaskList extends StatelessWidget {
                                 ? cubit.getUserTaskList![index].title.toString()
                                 : cubit.getAllTaskList![index].title.toString(),
                             nameEmployee: role != "3"
-                                ? '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name.toString()}'
-                                : '${TasksCubit.get(context).getUserTaskList![index].assigned_to?.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to?.last_name.toString()}',
+                                ? '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name ?? ''}'
+                                : '${TasksCubit.get(context).getUserTaskList![index].assigned_to?['first_name'] ?? ''} ${TasksCubit.get(context).getUserTaskList![index].assigned_to?['last_name'] ?? ''}',
                             nameClient: role == "3"
                                 ? cubit.getUserTaskList![index].client_name
                                     .toString()
@@ -476,27 +479,33 @@ class TaskList extends StatelessWidget {
                                 ? cubit.getUserTaskList![index].notes.toString()
                                 : cubit.getAllTaskList![index].notes.toString(),
                             address: role != '3'
-                                ? (cubit.getAllTaskList![index].location != null
-                                    ? cubit.getAllTaskList![index].location!
-                                        .address
+                                ? (cubit.getAllTaskList![index].loc != null &&
+                                        cubit.getAllTaskList![index].loc!
+                                            .isNotEmpty
+                                    ? cubit
+                                        .getAllTaskList![index].loc![0].address
                                         .toString()
                                     : 'لا يوجد')
-                                : (cubit.getUserTaskList![index].location !=
-                                        null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .address
+                                : (cubit.getUserTaskList![index].loc != null &&
+                                        cubit.getUserTaskList![index].loc!
+                                            .isNotEmpty
+                                    ? cubit
+                                        .getUserTaskList![index].loc![0].address
                                         .toString()
                                     : 'لا يوجد'),
                             link: role != '3'
-                                ? (cubit.getAllTaskList![index].location != null
-                                    ? cubit.getAllTaskList![index].location!
-                                        .map_url
+                                ? (cubit.getAllTaskList![index].loc != null &&
+                                        cubit.getAllTaskList![index].loc!
+                                            .isNotEmpty
+                                    ? cubit
+                                        .getAllTaskList![index].loc![0].mapUrl
                                         .toString()
                                     : 'لا يوجد')
-                                : (cubit.getUserTaskList![index].location !=
-                                        null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .map_url
+                                : (cubit.getUserTaskList![index].loc != null &&
+                                        cubit.getUserTaskList![index].loc!
+                                            .isNotEmpty
+                                    ? cubit
+                                        .getUserTaskList![index].loc![0].mapUrl
                                         .toString()
                                     : 'لا يوجد'),
                             deadline: role == "3"
@@ -545,7 +554,7 @@ class TaskList extends StatelessWidget {
                                       .getUserTaskList![index]
                                       .assigned_to
                                       ?.avatar
-                                      ?.data
+                                      ?.location_data
                                       ?.full_url
                                       ?.toString() ??
                                   'null'
@@ -557,14 +566,14 @@ class TaskList extends StatelessWidget {
                                       .getAllTaskList![index]
                                       .assigned_to
                                       ?.avatar
-                                      ?.data
+                                      ?.location_data
                                       ?.full_url
                                       ?.toString() ??
                                   'null'
                               : 'null'),
                       names: role == '3'
-                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}'
-                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name.toString()}',
+                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name']} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name']}'
+                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context)};}',
                       statusColor: Colors.green,
                       statusText: role == "3"
                           ? cubit.getUserTaskList![index].task_status.toString()
@@ -578,12 +587,26 @@ class TaskList extends StatelessWidget {
                       index: index,
                       textDate: 'مهلة المهمة',
                       location: role != '3'
-                          ? (cubit.getAllTaskList![index].location != null
-                              ? cubit.getAllTaskList![index].location!.address
+                          ? (cubit.getAllTaskList != null &&
+                                  cubit.getAllTaskList!.isNotEmpty &&
+                                  cubit.getAllTaskList![index].loc != null &&
+                                  cubit
+                                      .getAllTaskList![index].loc!.isNotEmpty &&
+                                  cubit.getAllTaskList![index].loc![0]
+                                          .address !=
+                                      null
+                              ? cubit.getAllTaskList![index].loc![0].address
                                   .toString()
                               : 'لا يوجد')
-                          : (cubit.getUserTaskList![index].location != null
-                              ? cubit.getUserTaskList![index].location!.address
+                          : (cubit.getUserTaskList != null &&
+                                  cubit.getUserTaskList!.isNotEmpty &&
+                                  cubit.getUserTaskList![index].loc != null &&
+                                  cubit.getUserTaskList![index].loc!
+                                      .isNotEmpty && // check list is not empty
+                                  cubit.getUserTaskList![index].loc![0]
+                                          .address !=
+                                      null
+                              ? cubit.getUserTaskList![index].loc![0].address
                                   .toString()
                               : 'لا يوجد'),
                     ),
@@ -632,11 +655,11 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                             task_status: cubit
                                 .getUserTaskList![index].task_status
                                 .toString(),
-                            locationId:
-                                (cubit.getUserTaskList![index].location != null
-                                    ? cubit.getUserTaskList![index].location!.id
-                                        .toString()
-                                    : '10'),
+                            locationId: (cubit.getUserTaskList![index].loc !=
+                                    null
+                                ? cubit.getUserTaskList![index].loc![index].id
+                                    .toString()
+                                : '10'),
                             id: cubit.getUserTaskList![index].id!.toInt(),
                             nameTask:
                                 cubit.getUserTaskList![index].title.toString(),
@@ -650,18 +673,16 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                                 .toString(),
                             notes:
                                 cubit.getUserTaskList![index].notes.toString(),
-                            address:
-                                (cubit.getUserTaskList![index].location != null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .address
-                                        .toString()
-                                    : 'لا يوجد'),
-                            link:
-                                (cubit.getUserTaskList![index].location != null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .map_url!
-                                        .toString()
-                                    : 'لا يوجد'),
+                            address: (cubit.getUserTaskList![index].loc != null
+                                ? cubit
+                                    .getUserTaskList![index].loc![index].address
+                                    .toString()
+                                : 'لا يوجد'),
+                            link: (cubit.getUserTaskList![index].loc != null
+                                ? cubit
+                                    .getUserTaskList![index].loc![index].mapUrl!
+                                    .toString()
+                                : 'لا يوجد'),
                             deadline: cubit.getUserTaskList![index].due_date
                                 .toString(),
                             description: cubit
@@ -696,7 +717,7 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                               .getUserTaskList![index]
                               .assigned_to!
                               .avatar!
-                              .data!
+                              .location_data!
                               .full_url
                               .toString()
                           : 'null',
@@ -708,8 +729,8 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                       taskName: cubit.getUserTaskList![index].title.toString(),
                       taskNotes: cubit.getUserTaskList![index].notes.toString(),
                       index: index,
-                      location: (cubit.getUserTaskList![index].location != null
-                          ? cubit.getUserTaskList![index].location!.address
+                      location: (cubit.getUserTaskList![index].loc != null
+                          ? cubit.getUserTaskList![index].loc![index].address
                               .toString()
                           : 'لا يوجد'),
                     ),
@@ -739,15 +760,15 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                                 .getUserTaskList![index].task_status
                                 .toString(),
                             locationId:
-                                (cubit.getUserTaskList![index].location != null
-                                    ? cubit.getUserTaskList![index].location!.id
+                                (cubit.getUserTaskList![index].loc != null
+                                    ? cubit.getUserTaskList![index].loc![0].id
                                         .toString()
                                     : '10'),
                             id: cubit.getUserTaskList![index].id!.toInt(),
                             nameTask:
                                 cubit.getUserTaskList![index].title.toString(),
                             nameEmployee:
-                                '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}',
+                                '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name'].toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name'].toString()}',
                             nameClient: cubit
                                 .getUserTaskList![index].client_name
                                 .toString(),
@@ -756,18 +777,14 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                                 .toString(),
                             notes:
                                 cubit.getUserTaskList![index].notes.toString(),
-                            address:
-                                (cubit.getUserTaskList![index].location != null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .address
-                                        .toString()
-                                    : 'لا يوجد'),
-                            link:
-                                (cubit.getUserTaskList![index].location != null
-                                    ? cubit.getUserTaskList![index].location!
-                                        .map_url
-                                        .toString()
-                                    : 'لا يوجد'),
+                            address: (cubit.getUserTaskList![index].loc != null
+                                ? cubit.getUserTaskList![index].loc![0].address
+                                    .toString()
+                                : 'لا يوجد'),
+                            link: (cubit.getUserTaskList![index].loc != null
+                                ? cubit.getUserTaskList![index].loc![0].mapUrl
+                                    .toString()
+                                : 'لا يوجد'),
                             deadline: cubit.getUserTaskList![index].due_date
                                 .toString(),
                             description: cubit
@@ -795,19 +812,18 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                           .toString(),
                       avatar: TasksCubit.get(context)
                                   .getUserTaskList![index]
-                                  .assigned_to!
-                                  .avatar !=
+                                  .assigned_to!['avatar'] !=
                               null
                           ? TasksCubit.get(context)
                               .getUserTaskList![index]
                               .assigned_to!
                               .avatar!
-                              .data!
+                              .location_data!
                               .full_url
                               .toString()
                           : 'null',
                       names:
-                          '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}',
+                          '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name'].toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name'].toString()}',
                       statusColor: Colors.green,
                       statusText:
                           cubit.getUserTaskList![index].task_status.toString(),
@@ -815,10 +831,11 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                       taskNotes: cubit.getUserTaskList![index].notes.toString(),
                       index: index,
                       textDate: 'مهلة المهمة',
-                      location: (cubit.getUserTaskList![index].location != null
-                          ? cubit.getUserTaskList![index].location!.address
+                      location: (cubit.getUserTaskList![index].loc != null &&
+                              cubit.getUserTaskList![index].loc!.isNotEmpty)
+                          ? cubit.getUserTaskList![index].loc![0].address
                               .toString()
-                          : 'لا يوجد'),
+                          : 'لا يوجد',
                     ),
                   ),
                 ),
@@ -865,10 +882,10 @@ class TaskListFilter extends StatelessWidget {
                                           .toString(),
                                       locationId: role == "3"
                                           ? (cubit.getUserTaskList![index]
-                                                      .location !=
+                                                      .loc !=
                                                   null
                                               ? cubit.getUserTaskList![index]
-                                                  .location!.id
+                                                  .loc![index].id
                                                   .toString()
                                               : '10')
                                           : '',
@@ -900,17 +917,17 @@ class TaskListFilter extends StatelessWidget {
                                           .toString(),
                                       address: cubit
                                                   .getAllTaskListFilter![index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
-                                              .location!.address
+                                              .loc![index].address
                                               .toString()
                                           : 'لا يوجد',
                                       link: cubit.getAllTaskListFilter![index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
-                                              .location!.map_url
+                                              .loc![index].mapUrl
                                               .toString()
                                           : 'لا يوجد',
                                       deadline: cubit
@@ -943,10 +960,10 @@ class TaskListFilter extends StatelessWidget {
                                           .toString(),
                                       locationId: role == "3"
                                           ? (cubit.getUserTaskList![index]
-                                                      .location !=
+                                                      .loc !=
                                                   null
                                               ? cubit.getUserTaskList![index]
-                                                  .location!.id
+                                                  .loc![index].id
                                                   .toString()
                                               : '10')
                                           : '',
@@ -975,25 +992,25 @@ class TaskListFilter extends StatelessWidget {
                                       address: cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit
                                               .getTaskListForOneUserSearch![
                                                   index]
-                                              .location!
+                                              .loc![index]
                                               .address
                                               .toString()
                                           : 'لا يوجد',
                                       link: cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit
                                               .getTaskListForOneUserSearch![
                                                   index]
-                                              .location!
-                                              .map_url
+                                              .loc![index]
+                                              .mapUrl
                                               .toString()
                                           : 'لا يوجد',
                                       deadline: cubit
@@ -1017,7 +1034,7 @@ class TaskListFilter extends StatelessWidget {
                                     .getAllTaskListFilter![index]
                                     .assigned_to!
                                     .avatar!
-                                    .data!
+                                    .location_data!
                                     .full_url
                                     .toString()
                                 : 'null',
@@ -1033,10 +1050,9 @@ class TaskListFilter extends StatelessWidget {
                                 .toString(),
                             index: index,
                             location:
-                                cubit.getAllTaskListFilter![index].location !=
-                                        null
+                                cubit.getAllTaskListFilter![index].loc != null
                                     ? cubit.getAllTaskListFilter![index]
-                                        .location!.address
+                                        .loc![index].address
                                         .toString()
                                     : 'لا يوجد',
                           )
@@ -1051,7 +1067,7 @@ class TaskListFilter extends StatelessWidget {
                                     .getTaskListForOneUserSearch![index]
                                     .assigned_to!
                                     .avatar!
-                                    .data!
+                                    .location_data!
                                     .full_url
                                     .toString()
                                 : 'null',
@@ -1068,13 +1084,13 @@ class TaskListFilter extends StatelessWidget {
                                 .getTaskListForOneUserSearch![index].notes
                                 .toString(),
                             index: index,
-                            location: cubit.getTaskListForOneUserSearch![index]
-                                        .location !=
-                                    null
-                                ? cubit.getTaskListForOneUserSearch![index]
-                                    .location!.address
-                                    .toString()
-                                : 'لا يوجد',
+                            location:
+                                cubit.getTaskListForOneUserSearch![index].loc !=
+                                        null
+                                    ? cubit.getTaskListForOneUserSearch![index]
+                                        .loc![index].address
+                                        .toString()
+                                    : 'لا يوجد',
                           ),
                   ),
                 )
@@ -1105,10 +1121,10 @@ class TaskListFilter extends StatelessWidget {
                                           .toString(),
                                       locationId: role == "3"
                                           ? (cubit.getUserTaskList![index]
-                                                      .location !=
+                                                      .loc !=
                                                   null
                                               ? cubit.getUserTaskList![index]
-                                                  .location!.id
+                                                  .loc![index].id
                                                   .toString()
                                               : '10')
                                           : '',
@@ -1132,17 +1148,17 @@ class TaskListFilter extends StatelessWidget {
                                           .toString(),
                                       address: cubit
                                                   .getAllTaskListFilter![index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
-                                              .location!.address
+                                              .loc![index].address
                                               .toString()
                                           : 'لا يوجد',
                                       link: cubit.getAllTaskListFilter![index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
-                                              .location!.map_url
+                                              .loc![index].mapUrl
                                               .toString()
                                           : 'لا يوجد',
                                       deadline: cubit
@@ -1177,12 +1193,12 @@ class TaskListFilter extends StatelessWidget {
                                           ? (cubit
                                                       .getTaskListForOneUserSearch![
                                                           index]
-                                                      .location !=
+                                                      .loc !=
                                                   null
                                               ? cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
-                                                  .location!
+                                                  .loc![index]
                                                   .id
                                                   .toString()
                                               : '10')
@@ -1212,25 +1228,25 @@ class TaskListFilter extends StatelessWidget {
                                       address: cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit
                                               .getTaskListForOneUserSearch![
                                                   index]
-                                              .location!
+                                              .loc![index]
                                               .address
                                               .toString()
                                           : 'لا يوجد',
                                       link: cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
-                                                  .location !=
+                                                  .loc !=
                                               null
                                           ? cubit
                                               .getTaskListForOneUserSearch![
                                                   index]
-                                              .location!
-                                              .map_url
+                                              .loc![index]
+                                              .mapUrl
                                               .toString()
                                           : 'لا يوجد',
                                       deadline: cubit
@@ -1251,7 +1267,7 @@ class TaskListFilter extends StatelessWidget {
                                     .getAllTaskListFilter!
                                     .length
                         ? TaskCardList(
-                            avatar: TasksCubit.get(context).getAllTaskListFilter![index].assigned_to?.avatar?.data?.full_url?.toString() ??
+                            avatar: TasksCubit.get(context).getAllTaskListFilter![index].assigned_to?.avatar?.location_data?.full_url?.toString() ??
                                 'null',
 
                             // or any fallback widget
@@ -1267,8 +1283,8 @@ class TaskListFilter extends StatelessWidget {
                                 .toString(),
                             index: index,
                             textDate: 'مهلة المهمة',
-                            location: cubit.getAllTaskListFilter![index].location != null
-                                ? cubit.getAllTaskListFilter![index].location!.address
+                            location: cubit.getAllTaskListFilter![index].loc != null
+                                ? cubit.getAllTaskListFilter![index].loc![index].address
                                     .toString()
                                 : 'لا يوجد')
                         : TaskCardList(
@@ -1278,7 +1294,7 @@ class TaskListFilter extends StatelessWidget {
                                     .getTaskListForOneUserSearch![index]
                                     .assigned_to!
                                     .avatar!
-                                    .data!
+                                    .location_data!
                                     .full_url
                                     .toString()
                                 : 'null',
@@ -1289,7 +1305,7 @@ class TaskListFilter extends StatelessWidget {
                             taskNotes: cubit.getTaskListForOneUserSearch![index].notes.toString(),
                             index: index,
                             textDate: 'مهلة المهمة',
-                            location: cubit.getTaskListForOneUserSearch![index].location != null ? cubit.getTaskListForOneUserSearch![index].location!.address.toString() : 'لا يوجد'),
+                            location: cubit.getTaskListForOneUserSearch![index].loc != null ? cubit.getTaskListForOneUserSearch![index].loc![index].address.toString() : 'لا يوجد'),
                   ),
                 ),
         ],

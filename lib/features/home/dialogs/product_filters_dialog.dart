@@ -50,7 +50,7 @@ class _FilterDialogState extends State<FilterDialog> {
 
     // Build locations from all tasks
     for (int i = 0; i < TasksCubit.get(context).getAllTaskList!.length; i++) {
-      var taskLocation = TasksCubit.get(context).getAllTaskList![i].location?.address;
+      var taskLocation = TasksCubit.get(context).getAllTaskList![i].location;
       if (taskLocation != null) {
         locationSet.add(taskLocation);
       }

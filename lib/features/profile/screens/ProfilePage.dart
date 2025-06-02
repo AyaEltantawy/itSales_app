@@ -292,7 +292,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               label: AppLocalizations.of(context)!
                                   .translate("sign_out"),
                               onTap: () async {
-                                await CacheHelper.clearAll();
+                               await CacheHelper.clearAll();
                                 navigateTo(context, AppRoutes.login);
                               }),
                           SizedBox(height: 30.h),

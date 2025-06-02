@@ -10,6 +10,7 @@ AddUserRequestModel _$AddUserRequestModelFromJson(Map<String, dynamic> json) =>
     AddUserRequestModel(
       email: json['email'] as String?,
       password: json['password'] as String?,
+      status: json['status'] as String?,
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
       role: json['role'] as String?,
@@ -21,6 +22,7 @@ Map<String, dynamic> _$AddUserRequestModelToJson(
     <String, dynamic>{
       'email': instance.email,
       'password': instance.password,
+      'status': instance.status,
       'first_name': instance.first_name,
       'last_name': instance.last_name,
       'role': instance.role,
@@ -37,6 +39,7 @@ EditUserRequestModel _$EditUserRequestModelFromJson(
       role: json['role'] as String?,
       avatar: (json['avatar'] as num?)?.toInt(),
       password: json['password'] as String?,
+      companies: (json['companies'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$EditUserRequestModelToJson(
@@ -49,6 +52,7 @@ Map<String, dynamic> _$EditUserRequestModelToJson(
       'role': instance.role,
       'password': instance.password,
       'avatar': instance.avatar,
+      'companies': instance.companies,
     };
 
 AddUserModel _$AddUserModelFromJson(Map<String, dynamic> json) => AddUserModel(
@@ -77,7 +81,7 @@ Map<String, dynamic> _$AllUsersModelToJson(AllUsersModel instance) =>
 DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       id: (json['id'] as num?)?.toInt(),
       status: json['status'] as String?,
-      role: json['role'] ,
+      role: json['role'],
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
       email: json['email'] as String?,
@@ -92,7 +96,7 @@ DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       avatar: json['avatar'] == null
           ? null
           : Avatar.fromJson(json['avatar'] as Map<String, dynamic>),
-      companies: json['companies'] ,
+      companies: json['companies'],
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
       last_accessOn: json['last_accessOn'] as String?,

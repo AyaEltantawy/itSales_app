@@ -6,27 +6,26 @@ part 'add_employee_model.g.dart';
 class AddUserRequestModel {
   String? email;
   String? password;
-
+  String? status;
   String? first_name;
   String? last_name;
 
   String? role;
 
-int? companies;
-  AddUserRequestModel({
-    this.email,
-    this.password,
+  int? companies;
 
-    this.first_name,
-    this.last_name,
-
-    this.role,
-this.companies
-
-  });
+  AddUserRequestModel(
+      {this.email,
+      this.password,
+      this.status,
+      this.first_name,
+      this.last_name,
+      this.role,
+      this.companies});
 
   factory AddUserRequestModel.fromJson(Map<String, dynamic> json) =>
       _$AddUserRequestModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AddUserRequestModelToJson(this);
 }
 
@@ -39,19 +38,21 @@ class EditUserRequestModel {
   String? role;
   String? password;
   int? avatar;
+  int? companies;
 
-  EditUserRequestModel({
-    this.email,
-    this.status,
-    this.first_name,
-    this.last_name,
-    this.role,
-    this.avatar,
-    this.password,
-  });
+  EditUserRequestModel(
+      {this.email,
+      this.status,
+      this.first_name,
+      this.last_name,
+      this.role,
+      this.avatar,
+      this.password,
+      this.companies});
 
   factory EditUserRequestModel.fromJson(Map<String, dynamic> json) =>
       _$EditUserRequestModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$EditUserRequestModelToJson(this);
 }
 
@@ -60,8 +61,10 @@ class AddUserModel {
   DataUserResponse? data;
 
   AddUserModel({this.data});
+
   factory AddUserModel.fromJson(Map<String, dynamic> json) =>
       _$AddUserModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AddUserModelToJson(this);
 }
 
@@ -70,8 +73,10 @@ class AllUsersModel {
   List<DataUser>? data;
 
   AllUsersModel({this.data});
+
   factory AllUsersModel.fromJson(Map<String, dynamic> json) =>
       _$AllUsersModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AllUsersModelToJson(this);
 }
 
@@ -125,6 +130,7 @@ class DataUser {
 
   factory DataUser.fromJson(Map<String, dynamic> json) =>
       _$DataUserFromJson(json);
+
   Map<String, dynamic> toJson() => _$DataUserToJson(this);
 }
 
@@ -160,6 +166,7 @@ class Company {
 
   factory Company.fromJson(Map<String, dynamic> json) =>
       _$CompanyFromJson(json);
+
   Map<String, dynamic> toJson() => _$CompanyToJson(this);
 }
 
@@ -197,6 +204,7 @@ class EmployeeInfo {
 
   factory EmployeeInfo.fromJson(Map<String, dynamic> json) =>
       _$EmployeeInfoFromJson(json);
+
   Map<String, dynamic> toJson() => _$EmployeeInfoToJson(this);
 }
 
@@ -248,6 +256,7 @@ class DataUserResponse {
 
   factory DataUserResponse.fromJson(Map<String, dynamic> json) =>
       _$DataUserResponseFromJson(json);
+
   Map<String, dynamic> toJson() => _$DataUserResponseToJson(this);
 }
 
@@ -274,6 +283,7 @@ class Role {
   });
 
   factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
+
   Map<String, dynamic> toJson() => _$RoleToJson(this);
 }
 
@@ -328,6 +338,7 @@ class Avatar {
   });
 
   factory Avatar.fromJson(Map<String, dynamic> json) => _$AvatarFromJson(json);
+
   Map<String, dynamic> toJson() => _$AvatarToJson(this);
 }
 
@@ -348,6 +359,7 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+
   Map<String, dynamic> toJson() => _$DataToJson(this);
 }
 
@@ -371,6 +383,7 @@ class Thumbnails {
 
   factory Thumbnails.fromJson(Map<String, dynamic> json) =>
       _$ThumbnailsFromJson(json);
+
   Map<String, dynamic> toJson() => _$ThumbnailsToJson(this);
 }
 
@@ -396,6 +409,7 @@ class AddEmployeeRequestModel {
 
   factory AddEmployeeRequestModel.fromJson(Map<String, dynamic> json) =>
       _$AddEmployeeRequestModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AddEmployeeRequestModelToJson(this);
 }
 
@@ -404,8 +418,10 @@ class AddEmployeeModel {
   DataEmployee? data;
 
   AddEmployeeModel({this.data});
+
   factory AddEmployeeModel.fromJson(Map<String, dynamic> json) =>
       _$AddEmployeeModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AddEmployeeModelToJson(this);
 }
 
@@ -443,6 +459,7 @@ class DataEmployee {
 
   factory DataEmployee.fromJson(Map<String, dynamic> json) =>
       _$DataEmployeeFromJson(json);
+
   Map<String, dynamic> toJson() => _$DataEmployeeToJson(this);
 }
 
@@ -451,8 +468,10 @@ class GetEmployeeModel {
   List<DataEmployee>? data;
 
   GetEmployeeModel({this.data});
+
   factory GetEmployeeModel.fromJson(Map<String, dynamic> json) =>
       _$GetEmployeeModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$GetEmployeeModelToJson(this);
 }
 
@@ -461,8 +480,10 @@ class GetOneUserModel {
   DataGetUser? data;
 
   GetOneUserModel({this.data});
+
   factory GetOneUserModel.fromJson(Map<String, dynamic> json) =>
       _$GetOneUserModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$GetOneUserModelToJson(this);
 }
 
@@ -514,5 +535,6 @@ class DataGetUser {
 
   factory DataGetUser.fromJson(Map<String, dynamic> json) =>
       _$DataGetUserFromJson(json);
+
   Map<String, dynamic> toJson() => _$DataGetUserToJson(this);
 }

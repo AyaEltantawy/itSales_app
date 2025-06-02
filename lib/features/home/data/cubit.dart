@@ -261,11 +261,12 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         role: role,
         password: password,
         companies: companyId,
+        status: status
       ),
     )
         .then((value) {
       emit(AddSuccessUserState());
-
+print("statussssssss:$status");
       getAllSales();
 
       print("🏢 companyIdForUser: $companyId");
@@ -315,6 +316,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     String? phone2,
     String? whatsapp,
     int? avatar,
+    int? companies,
   }) async {
     emit(LoadingEditUserState());
 
@@ -329,6 +331,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
               last_name: lastName,
               role: role,
               avatar: avatar,
+              companies: companies
             ))
         .then((value) {
       emit(SuccessEditUserState());
@@ -441,6 +444,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
       if (response.statusCode == 200) {
         emit(PostSuccessFileState());
+        print("statusssssssssss$status");
         print("File uploaded successfully!");
         print(response.data['data']['id']);
 
@@ -461,6 +465,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
             status: status,
             empStatus: empStatus,
             role: role,
+            companies: companyId
           );
         } else {
           adduserFun(
@@ -470,6 +475,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
               status: status,
               email: email,
               role: role,
+
               password: password,
               emailEmp: emailEmp,
               address: address,

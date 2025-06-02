@@ -77,12 +77,14 @@ class _EditDataPageState extends State<EditDataPage> {
                             validator: (v) {},
                             label: 'الاسم الاول'),
                         SizedBox(height: 15.h),
-                        defaultTextFormFeild(context,
-                            prefix: const Icon(Icons.person_2_outlined),
-                            keyboardType: TextInputType.name,
-                            controller: lName,
-                            validator: (v) {},
-                            label: 'الاسم الاخير', ),
+                        defaultTextFormFeild(
+                          context,
+                          prefix: const Icon(Icons.person_2_outlined),
+                          keyboardType: TextInputType.name,
+                          controller: lName,
+                          validator: (v) {},
+                          label: 'الاسم الاخير',
+                        ),
                         SizedBox(height: 15.h),
                         defaultTextFormFeild(context,
                             prefix: const Icon(Icons.email_outlined),
@@ -103,6 +105,7 @@ class _EditDataPageState extends State<EditDataPage> {
                                   selectedImageForSetting == null) {
                                 EmployeeCubit.get(context)
                                     .editUserFun(
+                                  companies: companyId,
                                   password: passController.text,
                                   idUser: userId.toString(),
                                   firstName: fName.text,
@@ -134,12 +137,26 @@ class _EditDataPageState extends State<EditDataPage> {
                                         idUser: userId.toString(),
                                         firstName: fName.text,
                                         phone1: role == '1'
-                                            ? EmployeeCubit.get(context)
-                                                .users![int.parse(
-                                                    userId.toString())]
-                                                .employee_info![0]
-                                                .phone_1
-                                                .toString()
+                                            ? (() {
+                                                final users =
+                                                    EmployeeCubit.get(context)
+                                                        .users;
+                                                if (users == null) return '';
+                                                final userIndex =
+                                                    users.indexWhere((u) =>
+                                                        u.id.toString() ==
+                                                        userId.toString());
+                                                if (userIndex == -1) return '';
+                                                final user = users[userIndex];
+                                                if (user.employee_info ==
+                                                        null ||
+                                                    user.employee_info!.isEmpty)
+                                                  return '';
+                                                return user.employee_info![0]
+                                                        .phone_1
+                                                        ?.toString() ??
+                                                    '';
+                                              })()
                                             : '',
                                         employeeId: '0',
                                         role: cubit.getInfoLogin?.role?.id
@@ -159,6 +176,7 @@ class _EditDataPageState extends State<EditDataPage> {
                                       })
                                     : EmployeeCubit.get(context)
                                         .editUserFun(
+                                        companies: companyId,
                                         password: passController.text,
                                         idUser: userId.toString(),
                                         firstName: fName.text,
