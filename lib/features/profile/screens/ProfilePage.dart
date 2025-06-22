@@ -157,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                               ],
                             ),
-                            Icon(
+                            const Icon(
                               Icons.arrow_forward_ios_outlined,
                               color: ColorsManager.black,
                             )
@@ -234,7 +234,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      TasksScreenForEmployee(back: true),
+                                      const TasksScreenForEmployee(back: true,task: true,),
                                 ),
                               );
                             },
@@ -292,7 +292,8 @@ class _SettingsPageState extends State<SettingsPage> {
                               label: AppLocalizations.of(context)!
                                   .translate("sign_out"),
                               onTap: () async {
-                               await CacheHelper.clearAll();
+                            //   await CacheHelper.clearAll();
+                                await CacheHelper.removeData('token');
                                 navigateTo(context, AppRoutes.login);
                               }),
                           SizedBox(height: 30.h),

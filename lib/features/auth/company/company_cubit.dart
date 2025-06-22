@@ -78,13 +78,14 @@ class CompanyCubit extends Cubit<CompanyState> {
           Utils.showSnackBar(context, errorMessage);
         }
       }
-    } catch (e) {
+    } catch (e,stackTrace) {
       if (!isClosed) emit(ErrorCompany());
 
       if (context.mounted) {
         Utils.showSnackBar(context, "حدث خطأ أثناء تسجيل الشركة");
       }
       print("❌ Error during company registration: $e");
+      print("goo$stackTrace");
     }
   }
 

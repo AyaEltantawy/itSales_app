@@ -10,6 +10,7 @@ import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/features/home/data/states.dart';
 import 'package:itsale/features/home/dialogs/product_filters_dialog.dart';
 import 'package:svg_flutter/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/app/app.dart';
 import '../../../core/constants/app_animation.dart';
@@ -38,6 +39,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
   @override
   void initState() {
     super.initState();
+
     EmployeeCubit.get(context).getAllSales();
     theRole = 0;
   }
@@ -53,9 +55,9 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
       role == '1'
           ? TasksCubit.get(context).getAllTasksFunWithFilter(text: value)
           : TasksCubit.get(context).getAllTasksFunWithFilter(
-        textEmp: value,
-        employee: userId,
-      );
+              textEmp: value,
+              employee: userId,
+            );
     } else {
       EmployeeCubit.get(context).getAdmins(search: value);
     }
@@ -106,7 +108,7 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                       Text(
                         widget.admin
                             ? AppLocalizations.of(context)!
-                            .translate("managers")
+                                .translate("managers")
                             : AppLocalizations.of(context)!.translate("users"),
                         style: AppFonts.style18medium,
                       ),
@@ -170,24 +172,24 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                         onFieldSubmitted: (value) {
                           widget.task!
                               ? (role == '1'
-                              ? TasksCubit.get(context)
-                              .getAllTasksFunWithFilter(text: value)
-                              : TasksCubit.get(context)
-                              .getAllTasksFunWithFilter(
-                              textEmp: value, employee: userId))
+                                  ? TasksCubit.get(context)
+                                      .getAllTasksFunWithFilter(text: value)
+                                  : TasksCubit.get(context)
+                                      .getAllTasksFunWithFilter(
+                                          textEmp: value, employee: userId))
                               : EmployeeCubit.get(context)
-                              .getAdmins(search: value.toString());
+                                  .getAdmins(search: value.toString());
                         },
                         onChanged: (value) {
                           widget.task!
                               ? (role == '1'
-                              ? TasksCubit.get(context)
-                              .getAllTasksFunWithFilter(text: value)
-                              : TasksCubit.get(context)
-                              .getAllTasksFunWithFilter(
-                              textEmp: value, employee: userId))
+                                  ? TasksCubit.get(context)
+                                      .getAllTasksFunWithFilter(text: value)
+                                  : TasksCubit.get(context)
+                                      .getAllTasksFunWithFilter(
+                                          textEmp: value, employee: userId))
                               : EmployeeCubit.get(context)
-                              .getAdmins(search: value.toString());
+                                  .getAdmins(search: value.toString());
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -196,10 +198,11 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                             child: SvgPicture.asset(AppIcons.searchIcon),
                           ),
                           contentPadding:
-                          EdgeInsets.symmetric(horizontal: 20.w),
+                              EdgeInsets.symmetric(horizontal: 20.w),
                           prefixIconConstraints:
-                          const BoxConstraints(minWidth: 20, minHeight: 20),
-                          labelText: 'ابحث هنا',
+                              const BoxConstraints(minWidth: 20, minHeight: 20),
+                          labelText: AppLocalizations.of(context)!.translate("search_here")
+                          ,
                           labelStyle: AppFonts.style14normal,
                         )))
               ],
@@ -229,15 +232,15 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
             child: (cubit.searchUser?.isNotEmpty ?? false)
                 ? buildEmployeeList(4)
                 : SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: nothing(context,
-                    button: 'مسؤولين',
-                    text: 'لا يوجد',
-                    route: AppRoutes.addEmployee),
-              ),
-            ),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: nothing(context,
+                          button: 'مسؤولين',
+                          text: AppLocalizations.of(context)!.translate("not_available"),
+                          route: AppRoutes.addEmployee),
+                    ),
+                  ),
           );
         }
         if (state is GetErrorAdminsState)
@@ -249,15 +252,15 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
           child: (cubit.usersAdmin?.isNotEmpty ?? false)
               ? buildEmployeeList(1)
               : SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: nothing(context,
-                  button: 'مسؤولين',
-                  text: 'لا يوجد مسؤولين',
-                  route: AppRoutes.addEmployee),
-            ),
-          ),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: nothing(context,
+                        button: 'مسؤولين',
+                        text: 'لا يوجد مسؤولين',
+                        route: AppRoutes.addEmployee),
+                  ),
+                ),
         );
       },
     );
@@ -268,7 +271,6 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
       listener: (context, state) {},
       builder: (context, state) {
         final cubit = EmployeeCubit.get(context);
-
         if (state is GetErrorSalesState)
           return Center(child: Text("للاسف حدث خطأ"));
         if (state is GetLoadingSearchEmployeeFilterState)
@@ -279,15 +281,15 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
             child: (cubit.searchUser?.isNotEmpty ?? false)
                 ? buildEmployeeList(4)
                 : SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: nothing(context,
-                    button: 'مستخدمين',
-                    text: 'لا يوجد',
-                    route: AppRoutes.addEmployee),
-              ),
-            ),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: nothing(context,
+                          button: 'مستخدمين',
+                          text: AppLocalizations.of(context)!.translate("not_available"),
+                          route: AppRoutes.addEmployee),
+                    ),
+                  ),
           );
         }
         if (state is GetLoadingSalesState) return const SizedBox.shrink();
@@ -297,15 +299,15 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
           child: (cubit.users?.isNotEmpty ?? false)
               ? buildEmployeeList(theRole)
               : SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: nothing(context,
-                  button: 'مستخدمين',
-                  text: 'لا يوجد مستخدمين',
-                  route: AppRoutes.addEmployee),
-            ),
-          ),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: nothing(context,
+                        button: 'مستخدمين',
+                        text: 'لا يوجد مستخدمين',
+                        route: AppRoutes.addEmployee),
+                  ),
+                ),
         );
       },
     );
@@ -337,31 +339,51 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
         separatorBuilder: (_, __) => SizedBox(height: 8.h),
         itemBuilder: (context, index) => InkWell(
             onTap: () => Navigator.push(context, MaterialPageRoute(
-              builder: (_) {
-                final employeeInfo = usersList[index].employee_info;
-                final info =
-                (employeeInfo != null && employeeInfo.isNotEmpty)
-                    ? employeeInfo[0]
-                    : null;
+                  builder: (_) {
+                    final employeeInfo = usersList[index].employee_info;
+                    final info =
+                        (employeeInfo != null && employeeInfo.isNotEmpty)
+                            ? employeeInfo[0]
+                            : null;
+                    return EmployeeDetailsScreen(
+                      name:
+                          '${usersList[index].first_name} ${usersList[index].last_name}',
+                      role: (usersList[index].role is int
+                              ? usersList[index].role == 1
+                              : usersList[index].role?['id'] == 1)
+                          ? AppLocalizations.of(context)!.translate('manager')
+                          : AppLocalizations.of(context)!.translate('employee'),
+                      avatar:
+                          usersList[index].avatar?.data?.full_url?.toString(),
+                      phone1: info?.phone_1 ?? AppLocalizations.of(context)!.translate("not_available"),
+                      phone2: info?.phone_2 ?? AppLocalizations.of(context)!.translate("not_available"),
+                      empEmail: info?.email ?? AppLocalizations.of(context)!.translate("not_available"),
+                      whatsapp: info?.whatsapp ?? AppLocalizations.of(context)!.translate("not_available"),
+                      passwordToken:
+                          usersList[index].passwordResetToken?.toString() ?? '',
+                      id: usersList[index].id?.toString() ?? '',
+                      email: usersList[index].email ?? AppLocalizations.of(context)!.translate("not_available"),
+                      address: info?.address ?? AppLocalizations.of(context)!.translate("not_available"),
+                    );
+                  },
+                )),
+            child: buildEmployeeListItem(usersList[index], () async {
+              final employeeInfo =
+                  EmployeeCubit.get(context).users?[index].employee_info;
 
-                return EmployeeDetailsScreen(
-                  name:
-                  '${usersList[index].first_name} ${usersList[index].last_name}',
-                  role: usersList[index].role == 1 ? 'مدير' : 'موظف',
-                  avatar:
-                  usersList[index].avatar?.data?.full_url ?? 'لا يوجد',
-                  phone1: info?.phone_1 ?? 'لا يوجد',
-                  phone2: info?.phone_2 ?? 'لا يوجد',
-                  empEmail: info?.email ?? 'لا يوجد',
-                  whatsapp: info?.whatsapp ?? 'لا يوجد',
-                  passwordToken:
-                  usersList[index].passwordResetToken?.toString() ?? '',
-                  id: usersList[index].id?.toString() ?? '',
-                  email: usersList[index].email ?? 'لا يوجد',
-                  address: info?.address ?? 'لا يوجد',
-                );
-              },
-            )),
-            child: buildEmployeeListItem(usersList[index])));
+              if (employeeInfo != null && employeeInfo.isNotEmpty) {
+                final phone = employeeInfo[0].phone_1?.toString();
+                if (phone != null && phone.isNotEmpty) {
+                  await launchUrl(Uri(
+                    scheme: 'tel',
+                    path: phone,
+                  ));
+                } else {
+                  print('رقم الهاتف غير متوفر');
+                }
+              } else {
+                print('بيانات الموظف غير متوفرة');
+              }
+            },context)));
   }
 }

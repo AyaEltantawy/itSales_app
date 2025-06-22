@@ -21,6 +21,8 @@ class DioHelper {
         Function(int, int)? onSendProgress}) async {
     bool result = await InternetConnectionChecker().hasConnection;
     if (!result) {
+
+
       Utils.showSnackBar(MagicRouter.currentContext!,
           'You are disconnected from the internet');
       throw Exception("No internet connection");

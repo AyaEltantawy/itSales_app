@@ -23,86 +23,104 @@ class LoginPage extends StatelessWidget {
   final TextEditingController? initialPassword;
   final int? companyId;
 
-  LoginPage(
-      {super.key, this.initialEmail, this.initialPassword, this.companyId});
+  LoginPage({super.key, this.initialEmail, this.initialPassword, this.companyId});
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppCubit, AppStates>(listener: (context, state) async {
-      if (state is PostSuccessLoginSalesState) {
-        await AppCubit.get(context).getUserDataFun(context);
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) async {
+        if (state is PostSuccessLoginSalesState) {
+          await AppCubit.get(context).getUserDataFun(context);
 
-        final cachedCompanyId = CacheHelper.getData(key: 'company_id');
-        final role = CacheHelper.getData(key: 'role');
+          final currentUserId = CacheHelper.getData(key: 'userId');
+          final cachedCompanyId = CacheHelper.getData(key: 'company_id');
+          final role = CacheHelper.getData(key: 'role');
 
-        print("📦 Cached companyId after login: $cachedCompanyId (${cachedCompanyId.runtimeType})");
-        print("👤 Role: $role (${role.runtimeType})");
+          if (role.toString() == '1') {
+            // ✅ استخدام loginPassword من AppCubit
+            final passwordText = AppCubit.get(context).loginPassword;
 
-        if ((cachedCompanyId == null || cachedCompanyId == '' || cachedCompanyId == 'null') &&
-            role.toString() == '1') {
-          print("❌ companyId is null or empty. Navigating to companyPage.");
-          await navigateTo(context, AppRoutes.companyPage);
-        } else {
-          print("✅ companyId is valid. Navigating to entryPoint.");
-          await navigateTo(context, AppRoutes.entryPoint);
+            if (passwordText != null && passwordText.isNotEmpty && currentUserId != null) {
+              await CacheHelper.saveData(key: 'password', value: passwordText);
+              passwordLogin = passwordText;
+              print("✅ تم حفظ كلمة مرور المدير userId=$currentUserId");
+            } else {
+              passwordLogin = null;
+              print("⚠️ كلمة المرور غير متوفرة أو فارغة");
+            }
+          }
+
+          /// التنقل بعد التحقق من الشركة
+          if ((cachedCompanyId == null || cachedCompanyId == '' || cachedCompanyId == 'null') &&
+              role.toString() == '1') {
+            await navigateTo(context, AppRoutes.companyPage);
+          } else {
+            await navigateTo(context, AppRoutes.entryPoint);
+          }
+
+          Utils.showSnackBar(
+            context,
+            AppLocalizations.of(context)!.translate("login_done_successfuly"),
+          );
         }
-
-        Utils.showSnackBar(
-          context,
-          AppLocalizations.of(context)!.translate("login_done_successfuly"),
-        );
-      }
-
-    }, builder: (context, state) {
-      if (state is PostLoadingLoginSalesState) {
-        return Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.translate("please_waiting"),
-                      style: AppFonts.style20medium,
-                    ),
-                    AppLottie.loader,
-                  ],
+      },
+      builder: (context, state) {
+        if (state is PostLoadingLoginSalesState) {
+          return Scaffold(
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.translate("please_waiting"),
+                        style: AppFonts.style20medium,
+                      ),
+                      AppLottie.loader,
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      }
+          );
+        }
 
-      return Scaffold(
+        return Scaffold(
           body: SafeArea(
-              child: ListView(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
-                  children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: ListView(
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
               children: [
-                Text(
-                  textAlign: TextAlign.start,
-                  AppLocalizations.of(context)!.translate('login'),
-                  style: TextStyles.font20Weight500BaseBlack,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.translate('login'),
+                      style: TextStyles.font20Weight500BaseBlack,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);
+                      },
+                      child: const Icon(Icons.arrow_forward),
+                    ),
+                  ],
                 ),
-                InkWell(
-                    onTap: (){ navigateTo(context, AppRoutes.chooseLoginOrSignUpPage);},
-                    child: Icon(Icons.arrow_forward))
+                Column(
+                  children: [
+                    const LoginPageHeader(),
+                    LoginPageForm(
+                      emailController: initialEmail,
+                      passwordController: initialPassword,
+                    ),
+                  ],
+                ),
               ],
             ),
-            Column(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const LoginPageHeader(),
-                  LoginPageForm(
-                    emailController: initialEmail,
-                    passwordController: initialPassword,
-                  ),
-                ]),
-          ])));
-    });
+          ),
+        );
+      },
+    );
   }
 }
+

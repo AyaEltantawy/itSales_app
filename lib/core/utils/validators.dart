@@ -1,21 +1,31 @@
+import 'package:flutter/material.dart' show BuildContext;
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:itsale/core/routes/magic_router.dart';
 
-class Validators {
+import '../localization/app_localizations.dart';
+
+class Validators  {
+
   /// Email Validator
-  static final email = EmailValidator(errorText: 'ايميل غير صالح');
+  ///
+  static EmailValidator email(BuildContext context)  => EmailValidator(errorText: AppLocalizations.of(context)!.translate("invalid_email")
+  );
 
   /// Password Validator
-  static final password = MultiValidator([
-    RequiredValidator(errorText: 'كلمة السر مطلوبة'),
-    MinLengthValidator(8, errorText: 'يجب أن تكون كلمة السر ع الأقل 8 أحرف'),
+  static MultiValidator password(BuildContext context) =>MultiValidator([
+    RequiredValidator(errorText: AppLocalizations.of(context)!.translate("password_required")
+    ),
+    MinLengthValidator(8, errorText:AppLocalizations.of(context)!.translate("password_min_length")
+    ),
     // PatternValidator(r'(?=.*?[#?!@$%^&*-])',
     //     errorText: 'يجب أن يكون هناك رمزا واحدا على الأقل')
   ]);
 
   /// Required Validator with Optional Field Name
-  static RequiredValidator requiredWithFieldName(String? fieldName) =>
-      RequiredValidator(errorText: '${fieldName ?? 'Field'} مطلوب ');
+  static RequiredValidator requiredWithFieldName(String? fieldName,BuildContext context) =>
+      RequiredValidator(errorText: '${fieldName ?? 'Field'} ${AppLocalizations.of(context)!.translate("required")
+      } ');
 
   /// Plain Required Validator
-  static final required = RequiredValidator(errorText: 'لا تترك هذا الحقل فارغا');
+  static RequiredValidator required(BuildContext context) => RequiredValidator(errorText: AppLocalizations.of(context)!.translate('Do not leave this field blank.'));
 }

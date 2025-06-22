@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:itsale/core/app/app.dart';
 import 'package:itsale/core/components/default_app_bar.dart';
 import 'package:itsale/core/constants/app_colors.dart';
 import 'package:itsale/core/constants/app_defaults.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
-
 import '../../../core/constants/app_animation.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/navigation.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../core/utils/token.dart' show role, userId;
 import '../../../core/utils/transition.dart';
 import '../../../generated/l10n.dart';
 import '../../HomeEmployee/components/card_contacts_widget.dart';
@@ -25,11 +27,12 @@ import '../../addEmployee/components/no_data_screen.dart';
 import '../../auth/data/cubit.dart';
 import '../../auth/data/states.dart';
 import '../../home/components/widgets_for_tasks_screen.dart';
+import '../../home/data/cubit.dart';
 
 class EmployeeDetailsScreen extends StatefulWidget {
   final String name;
   final String role;
-  final String avatar;
+  final dynamic avatar;
   final String email;
   final String phone1;
   final String phone2;
@@ -38,8 +41,9 @@ class EmployeeDetailsScreen extends StatefulWidget {
   final String empEmail;
   final String whatsapp;
   final String id;
+  bool? task;
 
-  const EmployeeDetailsScreen({
+  EmployeeDetailsScreen({
     super.key,
     required this.name,
     required this.id,
@@ -65,10 +69,26 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
   void initState() {
     TasksCubit.get(context).getUserTaskFun(userId: widget.id);
     final loginInfo = AppCubit.get(context).getInfoLogin;
-    // TODO: implement initState
     super.initState();
   }
 
+  bool showSearch = false;
+  String searchText = '';
+
+  // void onSearchChanged(String value) {
+  //   searchText = value;
+  //   if (widget.task == true) {
+  //     if (role == '1') {
+  //       TasksCubit.get(context).getAllTasksFunWithFilter(text: value);
+  //     } else {
+  //       TasksCubit.get(context).getAllTasksFunWithFilter(
+  //           textEmp: value, employee: userId.toString());
+  //     }
+  //   } else {
+  //     EmployeeCubit.get(context).getAdmins(search: value);
+  //   }
+  // }
+  //
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
@@ -84,8 +104,10 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
                     children: [
                       Padding(
                         padding: EdgeInsets.all(10.0.h),
-                        child: const CustomAppBar(
-                            back: true, title: 'تفاصيل الموظف'),
+                        child: CustomAppBar(
+                            back: true,
+                            title: AppLocalizations.of(context)!
+                                .translate("employee_details")),
                       ),
                       ProfileHeader(
                         id: int.parse(widget.id),
@@ -115,20 +137,20 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
                       ),
                       _buildContentForSelectedTab(
                         id: widget.id,
-                        phone1: widget.phone1 ?? 'لا يوجد',
-                        phone2: widget.phone2 != '' ? widget.phone2 : 'لا يوجد',
+                        phone1: widget.phone1 != '' ? widget.phone1 : AppLocalizations.of(context)!.translate("not_available"),
+                        phone2: widget.phone2 != '' ? widget.phone2 : AppLocalizations.of(context)!.translate("not_available"),
                         whatsapp:
-                            widget.whatsapp != '' ? widget.whatsapp : 'لا يوجد',
+                            widget.whatsapp != '' ? widget.whatsapp : AppLocalizations.of(context)!.translate("not_available"),
                         empEmail:
-                            widget.empEmail != '' ? widget.empEmail : 'لا يوجد',
+                            widget.empEmail != '' ? widget.empEmail : AppLocalizations.of(context)!.translate("not_available"),
                         password: widget.passwordToken != ''
                             ? widget.passwordToken
-                            : 'لا يوجد',
+                            : AppLocalizations.of(context)!.translate("not_available"),
                         address:
-                            widget.address != '' ? widget.address : 'لا يوجد',
-                        name: widget.name != '' ? widget.name : 'لا يوجد',
+                            widget.address != '' ? widget.address :AppLocalizations.of(context)!.translate("not_available"),
+                        name: widget.name != '' ? widget.name : AppLocalizations.of(context)!.translate("not_available"),
                         emailLogin:
-                            widget.email != '' ? widget.email : 'لا يوجد',
+                            widget.email != '' ? widget.email : AppLocalizations.of(context)!.translate("not_available"),
                       ),
                     ],
                   ),
@@ -167,7 +189,9 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
         empEmail: empEmail,
       );
     } else if (selectedTab == 1) {
-      return const TaskListInProfile();
+      return TaskListInProfile(
+        task: true,
+      );
     } else {
       return EmployeeInfo(
         name: name,
@@ -183,20 +207,38 @@ class _EmployeeDetailsScreenState extends State<EmployeeDetailsScreen> {
 }
 
 class TabSelector extends StatelessWidget {
-  final int selectedTab; // Receives the current selected tab from parent
-  final Function(int)
-      onTabSelected; // Callback to inform parent when a tab is selected
+  final int selectedTab;
+  final Function(int) onTabSelected;
 
-  const TabSelector(
+  TabSelector(
       {super.key, required this.selectedTab, required this.onTabSelected});
 
   @override
   Widget build(BuildContext context) {
+    // bool showSearch = false;
+    // String searchText = '';
+    //
+    // void onSearchChanged(String value) {
+    //   searchText = value;
+    //   if (task == true) {
+    //     if (role == '1') {
+    //       TasksCubit.get(context).getAllTasksFunWithFilter(text: value);
+    //     } else {
+    //       TasksCubit.get(context).getAllTasksFunWithFilter(
+    //           textEmp: value, employee: userId.toString());
+    //     }
+    //   } else {
+    //     EmployeeCubit.get(context).getAdmins(search: value);
+    //   }
+    // }
     return Row(
       children: [
-        _buildTab("نظرة عامة", 0), // Overview tab
-        _buildTab("المهام", 1), // Tasks tab
-        _buildTab("المعلومات", 2), // Information tab
+        _buildTab(AppLocalizations.of(context)!.translate("overview"),
+            0), // Overview tab
+        _buildTab(
+            AppLocalizations.of(context)!.translate("tasks"), 1), // Tasks tab
+        _buildTab(AppLocalizations.of(context)!.translate("information"),
+            2), // Information tab
       ],
     );
   }
@@ -228,7 +270,7 @@ class TabSelector extends StatelessWidget {
                     ? Colors.white
                     : globalDark
                         ? AppColors.textWhite
-                        : AppColors.textBlack, // Active tab text is white
+                        : AppColors.textBlack,
                 fontSize: 14.sp, // Font size for tab text
               ),
             ),
@@ -240,7 +282,11 @@ class TabSelector extends StatelessWidget {
 }
 
 class TaskListInProfile extends StatefulWidget {
-  const TaskListInProfile({super.key});
+  TaskListInProfile({super.key, this.task});
+
+  final bool? task;
+  bool showSearch = false;
+  String searchText = '';
 
   @override
   State<TaskListInProfile> createState() => _TaskListInProfileState();
@@ -248,6 +294,23 @@ class TaskListInProfile extends StatefulWidget {
 
 class _TaskListInProfileState extends State<TaskListInProfile> {
   bool isGrid = false;
+
+  void onSearchChanged(String value) {
+    widget.searchText = value;
+
+    if (widget.task == true) {
+      if (role == '1') {
+        TasksCubit.get(context).getAllTasksFunWithFilter(text: value);
+      } else {
+        TasksCubit.get(context).getAllTasksFunWithFilter(
+          textEmp: value,
+          employee: userId.toString(),
+        );
+      }
+    } else {
+      EmployeeCubit.get(context).getAdmins(search: value);
+    }
+  }
 
   void toggleViewMode() {
     setState(() {
@@ -264,64 +327,116 @@ class _TaskListInProfileState extends State<TaskListInProfile> {
           SizedBox(height: 10.h),
           Padding(
             padding: EdgeInsets.only(
-                right: AppDefaults.padding.w, top: AppDefaults.padding.h / 2),
+              right: AppDefaults.padding.w,
+              top: AppDefaults.padding.h / 2,
+            ),
             child: BuildSearchFilter(
-                task: true,
-                admin: false,
-                emp: false,
-                isGrid: isGrid,
-                toggleViewMode: toggleViewMode),
+              onTap: () {
+                setState(() {
+                  widget.showSearch = !widget.showSearch;
+                  if (!widget.showSearch) {
+                    widget.searchText = '';
+                    if (role == '3') {
+                      TasksCubit.get(context)
+                          .getUserTaskFun(userId: userId.toString());
+                    } else {
+                      TasksCubit.get(context).getAllTasksFun();
+                    }
+                  }
+                });
+              },
+              isGrid: isGrid,
+              emp: false,
+              task: true,
+              admin: false,
+              toggleViewMode: toggleViewMode,
+            ),
           ),
+          if (widget.showSearch) ...[
+            SizedBox(height: 30.h),
+            Container(
+              height: 40.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color:
+                    globalDark ? AppColors.cardColorDark : AppColors.cardColor,
+                border: Border.all(
+                  color: globalDark
+                      ? AppColors.borderColorDark
+                      : AppColors.borderColor,
+                  width: 0.5,
+                ),
+                borderRadius: BorderRadius.circular(8.0.r),
+              ),
+              child: TextFormField(
+                textDirection: TextDirection.rtl,
+                onChanged: onSearchChanged,
+                onFieldSubmitted: onSearchChanged,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SvgPicture.asset(AppIcons.searchIcon),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                  prefixIconConstraints:
+                      const BoxConstraints(minWidth: 20, minHeight: 20),
+                  labelText:AppLocalizations.of(context)!.translate("search_here"),
+                  labelStyle: AppFonts.style14normal,
+                ),
+              ),
+            )
+          ],
           Padding(
             padding: EdgeInsets.all(AppDefaults.padding.w),
             child: BlocConsumer<TasksCubit, TasksStates>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  if (state is NoInternetState) {
-                    return const NoInternet();
-                  }
-                  if (state is GetLoadingSearchTaskFilterState) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        const LinearProgressIndicator(),
-                      ],
-                    );
-                  }
+              listener: (context, state) {},
+              builder: (context, state) {
+                final cubit = TasksCubit.get(context);
 
-                  if (state is GetSuccessSearchTaskFilterState) {
-                    return TasksCubit.get(context)
-                            .getAllTaskListFilter!
-                            .isNotEmpty
-                        ? TaskListFilter(isGrid: isGrid)
-                        : nothing(context,
-                            route: AppRoutes.addTask,
-                            button: 'مهمة',
-                            text: 'لا يوجد');
-                  }
-                  if (state is GetLoadingUserTaskState) {
-                    return AppLottie.loader;
-                  }
-                  if (state is GetSuccessAllTaskFilterState) {
-                    return TasksCubit.get(context)
-                            .getAllTaskListFilter!
-                            .isNotEmpty
-                        ? TaskListFilter(isGrid: isGrid)
-                        : nothing(context,
-                            route: AppRoutes.addTask,
-                            button: 'مهمة',
-                            text: 'لا يوجد');
-                  }
+                if (state is NoInternetState) {
+                  return const NoInternet();
+                }
 
-                  return (TasksCubit.get(context).getUserTaskList!.isNotEmpty)
-                      ? TaskListForAdminToShowUserTasks(isGrid: isGrid)
-                      : nothing(context,
+                if (state is GetLoadingAllTaskFilterState ||
+                    state is GetLoadingAllTaskState ||
+                    state is GetLoadingUserTaskState) {
+                  return Column(
+                    children: [
+                      SizedBox(height: 10.h),
+                      const LinearProgressIndicator(),
+                    ],
+                  );
+                }
+                if (state is GetSuccessSearchTaskFilterState ||
+                    state is GetSuccessAllTaskFilterState) {
+                  return cubit.getAllTaskListFilter?.isNotEmpty ?? false
+                      ? TaskListFilter(isGrid: isGrid)
+                      : nothing(
+                          context,
                           route: AppRoutes.addTask,
-                          button: 'مهمة',
-                          text: 'لا يوجد مهام الى الان');
-                }),
+                          button:AppLocalizations.of(context)!.translate("task")
+                    ,
+                          text: 'لا يوجد نتائج مطابقة',
+                        );
+                }
+
+                // ✅ عرض قائمة المهام العادية
+                final userTasks = cubit.getUserTaskList;
+                if (userTasks != null && userTasks.isNotEmpty) {
+                  return TaskListForAdminToShowUserTasks(isGrid: isGrid);
+                }
+
+                return nothing(
+                  context,
+                  route: AppRoutes.addTask,
+                  button:"${ AppLocalizations.of(context)!.translate("task")}"
+                  ,
+                  text: AppLocalizations.of(context)!.translate("no_tasks_yet")
+                  ,
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -329,7 +444,6 @@ class _TaskListInProfileState extends State<TaskListInProfile> {
   }
 }
 
-// Overview Section (for the "Overview" tab)
 class OverviewSection extends StatefulWidget {
   final String phone1;
   final String phone2;
@@ -364,7 +478,7 @@ class _OverviewSectionState extends State<OverviewSection> {
         .getUserTaskList!
         .where((task) => task.task_status != 'completed')
         .toList();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -388,16 +502,34 @@ class _OverviewSectionState extends State<OverviewSection> {
             if (state is GetLoadingUserTaskState) {
               return AppLottie.loader;
             }
-            return Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: AppDefaults.padding.w / 1.6),
-              child: TaskSummarySectionForEmployee(
-                completedTasks: completedTasks,
-                uncompletedTasks: uncompletedTasks,
-              ),
-            );
+
+            if (state is GetSuccessUserTaskState) {
+              final tasks = TasksCubit.get(context).getUserTaskList ?? [];
+
+              final completedTasks = tasks
+                  .where((task) => task.task_status == 'completed')
+                  .toList();
+
+              final uncompletedTasks = tasks
+                  .where((task) => task.task_status != 'completed')
+                  .toList();
+
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppDefaults.padding.w / 1.6,
+                ),
+                child: TaskSummarySectionForEmployee(
+                  completedTasks: completedTasks,
+                  uncompletedTasks: uncompletedTasks,
+                ),
+              );
+            }
+
+            // في حال وجود خطأ أو حالة فارغة
+            return const Center(child: Text("لا توجد مهام"));
           },
         ),
+
         SizedBox(height: 20.h),
         //  Container(
         //    padding: const EdgeInsets.symmetric(horizontal: AppDefaults.padding / 1.6),
@@ -457,16 +589,14 @@ class CompletedTasksSectionForOneUser extends StatefulWidget {
 
 class _CompletedTasksSectionForOneUserState
     extends State<CompletedTasksSectionForOneUser> {
-  List<DataUserTask>? data = [];
-
   @override
   void initState() {
-    TasksCubit.get(context)
-        .getUserTaskFun(userId: widget.id, status: 'completed');
-    data = TasksCubit.get(context).getUserTaskListWithStatus;
-
-    // TODO: implement initState
     super.initState();
+    // فقط نقوم بطلب المهام المكتملة لهذا المستخدم
+    TasksCubit.get(context).getUserTaskFun(
+      userId: widget.id,
+      status: 'completed',
+    );
   }
 
   @override
@@ -476,98 +606,86 @@ class _CompletedTasksSectionForOneUserState
       decoration: BoxDecoration(
         color: globalDark ? AppColors.cardColorDark : AppColors.cardColor,
         border: Border.all(
-            color:
-                globalDark ? AppColors.borderColorDark : AppColors.borderColor,
-            width: 0.5),
+          color: globalDark ? AppColors.borderColorDark : AppColors.borderColor,
+          width: 0.5,
+        ),
         borderRadius: BorderRadius.circular(8.0.r),
       ),
       child: BlocBuilder<TasksCubit, TasksStates>(
         builder: (context, state) {
+          final data = TasksCubit.get(context).getUserTaskListWithStatus;
+
           if (state is GetLoadingUserTaskStateForEmpScreens) {
             return AppLottie.loader;
           }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'المهمات المكتملة',
+                AppLocalizations.of(context)!.translate("completed_tasks")
+                ,
                 textAlign: TextAlign.right,
                 style: AppFonts.style16semiBold,
               ),
-              data!.isNotEmpty
+              const SizedBox(height: 10),
+              data != null && data.isNotEmpty
                   ? ListView.separated(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemBuilder: (context, index) => InkWell(
+                      itemCount: data.length,
+                      separatorBuilder: (context, index) => Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Divider(
+                          color: globalDark
+                              ? AppColors.borderColorDark
+                              : AppColors.borderColor,
+                        ),
+                      ),
+                      itemBuilder: (context, index) {
+                        final task = data[index];
+                        return InkWell(
                           onTap: () {
                             Navigator.push(
-                                context,
-                                animatedNavigation(
-                                    screen: TaskDetailsScreen(
-                                  file: data![index].files!.isNotEmpty ||
-                                          data![index].files != null
-                                      ? data![index].files
-                                      : [],
-                                  task_status:
-                                      data![index].task_status.toString(),
-                                  id: data![index].id!.toInt(),
-                                  locationId: data![index].location != null
-                                      ? data![index].location!.id.toString()
-                                      : '10',
-                                  nameTask: data![index].title.toString(),
+                              context,
+                              animatedNavigation(
+                                screen: TaskDetailsScreen(
+                                  file: task.files ?? [],
+                                  task_status: task.task_status.toString(),
+                                  id: task.id!.toInt(),
+                                  locationId:
+                                      task.location?.id?.toString() ?? '10',
+                                  nameTask: task.title.toString(),
                                   nameEmployee:
-                                      '${data![index].assigned_to!.first_name.toString()} ${data![index].assigned_to!.last_name.toString()}',
-                                  nameClient:
-                                      data![index].client_name.toString(),
-                                  phoneClient:
-                                      data![index].client_phone.toString(),
-                                  notes: data![index].notes.toString(),
-                                  address: data![index].location != null
-                                      ? data![index]
-                                          .location!
-                                          .address
-                                          .toString()
-                                      : 'لا يوجد',
-                                  link: data![index].location != null
-                                      ? data![index]
-                                          .location!
-                                          .map_url
-                                          .toString()
-                                      : 'لا يوجد',
-                                  deadline: data![index].due_date.toString(),
-                                  description:
-                                      data![index].description.toString(),
-                                )));
+                                      '${task.assigned_to?['first_name'] ?? ''} ${task.assigned_to?['last_name'] ?? ''}',
+                                  nameClient: task.client_name.toString(),
+                                  phoneClient: task.client_phone.toString(),
+                                  notes: task.notes.toString(),
+                                  address: task.location?.address ?? AppLocalizations.of(context)!.translate("not_available"),
+                                  link: task.location?.map_url ?? AppLocalizations.of(context)!.translate("not_available"),
+                                  deadline: task.due_date.toString(),
+                                  description: task.description.toString(),
+                                ),
+                              ),
+                            );
                           },
                           child: TaskListItem(
                             index: index + 1,
-                            taskName: data![index].title.toString(),
-                            location: data![index].location != null
-                                ? data![index].location!.address.toString()
-                                : 'لا يوجد',
-                            time: data?[index].complete_date?.toString() ?? "",
-                          )),
-                      separatorBuilder: (context, index) => Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                            child: Divider(
-                              color: globalDark
-                                  ? AppColors.borderColorDark
-                                  : AppColors.borderColor,
-                            ),
+                            taskName: task.title.toString(),
+                            location: task.location?.address ?? AppLocalizations.of(context)!.translate("not_available"),
+                            time: task.complete_date?.toString() ?? '',
                           ),
-                      itemCount: data!.length)
-                  : Column(
-                      children: [
-                        SizedBox(
-                          height: 20.h,
+                        );
+                      },
+                    )
+                  : Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.h),
+                      child: Center(
+                        child: Text(
+                       AppLocalizations.of(context)!.translate("no_data"),
+                          style: AppFonts.style12light,
                         ),
-                        Center(
-                            child: Text('لا يوجد بيانات',
-                                style: AppFonts.style12light)),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                      ],
+                      ),
                     ),
             ],
           );
@@ -604,7 +722,7 @@ class _TaskSummarySectionForEmployeeState
         .getUserTaskList!
         .where((task) => task.task_status != 'completed')
         .toList();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -618,7 +736,6 @@ class _TaskSummarySectionForEmployeeState
         .getUserTaskList!
         .where((task) => task.task_status != 'completed')
         .toList();
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
@@ -628,17 +745,17 @@ class _TaskSummarySectionForEmployeeState
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         TaskSummaryCard(
-          title: 'كل المهمات',
+          title: AppLocalizations.of(context)!.translate("all_tasks"),
           count: TasksCubit.get(context).getUserTaskList!.length.toString(),
           color: AppColors.primary,
         ),
         TaskSummaryCard(
-          title: 'مكتمل',
+          title: AppLocalizations.of(context)!.translate('completed'),
           count: widget.completedTasks!.length.toString(),
           color: Colors.green,
         ),
         TaskSummaryCard(
-          title: 'غير مكتمل',
+          title: AppLocalizations.of(context)!.translate('unCompleted'),
           count: widget.uncompletedTasks!.length.toString(),
           color: Colors.red,
         ),
@@ -689,9 +806,9 @@ class EmployeeInfo extends StatelessWidget {
                   style: AppFonts.style16semiBold,
                 ),
                 SizedBox(height: 8.h),
-                _buildRow(label: 'البريد الالكتروني', value: emailLogin),
+                _buildRow(label:AppLocalizations.of(context)!.translate('email'), value: emailLogin),
                 SizedBox(height: 16.h),
-                _buildRow(label: 'كلمة المرور', value: '**********'),
+                _buildRow(label: AppLocalizations.of(context)!.translate('password'), value: '**********'),
                 SizedBox(height: 16.h),
               ],
             ),
@@ -712,16 +829,21 @@ class EmployeeInfo extends StatelessWidget {
                   style: AppFonts.style16semiBold,
                 ),
                 SizedBox(height: 8.h),
-                _buildRow(label: 'الاسم', value: name),
+                _buildRow(label: AppLocalizations.of(context)!.translate("name")
+                    , value: name),
                 SizedBox(height: 16.h),
-                _buildRow(label: 'رقم الهاتف', value: phone1),
+                _buildRow(label: AppLocalizations.of(context)!.translate("phone_number")
+                    , value: phone1),
                 SizedBox(height: 16.h),
-                _buildRow(label: 'رقم الهاتف البديل', value: phone2),
+                _buildRow(label: AppLocalizations.of(context)!.translate("alternative_phone_number")
+                    , value: phone2),
                 SizedBox(height: 16.h),
                 _buildDescription(
-                    label: 'البريد الالكتروني الخاص', value: empEmail),
+                    label: AppLocalizations.of(context)!.translate("personal_email")
+                    , value: empEmail),
                 SizedBox(height: 16.h),
-                _buildDescription(label: 'عنوان الاقامة', value: address),
+                _buildDescription(label: AppLocalizations.of(context)!.translate("residence_address")
+                    , value: address),
               ],
             ),
           ),
@@ -741,31 +863,33 @@ class EmployeeInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "بيانات الشركه",
+                      AppLocalizations.of(context)!.translate("company_info")
+                      ,
                       style: AppFonts.style16semiBold,
                     ),
                     SizedBox(height: 8.h),
                     _buildRow(
-                      label: 'الاسم',
+                      label: AppLocalizations.of(context)!.translate("name"),
                       value: loginInfo?.companies?.name ?? '',
                     ),
                     SizedBox(height: 16.h),
                     _buildRow(
-                      label: 'رقم الهاتف',
+                      label:  AppLocalizations.of(context)!.translate("phone_number"),
                       value: loginInfo?.companies?.whatsapp ?? "",
                     ),
                     SizedBox(height: 16.h),
                     _buildRow(
-                      label: 'رقم الهاتف البديل',
+                      label:AppLocalizations.of(context)!.translate("alternative_phone_number"),
                       value: loginInfo?.companies?.whatsapp ?? "",
                     ),
                     SizedBox(height: 16.h),
                     _buildDescription(
-                      label: 'البريد الالكتروني الخاص',
+                      label:  AppLocalizations.of(context)!.translate("personal_email"),
                       value: loginInfo?.companies?.email ?? '',
                     ),
                     SizedBox(height: 16.h),
-                    _buildDescription(label: 'عنوان الشركه', value: address),
+                    _buildDescription(label: AppLocalizations.of(context)!.translate("company_address")
+                        , value: address),
                   ],
                 ),
               );

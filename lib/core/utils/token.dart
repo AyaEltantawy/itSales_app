@@ -11,7 +11,10 @@ String? resetToken;
 String? token ;
 String? role ;
 String? userId ;
+String? passwordLogin ;
 int? companyId;
+String? passwordAddMain;
+String? idMainUser;
 
 void checkTokenAndShowLoginDialog( context) {
   if (token == null) {

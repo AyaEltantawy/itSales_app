@@ -17,7 +17,6 @@ import 'forget_password_state.dart';
 class ForgetPasswordPage extends StatelessWidget {
   ForgetPasswordPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -37,7 +36,12 @@ class ForgetPasswordPage extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Image.asset("assets/images/xicon.png"),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Image.asset("assets/images/xicon.png"),
+                          ),
                           SizedBox(width: 10.w),
                           Text(
                             "نسيت كلمة السر",
@@ -59,7 +63,9 @@ class ForgetPasswordPage extends StatelessWidget {
                         context,
                         keyboardType: TextInputType.emailAddress,
                         controller: cubit.emailController,
-                        validator: Validators.requiredWithFieldName('البريد الالكتروني').call,
+                        validator: Validators.requiredWithFieldName(
+                                'البريد الالكتروني',context)
+                            .call,
                         prefix: const Icon(AppIcons.email),
                         label: 'اكتب البريد الالكتروني',
                       ),
@@ -67,16 +73,17 @@ class ForgetPasswordPage extends StatelessWidget {
                       state is LoadingForgetPassword
                           ? Center(child: CircularProgressIndicator())
                           : defaultButton(
-                        context: context,
-                        text: "إرسال رمز التأكد",
-                        width: double.infinity,
-                        height: 56.h,
-                        isColor: true,
-                        textSize: 15.sp,
-                       toPage: () {    cubit.forgetPassword(context);},
-                      ),
+                              context: context,
+                              text: "إرسال رمز التأكد",
+                              width: double.infinity,
+                              height: 56.h,
+                              isColor: true,
+                              textSize: 15.sp,
+                              toPage: () {
+                                cubit.forgetPassword(context);
+                              },
+                            ),
                       SizedBox(height: 25.h),
-
                     ],
                   ),
                 ),

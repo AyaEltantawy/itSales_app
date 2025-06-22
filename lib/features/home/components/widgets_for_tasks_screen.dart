@@ -9,6 +9,8 @@ import 'package:svg_flutter/svg.dart';
 
 import '../../../core/app/app.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/localization/app_localizations.dart';
+import '../../../core/routes/magic_router.dart';
 import '../../../core/utils/token.dart';
 import '../dialogs/product_filters_dialog.dart';
 
@@ -190,7 +192,9 @@ Widget buildTaskList() {
       SizedBox(height: 24.h),
       _buildTaskCard(
         statusColor: const Color(0xffccd8e6),
-        statusText: 'نشط',
+
+
+        statusText:  AppLocalizations.of(MagicRouter.currentContext!)!.translate("active"),
         taskDate: 'تاريخ الانشاء\n2024-05-01 10:50 Pm',
       ),
       SizedBox(height: 24.h),

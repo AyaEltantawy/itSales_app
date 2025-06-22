@@ -5,7 +5,6 @@ import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
-
 import '../../core/app/app.dart';
 import '../../core/components/default_app_bar.dart';
 import '../../core/constants/app_animation.dart';
@@ -27,9 +26,11 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
-    TasksCubit.get(context).getNotificationForOneUserFun();
-    // TODO: implement initState
     super.initState();
+    final cubit = TasksCubit.get(context);
+    cubit.getNotificationForOneUserFun().then((_) {
+      cubit.updateNotifications();
+    });
   }
 
   @override
@@ -51,7 +52,6 @@ class _NotificationPageState extends State<NotificationPage> {
                   ],
                 );
               }
-
               return Column(
                 children: [
                   SizedBox(height: 10.h),

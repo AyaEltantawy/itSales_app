@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/app/app.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/localization/app_localizations.dart';
 
 class ContactOptionsCard extends StatelessWidget {
   final String phone1;
@@ -38,7 +39,8 @@ class ContactOptionsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'تواصل مع الموظف',
+              AppLocalizations.of(context)!.translate("contact_employee")
+              ,
               style: AppFonts.style16semiBold,
             ),
             SizedBox(height: 12.h),
@@ -47,23 +49,26 @@ class ContactOptionsCard extends StatelessWidget {
                 Expanded(child: InkWell(
                     onTap: ()
                     {
-                      phone1 != 'لا يوجد' ?  launchUrl(Uri(
+                      phone1 != AppLocalizations.of(context)!.translate("not_available")
+                          ?  launchUrl(Uri(
                         scheme: 'tel',
                         path: phone1,
                       )) : Container();
                     },
-                    child: _buildContactButton('تواصل',  phone1, Colors.blue, Colors.blueAccent,Icons.local_phone_outlined))),
+                    child: _buildContactButton(AppLocalizations.of(context)!.translate("contact")
+                        ,  phone1, Colors.blue, Colors.blueAccent,Icons.local_phone_outlined))),
                 SizedBox(width: 12.w), // Horizontal space between buttons
                 Expanded(child: InkWell(
     onTap: ()
     {
-      whatsapp != 'لا يوجد'  ? launchUrl(Uri(
+      whatsapp != AppLocalizations.of(context)!.translate("not_available") ? launchUrl(Uri(
     scheme: 'tel',
     path: whatsapp,
     ))  :Container();
     },
 
-                  child: _buildContactButton('واتساب', whatsapp,
+                  child: _buildContactButton(AppLocalizations.of(context)!.translate("whatsapp")
+                    , whatsapp,
                     Colors.green, Colors.green,  null ,
                     SvgPicture.asset(AppIcons.whatsAap,height: 22.h,),),
                 )),
@@ -75,23 +80,24 @@ class ContactOptionsCard extends StatelessWidget {
                 Expanded(child: InkWell(
                     onTap: ()
                     {
-                      phone2 != 'لا يوجد' ? launchUrl(Uri(
+                      phone2 !=AppLocalizations.of(context)!.translate("not_available") ? launchUrl(Uri(
                         scheme: 'tel',
                         path: phone2,
                       )) : Container();
                     },
-                    child: _buildContactButton('هاتف بديل',  phone2, Colors.blue, Colors.blueAccent,Icons.local_phone_outlined,))),
+                    child: _buildContactButton(AppLocalizations.of(context)!.translate("alternative_phone")
+                      ,  phone2, Colors.blue, Colors.blueAccent,Icons.local_phone_outlined,))),
                 SizedBox(width: 12.w), // Horizontal space between buttons
 
                 Expanded(child: InkWell(
                     onTap: ()
                     {
-                      empEmail != 'لا يوجد' ?  launchUrl(Uri(
+                      empEmail != AppLocalizations.of(context)!.translate("not_available")?  launchUrl(Uri(
                         scheme: 'mailto',
                         path: empEmail,
                       )) : Container();
                     },
-                    child: _buildContactButton('بريد إلكتروني', empEmail, Colors.orange, Colors.orangeAccent,  Icons.email,))),
+                    child: _buildContactButton(AppLocalizations.of(context)!.translate("email"), empEmail, Colors.orange, Colors.orangeAccent,  Icons.email,))),
               ],
             ),
           ],

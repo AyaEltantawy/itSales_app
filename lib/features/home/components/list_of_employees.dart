@@ -10,9 +10,18 @@ import '../../../core/app/app.dart';
 import '../../../core/components/back_and_forward_arrows.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_defaults.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../data/cubit.dart';
 
-Widget buildEmployeeListItem(DataUser user) {
+bool hasValidAvatar(DataUser user) {
+  print('Avatar URL: ${user.avatar?.data?.full_url}');
+
+  return user.avatar != null &&
+      user.avatar!.data?.full_url != null &&
+      user.avatar!.data!.full_url!.isNotEmpty;
+}
+
+Widget buildEmployeeListItem(DataUser user, VoidCallback onTapTele,BuildContext context) {
   return Container(
     width: 344.w,
     padding: const EdgeInsets.all(AppDefaults.padding / 5),
@@ -27,29 +36,23 @@ Widget buildEmployeeListItem(DataUser user) {
       children: [
         Padding(
           padding: EdgeInsets.only(right: 8.0.h),
-          child: user.avatar != null
-              ? Container(
-                  height: 42.h,
-                  width: 42.w,
-                  decoration: BoxDecoration(
-                    //  color: AppColors.lightGreenColor,
-                    borderRadius: BorderRadius.circular(5.r),
+          child: Container(
+            height: 42.h,
+            width: 42.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: hasValidAvatar(user)
+                ? NetworkImageWithLoader(user.avatar!.data!.full_url!)
+                : Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.lightGreenColor,
+                      borderRadius: BorderRadius.circular(5.r),
+                    ),
                   ),
-                  child: NetworkImageWithLoader(
-                      user.avatar!.data!.full_url.toString()),
-                )
-              : Container(
-                  height: 42.h,
-                  width: 42.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.lightGreenColor,
-                    borderRadius: BorderRadius.circular(5.r),
-                  ),
-                ),
+          ),
         ),
-        SizedBox(
-          width: 10.w,
-        ),
+        SizedBox(width: 10.w),
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
@@ -57,8 +60,7 @@ Widget buildEmployeeListItem(DataUser user) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ' ${user.first_name.toString()} ${user.last_name.toString()}',
-                  //  'هنا اسم الموظف',
+                  '${user.first_name} ${user.last_name}',
                   style: AppFonts.style16semiBold,
                 ),
                 Text(
@@ -67,30 +69,24 @@ Widget buildEmployeeListItem(DataUser user) {
                   textAlign: TextAlign.right,
                 ),
                 Text(
-                  user.role == 3 ? 'موظف' : 'مدير',
+                  (user.role is int ? user.role == 3 : user.role?['id'] == 3) ?  AppLocalizations.of(context)!.translate('employee') : AppLocalizations.of(context)!.translate('manager'),
                   style: AppFonts.style12light,
                   textAlign: TextAlign.right,
                 ),
+
               ],
             ),
           ),
         ),
         InkWell(
-          onTap: () async {
-            await launchUrl(Uri(
-              scheme: 'tel',
-              path: user.employee_info![0].phone_1.toString(),
-            ));
-          },
+          onTap: onTapTele,
           child: Padding(
             padding: EdgeInsets.all(8.w),
             child: Container(
               height: 40.h,
               width: 40.w,
               decoration: BoxDecoration(
-                // color: AppColors.lightGreenColor,
                 color: AppColors.success.withOpacity(0.1),
-                // border: Border.all(color: globalDark ? AppColors.borderColorDark : AppColors.borderColor, width: 0.5),
                 borderRadius: BorderRadius.circular(5.r),
               ),
               child: Icon(
@@ -110,10 +106,9 @@ Widget buildEmployeeListItem(DataUser user) {
   );
 }
 
-Widget buildAdminsListItem(DataUser user) {
+Widget buildAdminsListItem(DataUser user,BuildContext context) {
   return Container(
     width: 344.w,
-    // height: 65.h,
     decoration: BoxDecoration(
       color: AppColors.textWhite,
       borderRadius: BorderRadius.circular(5.r),
@@ -123,29 +118,23 @@ Widget buildAdminsListItem(DataUser user) {
       children: [
         Padding(
           padding: EdgeInsets.only(right: 8.0.h),
-          child: user.avatar != null
-              ? Container(
-                  height: 42.h,
-                  width: 42.w,
-                  decoration: BoxDecoration(
-                    //  color: AppColors.lightGreenColor,
-                    borderRadius: BorderRadius.circular(5.r),
+          child: Container(
+            height: 42.h,
+            width: 42.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: hasValidAvatar(user)
+                ? NetworkImageWithLoader(user.avatar!.data!.full_url!)
+                : Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.lightGreenColor,
+                      borderRadius: BorderRadius.circular(5.r),
+                    ),
                   ),
-                  child: NetworkImageWithLoader(
-                      user.avatar!.data!.full_url.toString()),
-                )
-              : Container(
-                  height: 42.h,
-                  width: 42.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.lightGreenColor,
-                    borderRadius: BorderRadius.circular(5.r),
-                  ),
-                ),
+          ),
         ),
-        SizedBox(
-          width: 10.w,
-        ),
+        SizedBox(width: 10.w),
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
@@ -153,8 +142,7 @@ Widget buildAdminsListItem(DataUser user) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ' ${user.first_name.toString()} ${user.last_name.toString()} ${user.id.toString()}',
-                  //  'هنا اسم الموظف',
+                  '${user.first_name} ${user.last_name} ${user.id}',
                   style: AppFonts.style16semiBold,
                 ),
                 Text(
@@ -163,7 +151,7 @@ Widget buildAdminsListItem(DataUser user) {
                   textAlign: TextAlign.right,
                 ),
                 Text(
-                  user.role!.id == 3 ? 'موظف' : 'مدير',
+                  user.role?.id == 3 ?  AppLocalizations.of(context)!.translate('employee'): AppLocalizations.of(context)!.translate('manager'),
                   style: AppFonts.style12light,
                   textAlign: TextAlign.right,
                 ),

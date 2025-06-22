@@ -1,23 +1,23 @@
 import 'dart:io';
-import 'dart:math';
-import 'package:itsale/core/constants/constants.dart';
-import 'package:itsale/core/routes/app_routes.dart';
-import 'package:itsale/core/routes/magic_router.dart';
-import 'package:itsale/main.dart';
-import 'package:path/path.dart';
-import 'package:intl/src/intl/date_format.dart';
-import 'package:bloc/bloc.dart';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:intl/src/intl/date_format.dart';
+import 'package:itsale/core/constants/constants.dart';
+import 'package:itsale/core/routes/app_routes.dart';
+import 'package:itsale/core/routes/magic_router.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/Tasks_Screens/data/models/notifications_model.dart';
 import 'package:itsale/features/auth/data/repo.dart';
+import 'package:path/path.dart';
+
+import '../../../../core/dio_helper.dart';
 import '../../../../core/utils/snack_bar.dart';
 import '../../../../core/utils/token.dart';
-
 import '../models/get_task_model.dart';
 
 class TasksCubit extends Cubit<TasksStates> {
@@ -30,6 +30,7 @@ class TasksCubit extends Cubit<TasksStates> {
   List<DataUserTask>? getUserTaskList = [];
   List<DataUserTask>? getUserTaskListWithStatus = [];
   List<DataUserTask>? data;
+  int newNotificationCount = 0;
 
   getUserTaskFun({
     required String userId,
@@ -61,7 +62,6 @@ class TasksCubit extends Cubit<TasksStates> {
           emit(GetSuccessUserTaskState());
         }
       }).catchError((error, stackTrace) async {
-        // Enhanced error logging with stack trace
         debugPrint('Error in getUserTaskFun: $error');
         debugPrint('Stack trace:\n$stackTrace');
 
@@ -76,6 +76,9 @@ class TasksCubit extends Cubit<TasksStates> {
       });
     }
   }
+
+  var value;
+  final AudioPlayer _player = AudioPlayer();
 
   Future<void> addTaskFun({
     required String status,
@@ -116,7 +119,7 @@ class TasksCubit extends Cubit<TasksStates> {
           company: company,
           location: location);
 
-      final value = await repo.addTask(taskRequest);
+      value = await repo.addTask(taskRequest);
 
       emit(AddSuccessUserTaskState());
 
@@ -136,13 +139,14 @@ class TasksCubit extends Cubit<TasksStates> {
         taskId: value.data!.id.toString(),
       );
 
-      // Send notification
       await postNotificationFun(
-        isRead: true,
+        isRead: false,
         message: 'راجع مهماتك الواردة: ${value.data!.title}',
         title: 'هناك مهمة جديدة',
         user: assigned_to.toString(),
       );
+      getNotificationForOneUserFun();
+
       final context = MagicRouter.currentContext;
       if (context != null) {
         navigateTo(context, AppRoutes.tasks_screen_for_employee);
@@ -196,7 +200,7 @@ class TasksCubit extends Cubit<TasksStates> {
                 assigned_to: assigned_to,
                 cancelled_date: cancelled_date,
                 client_name: client_name,
-                complete_date: complete_date ?? '2024-11-18',
+                complete_date: complete_date,
                 due_date: due_date,
                 location: locationId,
                 priority: priority,
@@ -213,15 +217,15 @@ class TasksCubit extends Cubit<TasksStates> {
             isRead: false,
             message: ' تم استلام المهمة  ${title.toString()}',
             title: 'راجع المهمات',
-            user: value.data!.owner!.id!.toInt());
+            user: value.data!.owner!);
       } else if (value.data!.task_status == 'completed') {
         postNotificationFun(
             isRead: false,
             message: ' تم اكتمال المهمة  ${title.toString()}',
             title: 'راجع المهمات',
-            user: value.data!.owner!.id!.toInt());
+            user: value.data!.owner!);
       }
-    }).catchError((onError) async {
+    }).catchError((onError, stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
           MagicRouter.currentContext!,
@@ -236,6 +240,7 @@ class TasksCubit extends Cubit<TasksStates> {
         getAllTasksFun();
       }
       debugPrint('error edit task ${onError.toString()}');
+      print("stackTrace$stackTrace");
     });
   }
 
@@ -292,15 +297,82 @@ class TasksCubit extends Cubit<TasksStates> {
     }
   }
 
-  Future<void> getAllTasksFunWithFilter({
+  Future<void> getUserTasksWithSearchFilter({
+    required String userId,
     String? status,
     String? date,
-    String? employee,
     String? location,
     String? sort,
-    String? text,
-    String? textEmp,
+    String? searchText,
   }) async {
+    getTaskListForOneUserSearch = [];
+
+    final hasInternet = await InternetConnectionChecker().hasConnection;
+    if (!hasInternet) {
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+      }
+      emit(NoInternetState());
+      return;
+    }
+
+    emit(GetLoadingSearchTaskFilterState());
+
+    Map<String, dynamic> queryParams = {
+      'filter[company]': companyId,
+      'filter[assigned_to.id][eq]': userId,
+      'fields': '*.*',
+    };
+
+    if (status != null) {
+      queryParams['filter[task_status][eq]'] = status;
+    }
+
+    if (date != null) {
+      queryParams['filter[created_on][contains]'] = date;
+    }
+
+    if (location != null) {
+      queryParams['filter[loc.address][eq]'] = location;
+    }
+
+    if (sort != null) {
+      queryParams['sort'] = '-$sort';
+    }
+
+    if (searchText != null && searchText.isNotEmpty) {
+      queryParams['q'] = searchText;
+    }
+
+    try {
+      final value = await repo.getAllTasks(queryParams);
+      getTaskListForOneUserSearch = value.data;
+      emit(GetSuccessSearchTaskFilterState());
+    } catch (onError, stackTrace) {
+      if (!await InternetConnectionChecker().hasConnection) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالانترنت',
+        );
+        emit(NoInternetState());
+      } else {
+        emit(GetErrorSearchTaskFilterState());
+        debugPrint('Error: ${onError.toString()}');
+        print("stackTrace$stackTrace");
+      }
+    }
+  }
+
+  Future<void> getAllTasksFunWithFilter(
+      {String? status,
+      String? date,
+      String? employee,
+      String? location,
+      String? sort,
+      String? text,
+      String? textEmp,
+      String? search}) async {
     getUserTaskList = [];
 
     final hasInternet = await InternetConnectionChecker().hasConnection;
@@ -333,7 +405,7 @@ class TasksCubit extends Cubit<TasksStates> {
       queryParams['filter[assigned_to.id][eq]'] = employee;
     }
     if (location != null) {
-      queryParams['filter[location.address][eq]'] = location;
+      queryParams['filter[loc.address][eq]'] = location;
     }
     if (sort != null) {
       queryParams['sort'] = '-$sort';
@@ -369,7 +441,7 @@ class TasksCubit extends Cubit<TasksStates> {
       if (sort != null && employee != null) {
         getLastTaskListForOneUser = value.data;
       }
-    } catch (onError) {
+    } catch (onError, stackTrace) {
       if (!await InternetConnectionChecker().hasConnection) {
         Utils.showSnackBar(
           MagicRouter.currentContext!,
@@ -383,11 +455,10 @@ class TasksCubit extends Cubit<TasksStates> {
           emit(GetErrorAllTaskFilterState());
         }
         debugPrint('Error: ${onError.toString()}');
+        print("stackTrace$stackTrace");
       }
     }
   }
-
-  /// notification
 
   List<DataNotificationUser>? getNotificationsList = [];
 
@@ -404,6 +475,10 @@ class TasksCubit extends Cubit<TasksStates> {
 
       await repo.getAllNotifications().then((value) {
         getNotificationsList = value.data;
+        newNotificationCount = getNotificationsForOneUserList
+                ?.where((notification) => notification.is_read == false)
+                .length ??
+            0;
 
         emit(GetSuccessAllNotificationState());
       }).catchError((onError, stackTrace) async {
@@ -422,14 +497,79 @@ class TasksCubit extends Cubit<TasksStates> {
     }
   }
 
+  void updateNotificationCount(getNotificationsList) {
+    print("🔍 updateNotificationCount called");
+
+    try {
+      final currentUserIdInt = int.parse(userId.toString());
+      final previousCount = newNotificationCount;
+      print("📦 previousCount = $previousCount");
+
+      newNotificationCount = getNotificationsForOneUserList!.where((n) {
+        print(
+            '🔔 Checking notification: user=${n.user.runtimeType}=${n.user}, is_read=${n.is_read}');
+        return n.is_read != true && n.user == currentUserIdInt;
+      }).length;
+      print('📢 Unread notifications count: $newNotificationCount');
+      print("📦 newNotificationCount = $newNotificationCount");
+      if (newNotificationCount > previousCount - 1 &&
+          newNotificationCount != 0 &&
+          previousCount != 0) {
+        try {
+          _player.play(AssetSource('sounds/bell-notification-337658.mp3'));
+
+          print("🔊 Sound played successfully");
+        } catch (e) {
+          print("🔴 Failed to play sound: $e");
+        }
+      }
+
+      emit(NewNotificationState());
+    } catch (e, stacktrace) {
+      print("❌ updateNotificationCount failed: $e");
+      print(stacktrace);
+    }
+  }
+
+  void markAllNotificationsAsReadLocally() {
+    if (getNotificationsList == null || getNotificationsList!.isEmpty) {
+      print('No notifications to mark as read.');
+
+      emit(GetSuccessUserNotificationState());
+      return;
+    }
+
+    bool anyChanged = false;
+    for (var notification in getNotificationsList!) {
+      if (notification.is_read == false) {
+        notification.is_read = true;
+        anyChanged = true;
+      }
+    }
+
+    if (!anyChanged) {
+      print('All notifications were already marked as read.');
+      emit(GetSuccessUserNotificationState());
+      return;
+    }
+
+    newNotificationCount = 0;
+    emit(GetSuccessUserNotificationState());
+
+    print('All notifications marked as read locally, UI updated.');
+  }
+
   List<DataNotificationUser>? getNotificationsForOneUserList = [];
 
   getNotificationForOneUserFun() async {
     if (await InternetConnectionChecker().hasConnection == false) {
-      Utils.showSnackBar(
-        MagicRouter.currentContext!,
-        'أنت غير متصل بالانترنت',
-      );
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(
+          context,
+          'أنت غير متصل بالانترنت',
+        );
+      }
 
       emit(NoInternetState());
     } else {
@@ -438,8 +578,14 @@ class TasksCubit extends Cubit<TasksStates> {
       await repo.getNotificationsForOneUser(userId.toString()).then((value) {
         getNotificationsForOneUserList = value.data;
         getNotificationsList = value.data;
+        newNotificationCount = getNotificationsList
+                ?.where((notification) => notification.is_read == false)
+                .length ??
+            0;
 
         emit(GetSuccessUserNotificationState());
+
+        updateNotificationCount(getNotificationsList);
       }).catchError((onError) async {
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
@@ -456,15 +602,11 @@ class TasksCubit extends Cubit<TasksStates> {
     }
   }
 
-  int newNotificationCount = 0;
-
-  /// Call this after you successfully post a notification
   void notifyNew() {
     newNotificationCount = 1;
     emit(NewNotificationState());
   }
 
-  /// Call this when user opens notifications screen
   void clearNotificationBadge() {
     newNotificationCount = 0;
     emit(ClearNotificationState());
@@ -488,7 +630,8 @@ class TasksCubit extends Cubit<TasksStates> {
     ))
         .then((value) {
       emit(PostSuccessAllNotificationState());
-      notifyNew();
+
+      getNotificationForOneUserFun();
     }).catchError((onError, stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
@@ -532,19 +675,6 @@ class TasksCubit extends Cubit<TasksStates> {
     ))
         .then((value) {
       emit(PostSuccessLocationState());
-      // editTaskFun(
-      //     status: 'published',
-      //     taskId: taskId,
-      //     title: title,
-      //     description: description,
-      //     client_phone: client_phone,
-      //     notes: notes,
-      //     assigned_to: assigned_to,
-      //     client_name: client_name,
-      //     due_date: due_date,
-      //     priority: priority,
-      //     task_status: task_status,
-      //     locationId: value.data?.id);
     }).catchError((onError, stackTrace) async {
       if (await InternetConnectionChecker().hasConnection == false) {
         Utils.showSnackBar(
@@ -636,9 +766,7 @@ class TasksCubit extends Cubit<TasksStates> {
     required String client_phone,
     required String notes,
     required int assigned_to,
-//  required String cancelled_date,
     required String client_name,
-    // required String complete_date,
     required String due_date,
     required String task_status,
   }) async {
@@ -663,14 +791,9 @@ class TasksCubit extends Cubit<TasksStates> {
           taskId: taskId,
           address: address,
           map_url: map_url,
-          // complete_date: complete_date,
-          //  cancelled_date: cancelled_date,
           assigned_to: assigned_to,
-
           client_name: client_name,
-
           due_date: due_date,
-
           task_status: task_status,
         );
       }).catchError((onError) async {
@@ -740,5 +863,34 @@ class TasksCubit extends Cubit<TasksStates> {
       print("Error during file upload: $e");
     }
     return idFiles;
+  }
+
+  Future<void> updateNotifications() async {
+    emit(UpdateNotificationsLoading());
+
+    try {
+      for (var notification in getNotificationsForOneUserList ?? []) {
+        if (notification.is_read == false || notification.is_read == null) {
+          final body = {"is_read": true};
+
+          final response = await DioHelper.patch(
+            "items/notifications/${notification.id}",
+            true,
+            body: body,
+          );
+
+          print("Marked as read: ${notification.id} => ${response.data}");
+        }
+      }
+
+      newNotificationCount = 0;
+      emit(UpdateNotificationsSuccess());
+
+      print('Update notifications completed successfully.');
+    } catch (e, stacktrace) {
+      print('Error updating notifications: $e');
+      print(stacktrace);
+      emit(UpdateNotificationsError());
+    }
   }
 }

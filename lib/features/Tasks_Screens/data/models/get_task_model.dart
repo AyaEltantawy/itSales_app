@@ -249,6 +249,8 @@ class DataAllTasks {
   dynamic? files;
   dynamic? company;
   List<Loc>? loc;
+  dynamic? avatar;
+
 
 
   DataAllTasks({
@@ -274,7 +276,8 @@ class DataAllTasks {
     this.cancelled_date,
     this.files,
     this.company,
-    this.loc
+    this.loc,
+    this.avatar
   });
 
   factory DataAllTasks.fromJson(Map<String, dynamic> json) {
@@ -308,7 +311,7 @@ class DataAllTasks {
       loc: json['loc'] != null
           ? (json['loc'] as List).map((e) => Loc.fromJson(e)).toList()
           : null,
-
+avatar: json['avatar']
 
     );
   }
@@ -330,7 +333,7 @@ class DataAllTasks {
       'client_phone': client_phone,
       'notes': notes,
       'loc': loc != null ? loc!.map((e) => e.toJson()).toList() : null,
-
+'avatar':avatar,
       'task_status': task_status,
       'priority': priority,
       'start_date': start_date,

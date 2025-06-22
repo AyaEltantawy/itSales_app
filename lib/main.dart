@@ -25,20 +25,23 @@ Future<void> main() async {
     await getInit();
     sharedPreferences = await SharedPreferences.getInstance();
     await CacheHelper.init();
-    resetToken=CacheHelper.getData(key: "reset_token");
+    resetToken = CacheHelper.getData(key: "reset_token");
     token = CacheHelper.getData(key: 'token');
     role = CacheHelper.getData(key: 'role');
     userId = CacheHelper.getData(key: 'userId');
     globalDark = CacheHelper.getData(key: 'isDark') ?? false;
     companyId = CacheHelper.getData(key: 'company_id');
+    passwordLogin = CacheHelper.getData(key: 'password');
+    idMainUser = CacheHelper.getData(key: 'id_user');
+    passwordAddMain = CacheHelper.getData(key: 'password_add_$idMainUser');
 
+    print("passMainLogin$passwordLogin");
     final defaultLocale = sharedPreferences?.getString('lang') ?? 'ar';
 
     runApp(
       RestartWidget(
         child: MyApp(
           defaultLocale: defaultLocale,
-
         ),
       ),
     );

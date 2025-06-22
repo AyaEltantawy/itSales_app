@@ -7,6 +7,7 @@ import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/auth/screens/choose_login_or_sign_up/widgets/choose_container.dart';
 
 import '../../../../core/constants/app_images.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/themes/styles.dart';
 import '../../data/cubit.dart' show AppCubit;
 import 'choose_login_or_sign_up_cubit.dart';
@@ -44,7 +45,8 @@ class ChooseLoginOrSignUpPage extends StatelessWidget {
                 height: 20.h,
               ),
               Text(
-                "مرحبا بك",
+                AppLocalizations.of(context)!.translate("welcome_message"),
+
                 style: TextStyles.font25WeightBoldBlack,
                 textAlign: TextAlign.center,
               ),
@@ -60,7 +62,8 @@ class ChooseLoginOrSignUpPage extends StatelessWidget {
                       defaultButton(
                         width: double.infinity,
                         height: 56.h,
-                        text: "تسجيل الدخول",
+                        text: AppLocalizations.of(context)!.translate("login")
+                        ,
                         textSize: 15.sp,
                         isColor: true,
                         context: context,
@@ -73,7 +76,8 @@ class ChooseLoginOrSignUpPage extends StatelessWidget {
                       ),
                       defaultButton(
                           context: context,
-                          text: "انشاء حساب جديد",
+                          text:AppLocalizations.of(context)!.translate("register")
+                          ,
                           width: double.infinity,
                           height: 56.h,
                           isColor: true,

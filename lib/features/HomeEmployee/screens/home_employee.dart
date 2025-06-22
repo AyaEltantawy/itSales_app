@@ -46,13 +46,12 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
   void initState() {
     super.initState();
     TasksCubit.get(context).clearNotificationBadge();
-    // also fetch actual notifications list
     TasksCubit.get(context).getNotificationForOneUserFun();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final id = CacheHelper.getData(key: 'company_id');
       final role = CacheHelper.getData(
-          key: 'role'); // make sure you get it from cache if needed
+          key: 'role');
 
       debugPrint('Fetched companyId: $id (type: ${id.runtimeType})');
       debugPrint('Fetched role: $role (type: ${role.runtimeType})');
@@ -130,9 +129,16 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                         title: '',
                         actions: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(AppLocalizations.of(context)!
-                                  .translate("main_page")),
+                              Text(
+                                style: TextStyles.font20Weight500BaseBlack,
+                                AppLocalizations.of(context)!
+                                    .translate("main_page"),
+                              ),
+                              SizedBox(
+                                width: 148.w,
+                              ),
                               BlocBuilder<TasksCubit, TasksStates>(
                                 buildWhen: (previous, current) =>
                                     current is NewNotificationState ||
@@ -142,27 +148,35 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                                       .newNotificationCount;
 
                                   return InkWell(
-                                    onTap: () {
-                                      navigateTo(
-                                              context, AppRoutes.notifications)
-                                          .then((_) {
-                                        // Clear badge when page is opened
-                                        TasksCubit.get(context)
-                                            .clearNotificationBadge();
-                                      });
+                                    onTap: () async {
+                                      await navigateTo(
+                                          context, AppRoutes.notifications);
+                                      // Clear badge when returning
+                                      TasksCubit.get(context)
+                                          .clearNotificationBadge();
                                     },
                                     child: badges.Badge(
                                       position: badges.BadgePosition.topEnd(
-                                          top: -25, end: 10),
+                                          top: -10, end: -6),
                                       showBadge: count > 0,
                                       badgeContent: Text(
-                                        "$count",
+                                        '$count',
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
-                                            color: Colors.white, fontSize: 12),
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      child:
-                                          Image.asset("assets/images/bell.png"),
+                                      badgeStyle: const badges.BadgeStyle(
+                                        badgeColor: Colors.red,
+                                        padding: EdgeInsets.all(6),
+                                      ),
+                                      child: Image.asset(
+                                        "assets/images/bell.png",
+                                        width: 28,
+                                        height: 28,
+                                      ),
                                     ),
                                   );
                                 },
@@ -223,7 +237,8 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                                       uncompletedTasksForUser:
                                           uncompletedTasksForUser,
                                     )
-                                  : const Center(child: Text("لا يوجد مهمة"));
+                                  :  Center(child: Text(AppLocalizations.of(context)!.translate("no_tasks")
+                              ));
                             },
                           ),
                           SizedBox(height: 20.h),
@@ -320,7 +335,6 @@ class _TaskSummarySectionState extends State<TaskSummarySection> {
         .getUserTaskList!
         .where((task) => task.task_status != 'completed')
         .toList();
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
@@ -427,7 +441,7 @@ class ChartsSection extends StatelessWidget {
             textAlign: TextAlign.right,
           ),
           // TasksCubit.get(context).getAllTaskListFilter!.isNotEmpty
-          ReportChart()
+          const ReportChart()
           //   : Column(
           // children: [
           //   SizedBox(height: 20.h),
@@ -468,8 +482,9 @@ class SimpleBarChart extends StatelessWidget {
       ),
     );
   }
-}
 
+
+}
 class CompletedTasksSection extends StatelessWidget {
   const CompletedTasksSection({super.key, required this.data});
 
@@ -477,92 +492,97 @@ class CompletedTasksSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allTasks = TasksCubit.get(context).getAllTaskList ?? [];
+    final userTasks = TasksCubit.get(context).getUserTaskList ?? [];
+
+    final List completedTasks = role == "3"
+        ? userTasks.where((e) => e.task_status?.toString().toLowerCase() == 'completed').toList()
+        : allTasks.where((e) => e.task_status?.toString().toLowerCase() == 'completed').toList();
+
+
+    print("✅ Filtered completed tasks length: ${completedTasks.length}");
     return Container(
       padding: const EdgeInsets.all(AppDefaults.padding),
       decoration: BoxDecoration(
         color: globalDark ? AppColors.cardColorDark : AppColors.cardColor,
         border: Border.all(
-            color:
-                globalDark ? AppColors.borderColorDark : AppColors.borderColor,
-            width: 0.5),
+          color: globalDark ? AppColors.borderColorDark : AppColors.borderColor,
+          width: 0.5,
+        ),
         borderRadius: BorderRadius.circular(8.0.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Text(
             AppLocalizations.of(context)!.translate("completed_tasks"),
             textAlign: TextAlign.right,
             style: AppFonts.style16semiBold,
           ),
-          data!.isNotEmpty
+          completedTasks.isNotEmpty
               ? ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              animatedNavigation(
-                                  screen: TaskDetailsScreen(
-                                file: data![index].files!.isNotEmpty ||
-                                        data![index].files != null
-                                    ? data![index].files
-                                    : [],
-                                task_status:
-                                    data![index].task_status.toString(),
-                                id: data![index].id!.toInt(),
-                                locationId: data![index].location != null
-                                    ? data![index].location!.toString()
-                                    : '10',
-                                nameTask: data![index].title.toString(),
-                                nameEmployee:
-                                    '${data![index].assigned_to!.first_name.toString()} ${data![index].assigned_to!.last_name.toString()}',
-                                nameClient: data![index].client_name.toString(),
-                                phoneClient:
-                                    data![index].client_phone.toString(),
-                                notes: data![index].notes.toString(),
-                                address: data![index].location != null
-                                    ? data![index].location!.toString()
-                                    : 'لا يوجد',
-                                link: data![index].location != null
-                                    ? data![index].location!.toString()
-                                    : 'لا يوجد',
-                                deadline: data![index].due_date.toString(),
-                                description:
-                                    data![index].description.toString(),
-                              )));
-                        },
-                        child: TaskListItem(
-                            index: index + 1,
-                            taskName: data![index].title.toString(),
-                            location: data![index].location != null
-                                ? data![index].location!.toString()
-                                : 'لا يوجد',
-                            time: data![index].complete_date!.toString()),
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: completedTasks.length,
+            itemBuilder: (context, index) {
+              final  task = completedTasks[index];
+
+
+              return InkWell(
+                onTap: () {print("y${data!.length}");
+                  Navigator.push(
+                    context,
+                    animatedNavigation(
+                      screen: TaskDetailsScreen(
+                        file: task.files?.isNotEmpty == true ? task.files : [],
+                        task_status: task.task_status.toString(),
+                        id: task.id!.toInt(),
+                        locationId: task.loc != null ? task.loc!.toString() : '10',
+                        nameTask: task.title.toString(),
+                        nameEmployee: '${task.assigned_to.first_name?? ''} ${task.assigned_to?.last_name ?? ''}',
+                        nameClient: task.client_name.toString(),
+                        phoneClient: task.client_phone.toString(),
+                        notes: task.notes.toString(),
+                        address: task.loc != null && task.loc!.isNotEmpty
+                            ? task.loc![0].address.toString()
+                            : AppLocalizations.of(context)!.translate("not_available"),
+                        link: task.loc?[0].mapUrl.toString() ?? AppLocalizations.of(context)!.translate("not_available"),
+                        deadline: task.due_date.toString(),
+                        description: task.description.toString(),
                       ),
-                  separatorBuilder: (context, index) => Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Divider(
-                          color: globalDark
-                              ? AppColors.borderColorDark
-                              : AppColors.borderColor,
-                        ),
-                      ),
-                  itemCount: data!.length)
-              : Column(
-                  children: [
-                    SizedBox(
-                      height: 20.h,
                     ),
-                    Center(
-                        child: Text("لا يوجد بيانات",
-                            style: AppFonts.style12light)),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                  ],
+                  );
+                },
+                child: TaskListItem(
+                  index: index + 1,
+                  taskName: task.title.toString(),
+                  location: task.loc != null && task.loc!.isNotEmpty
+                      ? task.loc![0].address.toString()
+                      :AppLocalizations.of(context)!.translate("not_available"),
+                  time: task.complete_date?.toString() ?? 'غير محدد',
                 ),
+              );
+            },
+            separatorBuilder: (context, index) => Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Divider(
+                color: globalDark
+                    ? AppColors.borderColorDark
+                    : AppColors.borderColor,
+              ),
+            ),
+          )
+              : Column(
+            children: [
+              SizedBox(height: 20.h),
+              Center(
+                child: Text(AppLocalizations.of(context)!.translate("no_data")
+                    , style: AppFonts.style12light),
+              ),
+              SizedBox(height: 20.h),
+            ],
+          ),
         ],
       ),
     );

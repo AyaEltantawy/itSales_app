@@ -22,9 +22,13 @@ import '../../home/components/widgets_for_tasks_screen.dart';
 import '../../home/data/cubit.dart';
 import '../components/widget_of_tasks_grid.dart';
 import '../data/models/get_task_model.dart' show AssignedTo;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TasksScreenForEmployee extends StatefulWidget {
-  TasksScreenForEmployee({super.key, required this.back, this.task});
+  const TasksScreenForEmployee({super.key, required this.back, this.task});
 
   final bool back;
   final bool? task;
@@ -36,6 +40,7 @@ class TasksScreenForEmployee extends StatefulWidget {
 class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
   bool isGrid = false;
   bool showSearch = false;
+  String searchText = '';
 
   void toggleViewMode() {
     setState(() {
@@ -43,19 +48,33 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
     });
   }
 
+  void onSearchChanged(String value) {
+    searchText = value;
+    if (widget.task == true) {
+      if (role == '1') {
+        TasksCubit.get(context).getAllTasksFunWithFilter(text: value);
+      } else {
+        TasksCubit.get(context).getAllTasksFunWithFilter(
+            textEmp: value, employee: userId.toString());
+      }
+    } else {
+      EmployeeCubit.get(context).getAdmins(search: value);
+    }
+  }
+
   @override
   void initState() {
-    TasksCubit.get(context).data;
-    role == "3"
-        ? TasksCubit.get(context).getUserTaskFun(userId: userId.toString())
-        : TasksCubit.get(context).getAllTasksFun();
-
     super.initState();
+    if (role == "3") {
+      TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
+    } else {
+      TasksCubit.get(context).getAllTasksFun();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _refreshData() async {
+    Future<void> refreshData() async {
       if (role == '3') {
         await TasksCubit.get(context).getUserTaskFun(userId: userId.toString());
       } else {
@@ -64,170 +83,137 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
     }
 
     return Scaffold(
-        body: RefreshIndicator(
-            onRefresh: _refreshData,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
+      body: RefreshIndicator(
+        onRefresh: refreshData,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          child: Column(
+            children: [
+              SizedBox(height: 50.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     children: [
-                      SizedBox(height: 50.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.arrow_back),
-                              //CustomAppBar(back: widget.back, title: ),
-                              Text(AppLocalizations.of(context)!
-                                  .translate("tasks")),
-                            ],
-                          ),
-                          BuildSearchFilter(
-                            onTap: () {
-                              setState(() {
-                                showSearch = !showSearch;
-                              });
-                            },
-                            isGrid: false,
-                            emp: false,
-                            task: true,
-                            admin: false,
-                            toggleViewMode: toggleViewMode,
-                          )
-                        ],
+                      InkWell(
+                        onTap: () => navigateTo(context, AppRoutes.entryPoint),
+                        child: const Icon(Icons.arrow_back),
                       ),
-                      if (showSearch) ...[
-                        SizedBox(height: 30.h),
-                        Container(
-                            height: 40.h,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: globalDark
-                                  ? AppColors.cardColorDark
-                                  : AppColors.cardColor,
-                              border: Border.all(
-                                color: globalDark
-                                    ? AppColors.borderColorDark
-                                    : AppColors.borderColor,
-                                width: 0.5,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0.r),
-                            ),
-                            child: TextFormField(
-                                textDirection: TextDirection.rtl,
-                                onFieldSubmitted: (value) {
-                                  (widget.task == true)
-                                      ? (role == '1'
-                                          ? TasksCubit.get(context)
-                                              .getAllTasksFunWithFilter(
-                                                  text: value)
-                                          : TasksCubit.get(context)
-                                              .getAllTasksFunWithFilter(
-                                                  textEmp: value,
-                                                  employee: userId))
-                                      : EmployeeCubit.get(context)
-                                          .getAdmins(search: value.toString());
-                                },
-                                onChanged: (value) {
-                                  (widget.task == true)
-                                      ? (role == '1'
-                                          ? TasksCubit.get(context)
-                                              .getAllTasksFunWithFilter(
-                                                  text: value)
-                                          : TasksCubit.get(context)
-                                              .getAllTasksFunWithFilter(
-                                                  textEmp: value,
-                                                  employee: userId))
-                                      : EmployeeCubit.get(context)
-                                          .getAdmins(search: value.toString());
-                                },
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  prefixIcon: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child:
-                                        SvgPicture.asset(AppIcons.searchIcon),
-                                  ),
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 20.w),
-                                  prefixIconConstraints: const BoxConstraints(
-                                      minWidth: 20, minHeight: 20),
-                                  labelText: 'ابحث هنا',
-                                  labelStyle: AppFonts.style14normal,
-                                )))
-                      ],
-                      BlocConsumer<TasksCubit, TasksStates>(
-                          listener: (context, state) {},
-                          builder: (context, state) {
-                            if (state is NoInternetState) {
-                              return const NoInternet();
-                            }
-                            if (state is GetLoadingSearchTaskFilterState) {
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                    height: 10.h,
-                                  ),
-                                  const LinearProgressIndicator(),
-                                ],
-                              );
-                            }
-
-                            if (state is GetSuccessSearchTaskFilterState) {
-                              return role == '1'
-                                  ? (TasksCubit.get(context)
-                                          .getAllTaskListFilter!
-                                          .isNotEmpty
-                                      ? TaskListFilter(isGrid: isGrid)
-                                      : nothing(context,
-                                          route: AppRoutes.addTask,
-                                          button: 'مهمة',
-                                          text: 'لا يوجد'))
-                                  : (TasksCubit.get(context)
-                                          .getTaskListForOneUserSearch!
-                                          .isNotEmpty
-                                      ? TaskListFilter(isGrid: isGrid)
-                                      : nothing(context,
-                                          route: AppRoutes.addTask,
-                                          button: 'مهمة   ',
-                                          text: 'لا يوجد'));
-                            }
-                            if (state is GetLoadingUserTaskState ||
-                                state is GetLoadingAllTaskState ||
-                                state is GetLoadingAllTaskFilterState) {
-                              return AppLottie.loader;
-                            }
-                            if (state is GetSuccessAllTaskFilterState) {
-                              return TasksCubit.get(context)
-                                      .getAllTaskListFilter!
-                                      .isNotEmpty
-                                  ? TaskListFilter(isGrid: isGrid)
-                                  : nothing(context,
-                                      route: AppRoutes.addTask,
-                                      button: 'مهمة',
-                                      text: 'لا يوجد');
-                            }
-
-                            return (TasksCubit.get(context)
-                                        .getUserTaskList!
-                                        .isNotEmpty ||
-                                    TasksCubit.get(context)
-                                        .getAllTaskList!
-                                        .isNotEmpty)
-                                ? TaskList(isGrid: isGrid)
-                                : nothing(context,
-                                    route: AppRoutes.addTask,
-                                    button: 'مهمة',
-                                    text: 'لا يوجد مهام الى الان');
-                          }),
+                      Text(AppLocalizations.of(context)!.translate("tasks")),
                     ],
                   ),
-                ),
+                  BuildSearchFilter(
+                    onTap: () {
+                      setState(() {
+                        showSearch = !showSearch;
+                        if (!showSearch) {
+
+                          searchText = '';
+                          if (role == '3') {
+                            TasksCubit.get(context)
+                                .getUserTaskFun(userId: userId.toString());
+                          } else {
+                            TasksCubit.get(context).getAllTasksFun();
+                          }
+                        }
+                      });
+                    },
+                    isGrid: isGrid,
+                    emp: false,
+                    task: true,
+                    admin: false,
+                    toggleViewMode: toggleViewMode,
+                  )
+                ],
               ),
-            )));
+              if (showSearch) ...[
+                SizedBox(height: 30.h),
+                Container(
+                  height: 40.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: globalDark
+                        ? AppColors.cardColorDark
+                        : AppColors.cardColor,
+                    border: Border.all(
+                      color: globalDark
+                          ? AppColors.borderColorDark
+                          : AppColors.borderColor,
+                      width: 0.5,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0.r),
+                  ),
+                  child: TextFormField(
+                    textDirection: TextDirection.rtl,
+                    onChanged: onSearchChanged,
+                    onFieldSubmitted: onSearchChanged,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset(AppIcons.searchIcon),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                      prefixIconConstraints:
+                          const BoxConstraints(minWidth: 20, minHeight: 20),
+                      labelText: 'ابحث هنا',
+                      labelStyle: AppFonts.style14normal,
+                    ),
+                  ),
+                ),
+              ],
+              BlocConsumer<TasksCubit, TasksStates>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is NoInternetState) {
+                    return const NoInternet();
+                  }
+                  if (state is GetLoadingSearchTaskFilterState ||
+                      state is GetLoadingAllTaskFilterState) {
+                    return Column(
+                      children: [
+                        SizedBox(height: 10.h),
+                        const LinearProgressIndicator(),
+                      ],
+                    );
+                  }
+                  if (state is GetSuccessSearchTaskFilterState ||
+                      state is GetSuccessAllTaskFilterState) {
+                    final tasks = role == '1'
+                        ? TasksCubit.get(context).getAllTaskListFilter
+                        : TasksCubit.get(context).getTaskListForOneUserSearch;
+                    if (tasks != null && tasks.isNotEmpty) {
+                      return TaskListFilter(isGrid: isGrid);
+                    } else {
+                      return nothing(context,
+                          route: AppRoutes.addTask,
+                          button: 'مهمة',
+                          text:  AppLocalizations.of(context)!.translate("not_available"));
+                    }
+                  }
+                  if (state is GetLoadingUserTaskState ||
+                      state is GetLoadingAllTaskState) {
+                    return AppLottie.loader;
+                  }
+                  // Default fallback:
+                  final allTasks = role == '1'
+                      ? TasksCubit.get(context).getAllTaskList
+                      : TasksCubit.get(context).getUserTaskList;
+                  if (allTasks != null && allTasks.isNotEmpty) {
+                    return TaskList(isGrid: isGrid);
+                  }
+                  return nothing(context,
+                      route: AppRoutes.addTask,
+                      button: 'مهمة',
+                      text: 'لا يوجد مهام الى الان');
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -312,19 +298,18 @@ class TaskList extends StatelessWidget {
                             address: role != '3'
                                 ? (cubit.getAllTaskList![index].loc?[index]
                                         .address ??
-                                    'لا يوجد')
+                                AppLocalizations.of(context)!.translate("not_available"))
                                 : (cubit.getUserTaskList![index].location
                                         ?.address ??
-                                    'لا يوجد'),
+                                AppLocalizations.of(context)!.translate("not_available")),
 
-// Map URL
                             link: role != '3'
                                 ? (cubit.getAllTaskList![index].loc?[index]
                                         ?.mapUrl ??
                                     '')
                                 : (cubit.getUserTaskList![index].loc?[index]
                                         ?.mapUrl ??
-                                    'لا يوجد'),
+                                AppLocalizations.of(context)!.translate("not_available")),
 
                             deadline: role == "3"
                                 ? cubit.getUserTaskList![index].due_date
@@ -368,32 +353,33 @@ class TaskList extends StatelessWidget {
                           ? (TasksCubit.get(context)
                                       .getUserTaskList![index]
                                       .assigned_to!
-                                      .avatar !=
+                                      .avatar
+                                      .data
+                                      .full_url !=
                                   null
                               ? TasksCubit.get(context)
                                   .getUserTaskList![index]
                                   .assigned_to!
                                   .avatar!
-                                  .location_data!
+                                  .data
                                   .full_url
                                   .toString()
                               : 'null')
                           : (TasksCubit.get(context)
-                                      .getAllTaskList![index]
-                                      .assigned_to!
-                                      .avatar !=
-                                  null
-                              ? TasksCubit.get(context)
+                          .getAllTaskList![index]
+                          .assigned_to?.avatar?.data?.full_url != null
+
+                          ? TasksCubit.get(context)
                                   .getAllTaskList![index]
                                   .assigned_to!
                                   .avatar!
-                                  .location_data!
+                                  .data
                                   .full_url
                                   .toString()
                               : 'null'),
                       names: role == '3'
-                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context).getUserTaskList![index].assigned_to?.last_name ?? ''}'
-                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name ?? ''}',
+                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to?.first_name.toString() ?? ''} ${TasksCubit.get(context).getUserTaskList![index].assigned_to?.last_name.to ?? ''}'
+                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to.first_name.toString()} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name.toString() ?? ''}',
                       statusColor: AppColors.inbox,
                       statusText: role == "3"
                           ? cubit.getUserTaskList![index].task_status.toString()
@@ -407,14 +393,14 @@ class TaskList extends StatelessWidget {
                       index: index,
                       location: role != '3'
                           ? (cubit.getAllTaskList![index].loc != null
-                              ? cubit.getAllTaskList![index].loc![index].address
+                              ? cubit.getAllTaskList![index].loc![0].address
                                   .toString()
-                              : 'لا يوجد')
+                              : AppLocalizations.of(context)!.translate("not_available"))
                           : (cubit.getUserTaskList![index].loc != null
                               ? cubit
                                   .getUserTaskList![index].loc![index].address
                                   .toString()
-                              : 'لا يوجد'),
+                              : AppLocalizations.of(context)!.translate("not_available")),
                     ),
                   ),
                 )
@@ -485,14 +471,14 @@ class TaskList extends StatelessWidget {
                                     ? cubit
                                         .getAllTaskList![index].loc![0].address
                                         .toString()
-                                    : 'لا يوجد')
+                                    : AppLocalizations.of(context)!.translate("not_available"))
                                 : (cubit.getUserTaskList![index].loc != null &&
                                         cubit.getUserTaskList![index].loc!
                                             .isNotEmpty
                                     ? cubit
                                         .getUserTaskList![index].loc![0].address
                                         .toString()
-                                    : 'لا يوجد'),
+                                    :AppLocalizations.of(context)!.translate("not_available")),
                             link: role != '3'
                                 ? (cubit.getAllTaskList![index].loc != null &&
                                         cubit.getAllTaskList![index].loc!
@@ -500,14 +486,14 @@ class TaskList extends StatelessWidget {
                                     ? cubit
                                         .getAllTaskList![index].loc![0].mapUrl
                                         .toString()
-                                    : 'لا يوجد')
+                                    : AppLocalizations.of(context)!.translate("not_available"))
                                 : (cubit.getUserTaskList![index].loc != null &&
                                         cubit.getUserTaskList![index].loc!
                                             .isNotEmpty
                                     ? cubit
                                         .getUserTaskList![index].loc![0].mapUrl
                                         .toString()
-                                    : 'لا يوجد'),
+                                    : AppLocalizations.of(context)!.translate("not_available")),
                             deadline: role == "3"
                                 ? cubit.getUserTaskList![index].due_date
                                     .toString()
@@ -547,33 +533,44 @@ class TaskList extends StatelessWidget {
                               .toString()
                           : '',
                       avatar: role == "3"
-                          ? (TasksCubit.get(context)
-                                  .getUserTaskList![index]
-                                  .assigned_to is AssignedTo
+                          ? (TasksCubit.get(context).getUserTaskList != null &&
+                                  TasksCubit.get(context)
+                                          .getUserTaskList!
+                                          .length >
+                                      index &&
+                                  TasksCubit.get(context)
+                                      .getUserTaskList![index]
+                                      .assigned_to is AssignedTo)
                               ? TasksCubit.get(context)
                                       .getUserTaskList![index]
                                       .assigned_to
                                       ?.avatar
-                                      ?.location_data
+                                      ?.data
                                       ?.full_url
                                       ?.toString() ??
                                   'null'
-                              : 'null')
-                          : (TasksCubit.get(context)
-                                  .getAllTaskList![index]
-                                  .assigned_to is AssignedTo
+                              : 'null'
+                          : (TasksCubit.get(context).getAllTaskList != null &&
+                                  TasksCubit.get(context)
+                                          .getAllTaskList!
+                                          .length >
+                                      index &&
+                                  TasksCubit.get(context)
+                                          .getAllTaskList![index]
+                                          .assigned_to !=
+                                      null)
                               ? TasksCubit.get(context)
                                       .getAllTaskList![index]
                                       .assigned_to
                                       ?.avatar
-                                      ?.location_data
+                                      ?.data
                                       ?.full_url
                                       ?.toString() ??
                                   'null'
-                              : 'null'),
+                              : 'null',
                       names: role == '3'
-                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name']} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name']}'
-                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name ?? ''} ${TasksCubit.get(context)};}',
+                          ? '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name'].toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name'].toString()}'
+                          : '${TasksCubit.get(context).getAllTaskList![index].assigned_to?.first_name.toString() ?? ''} ${TasksCubit.get(context).getAllTaskList![index].assigned_to?.last_name.toString() ?? ''}',
                       statusColor: Colors.green,
                       statusText: role == "3"
                           ? cubit.getUserTaskList![index].task_status.toString()
@@ -597,7 +594,7 @@ class TaskList extends StatelessWidget {
                                       null
                               ? cubit.getAllTaskList![index].loc![0].address
                                   .toString()
-                              : 'لا يوجد')
+                              : AppLocalizations.of(context)!.translate("not_available"))
                           : (cubit.getUserTaskList != null &&
                                   cubit.getUserTaskList!.isNotEmpty &&
                                   cubit.getUserTaskList![index].loc != null &&
@@ -608,7 +605,7 @@ class TaskList extends StatelessWidget {
                                       null
                               ? cubit.getUserTaskList![index].loc![0].address
                                   .toString()
-                              : 'لا يوجد'),
+                              : AppLocalizations.of(context)!.translate("not_available")),
                     ),
                   ),
                 ),
@@ -677,12 +674,12 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                                 ? cubit
                                     .getUserTaskList![index].loc![index].address
                                     .toString()
-                                : 'لا يوجد'),
+                                : AppLocalizations.of(context)!.translate("not_available")),
                             link: (cubit.getUserTaskList![index].loc != null
                                 ? cubit
                                     .getUserTaskList![index].loc![index].mapUrl!
                                     .toString()
-                                : 'لا يوجد'),
+                                : AppLocalizations.of(context)!.translate("not_available")),
                             deadline: cubit.getUserTaskList![index].due_date
                                 .toString(),
                             description: cubit
@@ -709,20 +706,14 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                           .modified_on
                           .toString(),
                       avatar: TasksCubit.get(context)
-                                  .getUserTaskList![index]
-                                  .assigned_to!
-                                  .avatar !=
-                              null
-                          ? TasksCubit.get(context)
-                              .getUserTaskList![index]
-                              .assigned_to!
-                              .avatar!
-                              .location_data!
-                              .full_url
-                              .toString()
-                          : 'null',
+                              .getUserTaskList?[index]
+                              .assigned_to?['avatar']
+                              ['data']
+                              ?['full_url']
+                              ?.toString() ??
+                          'null',
                       names:
-                          '${TasksCubit.get(context).getUserTaskList![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!.last_name.toString()}',
+                          '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name'].toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name'].toString()}',
                       statusColor: AppColors.inbox,
                       statusText:
                           cubit.getUserTaskList![index].task_status.toString(),
@@ -730,9 +721,9 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                       taskNotes: cubit.getUserTaskList![index].notes.toString(),
                       index: index,
                       location: (cubit.getUserTaskList![index].loc != null
-                          ? cubit.getUserTaskList![index].loc![index].address
+                          ? cubit.getUserTaskList![index].loc![0].address
                               .toString()
-                          : 'لا يوجد'),
+                          : AppLocalizations.of(context)!.translate("not_available")),
                     ),
                   ),
                 )
@@ -780,11 +771,11 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                             address: (cubit.getUserTaskList![index].loc != null
                                 ? cubit.getUserTaskList![index].loc![0].address
                                     .toString()
-                                : 'لا يوجد'),
+                                : AppLocalizations.of(context)!.translate("not_available")),
                             link: (cubit.getUserTaskList![index].loc != null
                                 ? cubit.getUserTaskList![index].loc![0].mapUrl
                                     .toString()
-                                : 'لا يوجد'),
+                                : AppLocalizations.of(context)!.translate("not_available")),
                             deadline: cubit.getUserTaskList![index].due_date
                                 .toString(),
                             description: cubit
@@ -812,14 +803,12 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                           .toString(),
                       avatar: TasksCubit.get(context)
                                   .getUserTaskList![index]
-                                  .assigned_to!['avatar'] !=
+                                  .assigned_to?['avatar']?['data']?['full_url']
+                                  .toString() !=
                               null
                           ? TasksCubit.get(context)
                               .getUserTaskList![index]
-                              .assigned_to!
-                              .avatar!
-                              .location_data!
-                              .full_url
+                              .assigned_to!['avatar']['data']['full_url']
                               .toString()
                           : 'null',
                       names:
@@ -835,7 +824,7 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                               cubit.getUserTaskList![index].loc!.isNotEmpty)
                           ? cubit.getUserTaskList![index].loc![0].address
                               .toString()
-                          : 'لا يوجد',
+                          : AppLocalizations.of(context)!.translate("not_available"),
                     ),
                   ),
                 ),
@@ -922,14 +911,14 @@ class TaskListFilter extends StatelessWidget {
                                           ? cubit.getAllTaskListFilter![index]
                                               .loc![index].address
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       link: cubit.getAllTaskListFilter![index]
                                                   .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
                                               .loc![index].mapUrl
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       deadline: cubit
                                           .getAllTaskListFilter![index].due_date
                                           .toString(),
@@ -1000,7 +989,7 @@ class TaskListFilter extends StatelessWidget {
                                               .loc![index]
                                               .address
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       link: cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
@@ -1012,7 +1001,7 @@ class TaskListFilter extends StatelessWidget {
                                               .loc![index]
                                               .mapUrl
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       deadline: cubit
                                           .getTaskListForOneUserSearch![index]
                                           .due_date
@@ -1028,13 +1017,16 @@ class TaskListFilter extends StatelessWidget {
                             avatar: TasksCubit.get(context)
                                         .getAllTaskListFilter![index]
                                         .assigned_to!
-                                        .avatar !=
-                                    null
+                                        .avatar
+                                        .data!
+                                        .full_url
+                                        .toString() !=
+                                    "null"
                                 ? TasksCubit.get(context)
                                     .getAllTaskListFilter![index]
                                     .assigned_to!
                                     .avatar!
-                                    .location_data!
+                                    .data!
                                     .full_url
                                     .toString()
                                 : 'null',
@@ -1051,23 +1043,26 @@ class TaskListFilter extends StatelessWidget {
                             index: index,
                             location:
                                 cubit.getAllTaskListFilter![index].loc != null
-                                    ? cubit.getAllTaskListFilter![index]
-                                        .loc![index].address
+                                    ? cubit.getAllTaskListFilter![index].loc![0]
+                                        .address
                                         .toString()
-                                    : 'لا يوجد',
+                                    : AppLocalizations.of(context)!.translate("not_available"),
                           )
                         : TaskCardGrid(
                             search: true,
                             avatar: TasksCubit.get(context)
                                         .getTaskListForOneUserSearch![index]
                                         .assigned_to!
-                                        .avatar !=
-                                    null
+                                        .avatar
+                                        .data!
+                                        .full_url
+                                        .toString() !=
+                                    "null"
                                 ? TasksCubit.get(context)
                                     .getTaskListForOneUserSearch![index]
                                     .assigned_to!
                                     .avatar!
-                                    .location_data!
+                                    .data!
                                     .full_url
                                     .toString()
                                 : 'null',
@@ -1090,7 +1085,7 @@ class TaskListFilter extends StatelessWidget {
                                     ? cubit.getTaskListForOneUserSearch![index]
                                         .loc![index].address
                                         .toString()
-                                    : 'لا يوجد',
+                                    : AppLocalizations.of(context)!.translate("not_available"),
                           ),
                   ),
                 )
@@ -1151,16 +1146,16 @@ class TaskListFilter extends StatelessWidget {
                                                   .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
-                                              .loc![index].address
+                                              .loc![0].address
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       link: cubit.getAllTaskListFilter![index]
                                                   .loc !=
                                               null
                                           ? cubit.getAllTaskListFilter![index]
-                                              .loc![index].mapUrl
+                                              .loc![0].mapUrl
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       deadline: cubit
                                           .getAllTaskListFilter![index].due_date
                                           .toString(),
@@ -1236,7 +1231,7 @@ class TaskListFilter extends StatelessWidget {
                                               .loc![index]
                                               .address
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       link: cubit
                                                   .getTaskListForOneUserSearch![
                                                       index]
@@ -1248,7 +1243,7 @@ class TaskListFilter extends StatelessWidget {
                                               .loc![index]
                                               .mapUrl
                                               .toString()
-                                          : 'لا يوجد',
+                                          : AppLocalizations.of(context)!.translate("not_available"),
                                       deadline: cubit
                                           .getTaskListForOneUserSearch![index]
                                           .due_date
@@ -1259,23 +1254,15 @@ class TaskListFilter extends StatelessWidget {
                                           .toString(),
                                     )));
                     },
-                    child: role == '1' &&
-                            TasksCubit.get(context).getAllTaskListFilter !=
-                                null &&
-                            index <
-                                TasksCubit.get(context)
-                                    .getAllTaskListFilter!
-                                    .length
+                    child: role == '1' && TasksCubit.get(context).getAllTaskListFilter != null && index < TasksCubit.get(context).getAllTaskListFilter!.length
                         ? TaskCardList(
-                            avatar: TasksCubit.get(context).getAllTaskListFilter![index].assigned_to?.avatar?.location_data?.full_url?.toString() ??
+                            avatar: TasksCubit.get(context).getAllTaskListFilter![index].assigned_to?.avatar?.data?.full_url?.toString() ??
                                 'null',
-
-                            // or any fallback widget
-
                             names:
                                 '${TasksCubit.get(context).getAllTaskListFilter![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskListFilter![index].assigned_to!.last_name.toString()}',
                             statusColor: Colors.green,
-                            statusText: cubit.getAllTaskListFilter![index].task_status
+                            statusText: cubit
+                                .getAllTaskListFilter![index].task_status
                                 .toString(),
                             taskName: cubit.getAllTaskListFilter![index].title
                                 .toString(),
@@ -1284,17 +1271,17 @@ class TaskListFilter extends StatelessWidget {
                             index: index,
                             textDate: 'مهلة المهمة',
                             location: cubit.getAllTaskListFilter![index].loc != null
-                                ? cubit.getAllTaskListFilter![index].loc![index].address
+                                ? cubit.getAllTaskListFilter![index].loc![0].address
                                     .toString()
-                                : 'لا يوجد')
+                                : AppLocalizations.of(context)!.translate("not_available"))
                         : TaskCardList(
                             search: true,
-                            avatar: TasksCubit.get(context).getTaskListForOneUserSearch![index].assigned_to!.avatar != null
+                            avatar: TasksCubit.get(context).getTaskListForOneUserSearch![index].assigned_to!.avatar.data!.full_url != null
                                 ? TasksCubit.get(context)
                                     .getTaskListForOneUserSearch![index]
                                     .assigned_to!
                                     .avatar!
-                                    .location_data!
+                                    .data
                                     .full_url
                                     .toString()
                                 : 'null',

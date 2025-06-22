@@ -631,8 +631,10 @@ class TaskCardList extends StatelessWidget {
                               height: 30.h,
                               width: 30.w,
                               child: NetworkImageWithLoader(
-                                  borderRadius: BorderRadius.circular(5.r),
-                                  avatar.toString())) :   Padding(
+                                avatar?.toString() ?? '',
+                                borderRadius: BorderRadius.circular(5.r),
+                              )
+                          ) :   Padding(
                             padding:  EdgeInsets.only(right: 2.0.w,left: 10.0.w),
                             child: Container(
                               height: 30.h,

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_fonts.dart' show AppFonts;
+import '../../../../core/localization/app_localizations.dart';
 import '../../../addEmployee/components/report_chart.dart' show ReportChart;
 import 'help_cubit.dart';
 import 'help_state.dart';
@@ -26,7 +27,8 @@ class HelpPage extends StatelessWidget {
                           horizontal: 20.w, vertical: 20.h),
                       children: [
                         Text(
-                          'المساعدة',
+                          AppLocalizations.of(context)!.translate("help")
+                          ,
                           style: AppFonts.style16semiBold,
                           textAlign: TextAlign.right,
                         ),

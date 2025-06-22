@@ -15,6 +15,7 @@ AddUserRequestModel _$AddUserRequestModelFromJson(Map<String, dynamic> json) =>
       last_name: json['last_name'] as String?,
       role: json['role'] as String?,
       companies: (json['companies'] as num?)?.toInt(),
+      avatar: (json['avatar'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$AddUserRequestModelToJson(
@@ -27,17 +28,19 @@ Map<String, dynamic> _$AddUserRequestModelToJson(
       'last_name': instance.last_name,
       'role': instance.role,
       'companies': instance.companies,
+      'avatar': instance.avatar,
     };
 
 EditUserRequestModel _$EditUserRequestModelFromJson(
         Map<String, dynamic> json) =>
     EditUserRequestModel(
+      id: json['id'] as String?,
       email: json['email'] as String?,
       status: json['status'] as String?,
       first_name: json['first_name'] as String?,
       last_name: json['last_name'] as String?,
       role: json['role'] as String?,
-      avatar: (json['avatar'] as num?)?.toInt(),
+      avatar: json['avatar'],
       password: json['password'] as String?,
       companies: (json['companies'] as num?)?.toInt(),
     );
@@ -45,6 +48,7 @@ EditUserRequestModel _$EditUserRequestModelFromJson(
 Map<String, dynamic> _$EditUserRequestModelToJson(
         EditUserRequestModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'email': instance.email,
       'status': instance.status,
       'first_name': instance.first_name,
@@ -93,9 +97,10 @@ DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       timezone: json['timezone'] as String?,
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
-      avatar: json['avatar'] == null
-          ? null
-          : Avatar.fromJson(json['avatar'] as Map<String, dynamic>),
+      avatar: json['avatar'] is Map<String, dynamic>
+          ? Avatar.fromJson(json['avatar'] as Map<String, dynamic>)
+          : null,
+
       companies: json['companies'],
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,
@@ -209,7 +214,7 @@ DataUserResponse _$DataUserResponseFromJson(Map<String, dynamic> json) =>
       timezone: json['timezone'] as String?,
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
-      avatar: (json['avatar'] as num?)?.toInt(),
+      avatar: json['avatar'],
       companies: json['companies'],
       title: json['title'] as String?,
       email_notifications: json['email_notifications'] as bool?,

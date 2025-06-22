@@ -84,7 +84,7 @@ class RouteGenerator {
 
       case AppRoutes.addEmployee:
         return animatedNavigation(
-            screen: const AddNewEmployee(
+            screen: AddNewEmployee(
           empId: 0,
           isEdit: false,
         ));
@@ -157,7 +157,7 @@ class RouteGenerator {
       case AppRoutes.settingsNotifications:
         return animatedNavigation(screen: const NotificationSettingsPage());
       case AppRoutes.tasks_screen_for_employee:
-        return animatedNavigation(screen:  TasksScreenForEmployee(back: true));
+        return animatedNavigation(screen:  TasksScreenForEmployee(back: true,task: true,));
 
       case AppRoutes.settings:
         return animatedNavigation(screen: const SettingsPage());

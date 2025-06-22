@@ -57,8 +57,6 @@ class _EntryPointUIState extends State<EntryPointUI> {
     EmployeeCubit.get(context).getAdmins(role: 1);
     EmployeeCubit.get(context).getAdmins(role: 3);
     //EmployeeCubit.get(context).getAllEmployee();
-
-    // TODO: implement initState
     super.initState();
   }
 
@@ -75,9 +73,12 @@ class _EntryPointUIState extends State<EntryPointUI> {
     ),
      TasksScreenForEmployee(
       back: true,
+       task: true,
     ),
   TasksScreenForEmployee(
       back: true,
+    task:
+    true,
     ),
     //const AddTaskScreen(back: false, isEdit: false, taskId: 0,),
     // const SavePage(isHomePage: false),

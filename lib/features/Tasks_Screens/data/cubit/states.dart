@@ -83,5 +83,8 @@ class UploadErrorFilesState extends TasksStates{}
 class NoInternetState extends TasksStates{}
 class NewNotificationState extends TasksStates{}
 class ClearNotificationState extends TasksStates{}
+class UpdateNotificationsLoading extends TasksStates{}
+class UpdateNotificationsSuccess extends TasksStates{}
+class UpdateNotificationsError extends TasksStates{}
 
 

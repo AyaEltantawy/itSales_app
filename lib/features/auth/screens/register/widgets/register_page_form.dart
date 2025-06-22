@@ -6,6 +6,7 @@ import 'package:itsale/core/routes/app_routes.dart';
 import '../../../../../core/components/app_buttons.dart';
 import '../../../../../core/components/app_text_form_field.dart';
 import '../../../../../core/constants/app_icons.dart';
+import '../../../../../core/localization/app_localizations.dart';
 import '../../../../../core/utils/snack_bar.dart'
     show Utils, warningMotionToast;
 import '../../../../../core/utils/validators.dart';
@@ -52,9 +53,10 @@ class RegisterPageForm extends StatelessWidget {
           defaultTextFormFeild(
             context,
             controller: firstNameController,
-            validator: Validators.requiredWithFieldName('الاسم الأول'),
+            validator: Validators.requiredWithFieldName(
+                AppLocalizations.of(context)!.translate("first_name"),context),
             prefix: Icon(AppIcons.person_2_outlined),
-            label: "الاسم الأول",
+            label: AppLocalizations.of(context)!.translate("first_name"),
             keyboardType: TextInputType.name,
           ),
           SizedBox(height: 15.h),
@@ -62,29 +64,32 @@ class RegisterPageForm extends StatelessWidget {
             keyboardType: TextInputType.name,
             context,
             controller: lastNameController,
-            validator: Validators.requiredWithFieldName('الاسم الأخير'),
+            validator: Validators.requiredWithFieldName(AppLocalizations.of(context)!.translate("last_name")
+            ,context),
             prefix: Icon(AppIcons.person_2_outlined),
-            label: "الاسم الأخير",
+            label: AppLocalizations.of(context)!.translate("last_name")
+            ,
           ),
           SizedBox(height: 15.h),
           defaultTextFormFeild(
             context,
             keyboardType: TextInputType.emailAddress,
             controller: emailController,
-            validator: Validators.requiredWithFieldName('البريد الالكتروني'),
+            validator: Validators.requiredWithFieldName(AppLocalizations.of(context)!.translate("email"),context),
             prefix: const Icon(AppIcons.email),
-            label: 'البريد الالكتروني',
+            label: AppLocalizations.of(context)!.translate("email"),
           ),
           SizedBox(height: 15.h),
           defaultTextFormFeild(
             keyboardType: TextInputType.multiline,
             context,
             controller: passwordController,
-            validator: Validators.password,
+            validator: Validators.password(context),
             onSubmit: (_) => onSubmit(),
             secure: !isPasswordShown,
             prefix: const Icon(AppIcons.lock),
-            label: 'كلمة المرور',
+            label: AppLocalizations.of(context)!.translate("password")
+            ,
             suffix: IconButton(
               onPressed: onPassShowClicked,
               icon: Icon(
@@ -100,14 +105,15 @@ class RegisterPageForm extends StatelessWidget {
             controller: confirmPasswordController,
             validator: (value) {
               if (value != passwordController.text) {
-                return 'كلمة المرور غير متطابقة';
+                return AppLocalizations.of(context)!.translate('Password does not match');
               }
-              return Validators.password(value);
+              return Validators.password(context).call(value);
+
             },
             onSubmit: (_) => onSubmit(),
             secure: !isPasswordShownConfirm,
             prefix: const Icon(AppIcons.lock),
-            label: 'تأكيد كلمة المرور',
+            label: AppLocalizations.of(context)!.translate('password_confirmation'),
             suffix: IconButton(
               onPressed: onPassShowClickedConfirm,
               icon: Icon(
@@ -122,11 +128,10 @@ class RegisterPageForm extends StatelessWidget {
             isColor: true,
             height: 56.h,
             width: double.infinity,
-            text: 'إنشاء حساب جديد',
+            text: AppLocalizations.of(context)!.translate("register"),
             textSize: 17.sp,
             toPage: onSubmit,
           ),
-
         ],
       ),
     );

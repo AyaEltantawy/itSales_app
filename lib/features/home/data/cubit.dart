@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:itsale/core/cache_helper/cache_helper.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/core/routes/magic_router.dart';
@@ -12,9 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:itsale/features/auth/data/repo.dart';
 import 'package:itsale/features/home/data/models/all_employees_model.dart';
-
 import 'package:itsale/features/home/data/states.dart';
-
 import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/token.dart';
 import '../../addEmployee/data/models/add_employee_model.dart';
@@ -76,7 +75,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         print("userssssssssssssssssssssssssss");
         print(users);
         emit(GetSuccessSalesState());
-      }).catchError((onError) async {
+      }).catchError((onError, stackTrace) async {
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
             MagicRouter.currentContext!,
@@ -88,6 +87,7 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
         emit(GetErrorSalesState());
         debugPrint('errrrrror ${onError}');
+        print("stackTrace$stackTrace");
       });
     }
   }
@@ -108,7 +108,6 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
 
     Map<String, dynamic> queryParams = {};
 
-    // Add role filter if provided
     if (role != null) {
       queryParams['filter[role]'] = role.toString();
     }
@@ -139,16 +138,19 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
         searchUser = value.data;
         emit(GetSuccessSearchEmployeeFilterState());
       }
-    } catch (onError,stackTrace) {
+    } catch (onError, stackTrace) {
       if (search != null && search.isNotEmpty) {
         emit(GetErrorSearchEmployeeFilterState());
       }
 
       if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(
-          MagicRouter.currentContext!,
-          'أنت غير متصل بالانترنت',
-        );
+        final context = MagicRouter.currentContext;
+        if (context != null) {
+          Utils.showSnackBar(
+            context,
+            'أنت غير متصل بالانترنت',
+          );
+        }
         emit(NoInternetState());
       }
 
@@ -234,42 +236,59 @@ class EmployeeCubit extends Cubit<EmployeeStates> {
     });
   }
 
-  adduserFun({
+  Future<void> addUserFun({
     required String firstName,
     required String lastName,
     required String status,
     required String email,
     required String role,
-    required String password,
+    String? password,
     String? phone1,
     String? emailEmp,
     String? address,
     String? phone2,
     String? whatsapp,
-    int? avatar,
+    dynamic? avatar,
     int? companies,
+    bool isEdit = false,
+    String? employeeId,
   }) async {
     emit(AddLoadingUserState());
-    print("🔐 tokenForAddUsers: $token");
+    debugPrint("🔐 tokenForAddUsers: $token");
 
-    await repo
-        .addUser(
-      AddUserRequestModel(
-        email: email,
-        first_name: firstName,
-        last_name: lastName,
-        role: role,
-        password: password,
-        companies: companyId,
-        status: status
-      ),
-    )
-        .then((value) {
+    final request = AddUserRequestModel(
+      email: email,
+      first_name: firstName,
+      last_name: lastName,
+      password: password,
+      role: role,
+      companies: companyId,
+      status: status,
+      avatar: avatar,
+    );
+    print("add data${avatar}");
+
+    if (!isEdit || (password != null && password.isNotEmpty)) {
+      request.password = password;
+    }
+
+    debugPrint(
+        "Password provided: ${password != null && password.isNotEmpty ? 'Yes' : 'No'}");
+
+    try {
+      final value = await repo.addUser(request);
       emit(AddSuccessUserState());
-print("statussssssss:$status");
-      getAllSales();
 
-      print("🏢 companyIdForUser: $companyId");
+      if (password != null && password.isNotEmpty) {
+        final userIdToSave = value.data?.id?.toString() ?? employeeId ?? '';
+
+        await CacheHelper.saveData(
+            key: "password_add_$userIdToSave", value: password);
+        debugPrint("🔑 Password saved for user $userIdToSave");
+      }
+
+      getAllSales();
+      debugPrint("🏢 companyIdForUser: $companyId");
 
       final context = MagicRouter.currentContext;
       if (context != null) {
@@ -277,15 +296,14 @@ print("statussssssss:$status");
       }
 
       addEmployeeFun(
-        employeeId: value.data?.id?.toString() ?? '',
-        status: 'published',
-        email: emailEmp,
-        address: address,
-        phone2: phone2,
-        whatsapp: whatsapp,
-        phone1: '',
-      );
-    }).catchError((error, stackTrace) async {
+          employeeId: value.data?.id?.toString() ?? employeeId ?? '',
+          status: 'published',
+          email: emailEmp,
+          address: address,
+          phone2: phone2,
+          whatsapp: whatsapp,
+          phone1: phone1 ?? '');
+    } catch (error, stackTrace) {
       if (await InternetConnectionChecker().hasConnection == false) {
         final context = MagicRouter.currentContext;
         if (context != null) {
@@ -297,10 +315,10 @@ print("statussssssss:$status");
       emit(AddErrorUserState());
       debugPrint('🔴 ERROR: $error');
       debugPrint('📍 STACK TRACE:\n$stackTrace');
-    });
+    }
   }
 
-  editUserFun({
+  Future<void> editUserFun({
     required String firstName,
     required String lastName,
     required String employeeId,
@@ -315,53 +333,106 @@ print("statussssssss:$status");
     String? address,
     String? phone2,
     String? whatsapp,
-    int? avatar,
+    dynamic? avatar,
     int? companies,
+    bool? isEdit = true,
   }) async {
+    if (idUser.isEmpty || idUser == 'null') {
+      debugPrint('⚠️ Invalid user ID: $idUser');
+      emit(ErrorEditUserState());
+      return;
+    }
+
     emit(LoadingEditUserState());
 
-    await repo
-        .editDataUser(
-            idUser,
-            EditUserRequestModel(
-              password: password,
-              status: status ?? 'active',
-              email: email,
-              first_name: firstName,
-              last_name: lastName,
-              role: role,
-              avatar: avatar,
-              companies: companies
-            ))
-        .then((value) {
-      emit(SuccessEditUserState());
-      employeeId != '0'
-          ? editEmployeeFun(
-              employeeId: employeeId,
-              user: value.data!.id.toString(),
-              status: empStatus ?? 'published',
-              email: emailEmp,
-              address: address,
-              phone1: phone1,
-              phone2: phone2,
-              whatsapp: whatsapp)
-          : Container();
-      getAllSales();
-    }).catchError((onError) async {
-      if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(
-          MagicRouter.currentContext!,
-          'أنت غير متصل بالانترنت',
-        );
+    try {
+      String? passwordToUse;
 
-        emit(NoInternetState());
+      if (idUser == userId) {
+         passwordToUse = passwordLogin ?? await CacheHelper.getData(key: 'password') ?? '123456789';
+
+
+
+        debugPrint('🔑 Using manager password from login cache');
+      } else {
+        passwordToUse = await CacheHelper.getData(key: "password_add_$idUser");
+        debugPrint('🔑 Using password from user creation cache');
+
+        if ((passwordToUse == null || passwordToUse.isEmpty) &&
+            password != null &&
+            password.isNotEmpty) {
+          passwordToUse = password;
+          debugPrint('🔑 Using password from request parameters');
+        }
       }
+      debugPrint(
+          '🔐 Password available: ${passwordToUse != null ? "Yes" : "No"}');
+      final value = await repo.editDataUser(
+        idUser,
+        EditUserRequestModel(
+          id: idUser,
+          password: passwordToUse,
+          status: status ?? 'active',
+          email: email,
+          first_name: firstName,
+          last_name: lastName,
+          role: role,
+          avatar: avatar,
+          companies: companies,
+        ),
+      );
+
+      emit(SuccessEditUserState());
+
+      if (value.data != null && employeeId.isNotEmpty && employeeId != '0') {
+        await editEmployeeFun(
+          employeeId: employeeId,
+          user: value.data!.id.toString(),
+          status: empStatus ?? 'published',
+          email: emailEmp,
+          address: address,
+          phone1: phone1,
+          phone2: phone2,
+          whatsapp: whatsapp,
+        );
+      }
+    } on DioException catch (e) {
+      final errorMessage = e.response?.data?['error']?['message'] ??
+          e.message ??
+          'Failed to update user';
+
+      debugPrint('❌ Dio Error: $errorMessage');
+      debugPrint('📛 Status Code: ${e.response?.statusCode}');
+      debugPrint('📛 Response: ${e.response?.data}');
+
       emit(ErrorEditUserState());
-      debugPrint('errrrrror ${onError.toString()}');
-    });
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(
+            context, 'حدث خطأ أثناء تعديل المستخدم: $errorMessage');
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ Unexpected error: $e');
+      debugPrint('📛 StackTrace: $stackTrace');
+
+      if (!await InternetConnectionChecker().hasConnection) {
+        final context = MagicRouter.currentContext;
+        if (context != null) {
+          Utils.showSnackBar(context, 'أنت غير متصل بالانترنت');
+        }
+        emit(NoInternetState());
+        return;
+      }
+
+      emit(ErrorEditUserState());
+      final context = MagicRouter.currentContext;
+      if (context != null) {
+        Utils.showSnackBar(context, 'حدث خطأ غير متوقع أثناء تعديل المستخدم');
+      }
+    }
   }
 
-  editEmployeeFun({
+  Future<void> editEmployeeFun({
     required String employeeId,
     String? status,
     String? email,
@@ -371,35 +442,48 @@ print("statussssssss:$status");
     String? whatsapp,
     required String user,
   }) async {
-    emit(EditLoadingEmployeeInfoState());
-
-    await repo
-        .editEmployee(
-            employeeId,
-            AddEmployeeRequestModel(
-              user: user,
-              status: status,
-              email: email,
-              address: address,
-              phone_1: phone1,
-              phone_2: phone2,
-              whatsapp: whatsapp,
-            ))
-        .then((value) {
-      emit(EditSuccessEmployeeInfoState());
-      getAllSales();
-    }).catchError((onError) async {
-      if (await InternetConnectionChecker().hasConnection == false) {
+    if (employeeId.isEmpty || employeeId == 'null') {
+      debugPrint("❌ employeeId is invalid: $employeeId");
+      final context = MagicRouter.currentContext;
+      if (context != null) {
         Utils.showSnackBar(
-          MagicRouter.currentContext!,
-          'أنت غير متصل بالانترنت',
+          context,
+          'لا يمكن تعديل الموظف، المعرف غير صالح',
         );
-
-        emit(NoInternetState());
       }
       emit(EditErrorEmployeeInfoState());
-      debugPrint('errrrrror ${onError.toString()}');
-    });
+      return;
+    }
+
+    emit(EditLoadingEmployeeInfoState());
+
+    try {
+      await repo.editEmployee(
+        employeeId,
+        AddEmployeeRequestModel(
+          user: user,
+          status: status,
+          email: email,
+          address: address,
+          phone_1: phone1,
+          phone_2: phone2,
+          whatsapp: whatsapp,
+        ),
+      );
+      emit(EditSuccessEmployeeInfoState());
+      getAllSales();
+    } catch (onError) {
+      if (!await InternetConnectionChecker().hasConnection) {
+        Utils.showSnackBar(
+          MagicRouter.currentContext!,
+          'أنت غير متصل بالإنترنت',
+        );
+        emit(NoInternetState());
+      } else {
+        debugPrint('❌ Error editing employee: $onError');
+        emit(EditErrorEmployeeInfoState());
+      }
+    }
   }
 
   Future<void> uploadFile(
@@ -414,6 +498,7 @@ print("statussssssss:$status");
     required String phone1,
     required String employeeId,
     required String idUser,
+    int? avatar,
     String? emailEmp,
     String? empStatus,
     String? address,
@@ -421,39 +506,39 @@ print("statussssssss:$status");
     String? whatsapp,
     int? companyId,
   }) async {
-    Dio dio = Dio();
+    emit(PostLoadingFileState());
+    debugPrint(
+        "📤 Starting file upload for ${edit ? "edit" : "add"} operation");
+
     try {
-      emit(PostLoadingFileState());
-      String baseUrl = "https://eby-itsales.guessitt.com/public/itsales/";
-      String endpoint = "files";
-      String fileName = basename(file.path);
+      final fileId = await _uploadFile(file);
 
-      FormData formData = FormData.fromMap({
-        "data": await MultipartFile.fromFile(file.path, filename: fileName),
-      });
+      String? passwordToUse;
 
-      Response response = await dio.post(
-        "$baseUrl$endpoint",
-        data: formData,
-        options: Options(
-          headers: {
-            "Authorization": "Bearer $token",
-          },
-        ),
-      );
+      if (idUser == userId) {
+        passwordToUse =
+            passwordLogin ?? await CacheHelper.getData(key: 'password');
+        debugPrint('🔑 Using manager password from login cache');
+      } else {
+        passwordToUse = await CacheHelper.getData(key: "password_add_$idUser");
+        debugPrint('🔑 Using password from user creation cache');
 
-      if (response.statusCode == 200) {
-        emit(PostSuccessFileState());
-        print("statusssssssssss$status");
-        print("File uploaded successfully!");
-        print(response.data['data']['id']);
-
-        if (edit) {
-          editUserFun(
+        if ((passwordToUse == null || passwordToUse.isEmpty) &&
+            password != null &&
+            password.isNotEmpty) {
+          passwordToUse = password;
+          debugPrint('🔑 Using password from request parameters');
+        }
+      }
+      debugPrint(
+          '🔐 Password available: ${passwordToUse != null ? "Yes" : "No"}');
+      if (edit) {
+        if (passwordToUse != null) {
+          await editUserFun(
             idUser: idUser,
-            avatar: response.data['data']['id'],
+            avatar: fileId,
             phone1: phone1,
-            password: password,
+            password: passwordToUse,
             employeeId: employeeId,
             phone2: phone2,
             whatsapp: whatsapp,
@@ -465,39 +550,75 @@ print("statussssssss:$status");
             status: status,
             empStatus: empStatus,
             role: role,
-            companies: companyId
+            companies: companyId,
           );
         } else {
-          adduserFun(
-              firstName: firstName,
-              avatar: response.data['data']['id'],
-              lastName: lastName,
-              status: status,
-              email: email,
-              role: role,
-
-              password: password,
-              emailEmp: emailEmp,
-              address: address,
-              phone1: phone1,
-              phone2: phone2,
-              whatsapp: whatsapp,
-              companies: companyId);
+          await editUserFun(
+            idUser: idUser,
+            avatar: fileId,
+            phone1: phone1,
+            employeeId: employeeId,
+            phone2: phone2,
+            whatsapp: whatsapp,
+            emailEmp: emailEmp,
+            address: address,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            status: status,
+            empStatus: empStatus,
+            role: role,
+            companies: companyId,
+          );
         }
       } else {
-        emit(PostErrorFileState());
-        print("File upload failed with status: ${response.statusCode}");
-      }
-    } catch (e) {
-      if (await InternetConnectionChecker().hasConnection == false) {
-        Utils.showSnackBar(
-          MagicRouter.currentContext!,
-          'أنت غير متصل بالانترنت',
+        await addUserFun(
+          firstName: firstName,
+          avatar: fileId,
+          lastName: lastName,
+          status: status,
+          email: email,
+          role: role,
+          password: password,
+          emailEmp: emailEmp,
+          address: address,
+          phone1: phone1,
+          phone2: phone2,
+          whatsapp: whatsapp,
+          companies: companyId,
         );
-        emit(NoInternetState());
       }
+
+      emit(PostSuccessFileState());
+    } catch (error, stackTrace) {
+      _handleError(error, stackTrace);
+    }
+  }
+
+  Future<int> _uploadFile(File file) async {
+    final dio = Dio();
+    final response = await dio.post(
+      "https://eby-itsales.guessitt.com/public/itsales/files",
+      data: FormData.fromMap({
+        "data": await MultipartFile.fromFile(file.path,
+            filename: basename(file.path)),
+      }),
+      options: Options(headers: {"Authorization": "Bearer $token"}),
+    );
+
+    if (response.statusCode != 200) throw Exception("File upload failed");
+    return response.data['data']['id'];
+  }
+
+  void _handleError(dynamic error, StackTrace stackTrace) async {
+    debugPrint("❌ Error: $error");
+
+    if (await InternetConnectionChecker().hasConnection == false) {
+      Utils.showSnackBar(MagicRouter.currentContext!, 'No internet connection');
+      emit(NoInternetState());
+    } else {
       emit(PostErrorFileState());
-      print("Error during file upload: $e");
+      Utils.showSnackBar(MagicRouter.currentContext!, 'Operation failed');
     }
   }
 }

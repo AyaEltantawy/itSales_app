@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:itsale/core/constants/app_colors.dart';
-import 'package:itsale/core/app/app.dart'; // for globalDark
+import 'package:itsale/core/app/app.dart';
+
+import '../localization/app_localizations.dart'; // for globalDark
 
 Widget defaultTextFormFeild(
     BuildContext context, {
@@ -36,7 +38,8 @@ Widget defaultTextFormFeild(
     validator: validator ??
             (value) {
           if (value == null || value.trim().isEmpty) {
-            return 'هذا الحقل مطلوب';
+            return AppLocalizations.of(context)!.translate("field_required")
+            ;
           }
           return null;
         },

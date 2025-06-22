@@ -26,6 +26,7 @@
     </queries>
 
     <application
+        android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:label="GeoTask"
         android:icon="@mipmap/ic_launcher">

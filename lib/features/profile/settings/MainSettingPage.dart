@@ -73,7 +73,9 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
           child: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         children: [
-          const CustomAppBar(back: true, title: 'الاعدادات'),
+
+           CustomAppBar(back: true, title: AppLocalizations.of(context)!.translate("settings")
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -115,7 +117,8 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
             height: 30.h,
           ),
           CustomRowInSettings(
-            text: "تعديل بيانات الحساب",
+            text: AppLocalizations.of(context)!.translate("edit_account_info")
+            ,
             onTap: () {
               navigateTo(context, AppRoutes.editDataPage);
             },
@@ -124,7 +127,8 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
             height: 20.h,
           ),
           CustomRowInSettings(
-            text: "تعديل كلمة السر",
+            text:AppLocalizations.of(context)!.translate("change_password")
+            ,
             onTap: () {
               Navigator.push(
                   context,
@@ -136,7 +140,8 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
             height: 20.h,
           ),
           CustomRowInSettings(
-            text: "اللغة",
+            text: AppLocalizations.of(context)!.translate("language")
+            ,
             onTap: () {
               Navigator.push(
                   context,
@@ -148,7 +153,8 @@ class _MainSettingsPageState extends State<MainSettingsPage> {
             height: 20.h,
           ),
           CustomRowInSettings(
-            text: "لون التطبيق",
+            text: AppLocalizations.of(context)!.translate("app_color")
+            ,
             onTap: () {
               Navigator.push(
                   context,

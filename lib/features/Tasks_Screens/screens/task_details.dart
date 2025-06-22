@@ -14,8 +14,10 @@ import 'package:itsale/generated/l10n.dart';
 
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_fonts.dart';
+import '../../../core/localization/app_localizations.dart' show AppLocalizations;
 import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/transition.dart';
+import '../../addEmployee/data/models/add_employee_model.dart';
 import '../components/details_screen_widget.dart';
 import '../data/models/get_task_model.dart';
 
@@ -69,7 +71,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   @override
   void initState() {
     TasksCubit.get(context).getAllTasksFun();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -191,21 +193,21 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                       title: widget.nameTask,
                                       description: widget.description,
                                       due_date: widget.deadline,
-                                      locationId: (widget.locationId != 'لا يوجد' && widget.locationId != '')
-                                          ? widget.locationId.toString()
-                                          : '10',
+                                      locationId:
+                                          (widget.locationId !=AppLocalizations.of(context)!.translate("not_available") &&
+                                                  widget.locationId != '')
+                                              ? widget.locationId.toString()
+                                              : '10',
                                       notes: widget.notes,
                                       clientName: widget.nameClient,
                                       clientPhone: widget.phoneClient,
                                       assign_to: userId.toString(),
                                     ),
-
                                   ),
                                 );
-                                print('Navigating with locationId: ${widget.locationId}');
-
-                              }
-                          ),
+                                print(
+                                    'Navigating with locationId: ${widget.locationId}');
+                              }),
                         ))
                   : Container(),
               widget.task_status != 'completed'
@@ -279,10 +281,10 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                   client_name: widget.nameClient,
                                   due_date: widget.deadline,
                                   task_status: widget.task_status,
-                                  locationId: widget.locationId == 'لا يوجد' ||
+                                  locationId: widget.locationId == AppLocalizations.of(context)!.translate("not_available") ||
                                           widget.locationId == ''
                                       ? 10
-                                      :int.tryParse(widget.locationId),
+                                      : int.tryParse(widget.locationId),
                                   taskId: widget.id.toString(),
                                 )
                                     .then((onValue) {

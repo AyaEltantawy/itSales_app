@@ -38,31 +38,48 @@ class _FilterDialogState extends State<FilterDialog> {
   Widget build(BuildContext context) {
     states = ['قيد الانتظار', 'ملغي', 'مكتمل', 'تم الاستلام'];
 
-    // Build locations from user tasks
-    for (int i = 0; i < TasksCubit.get(context).getUserTaskList!.length; i++) {
-      var taskLocation = TasksCubit.get(context).getUserTaskList![i].location?.address;
-      if (taskLocation != null) {
-        locationSet.add(taskLocation);
-        print('taskLocation ,,,,,,,,,,,,,,,,, $taskLocation');
+    // Clear location set before rebuilding
+    locationSet.clear();
+
+    // Build locations from user tasks safely
+    if (TasksCubit.get(context).getUserTaskList != null) {
+      for (var task in TasksCubit.get(context).getUserTaskList!) {
+        if (task.loc != null && task.loc!.isNotEmpty) {
+          final address = task.loc![0].address;
+          if (address != null && address.isNotEmpty) {
+            locationSet.add(address);
+          }
+        }
       }
     }
-    locations = locationSet.toList();
 
-    // Build locations from all tasks
-    for (int i = 0; i < TasksCubit.get(context).getAllTaskList!.length; i++) {
-      var taskLocation = TasksCubit.get(context).getAllTaskList![i].location;
-      if (taskLocation != null) {
-        locationSet.add(taskLocation);
+    // Build locations from all tasks safely
+    if (TasksCubit.get(context).getAllTaskList != null) {
+      for (var task in TasksCubit.get(context).getAllTaskList!) {
+        if (task.loc != null && task.loc!.isNotEmpty) {
+          final address = task.loc![0].address;
+          if (address != null && address.isNotEmpty) {
+            locationSet.add(address);
+          }
+        }
       }
     }
+
+    // Convert to list once after both loops
     locations = locationSet.toList();
 
-    // Build employees list and map
-    for (int i = 0; i < EmployeeCubit.get(context).users!.length; i++) {
-      var user = EmployeeCubit.get(context).users![i];
-      String fullName = '${user.first_name} ${user.last_name}'; // Combine first and last name
-      employeeSet.add(fullName); // Avoid duplicates
-      employeeMap[user.id!.toString()] = fullName;
+    // Build employees list and map safely
+    employeeSet.clear();
+    employeeMap.clear();
+
+    if (EmployeeCubit.get(context).users != null) {
+      for (var user in EmployeeCubit.get(context).users!) {
+        String fullName = '${user.first_name} ${user.last_name}'; // Combine first and last name
+        employeeSet.add(fullName); // Avoid duplicates
+        if (user.id != null) {
+          employeeMap[user.id!.toString()] = fullName;
+        }
+      }
     }
     employees = employeeSet.toList();
 
@@ -91,7 +108,7 @@ class _FilterDialogState extends State<FilterDialog> {
                   children: [
                     const Icon(Icons.cancel_presentation_outlined, size: 20),
                     SizedBox(width: 8.w),
-                    Text(
+                    const Text(
                       "الغي الفلتر ",
                       style: TextStyle(
                         decoration: TextDecoration.underline,
@@ -278,7 +295,7 @@ class _FilterDialogState extends State<FilterDialog> {
               isExpanded: true,
               underline: Container(),
               value: value,
-              hint: Text("اختار عنوان"),
+              hint: const Text("اختار عنوان"),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
                   value: item,
@@ -300,7 +317,7 @@ class _FilterDialogState extends State<FilterDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("التاريخ", style: TextStyle(fontSize: 16)),
+          const Text("التاريخ", style: TextStyle(fontSize: 16)),
           SizedBox(height: 8.h),
           GestureDetector(
             onTap: () async {
@@ -319,7 +336,7 @@ class _FilterDialogState extends State<FilterDialog> {
             child: Container(
               height: 50.h,
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.h),
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.placeholder),
                 borderRadius: BorderRadius.circular(8.h),
@@ -327,9 +344,9 @@ class _FilterDialogState extends State<FilterDialog> {
               alignment: Alignment.centerLeft,
               child: Text(
                 selectedDate == null
-                    ? 'اختار التاريخ'
-                    : '${selectedDate!.year}-${selectedDate!.month.toString().padLeft(2, '0')}-${selectedDate!.day.toString().padLeft(2, '0')}',
-                style: TextStyle(fontSize: 16),
+                    ? "اختار التاريخ"
+                    : selectedDate!.toLocal().toString().split(' ')[0],
+                style: TextStyle(fontSize: 16.sp),
               ),
             ),
           ),
@@ -338,7 +355,6 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 }
-
 
 class RoleDialog extends StatefulWidget {
   @override

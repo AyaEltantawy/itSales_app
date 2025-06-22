@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,201 +8,141 @@ import 'package:itsale/core/constants/app_animation.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/core/routes/app_routes.dart';
-import 'package:itsale/core/utils/token.dart';
-
+import 'package:itsale/features/addEmployee/data/models/add_employee_model.dart';
 import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/features/home/data/states.dart';
 import 'package:svg_flutter/svg.dart';
-
-import '../../../core/app/app.dart';
 import '../../../core/components/app_text_form_field.dart';
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/navigation.dart';
 import '../../../core/utils/snack_bar.dart';
-import '../../../generated/l10n.dart';
+import '../../../core/utils/token.dart';
 
 class AddNewEmployee extends StatefulWidget {
   final int empId;
   final bool isEdit;
 
-  const AddNewEmployee({super.key, required this.empId, required this.isEdit});
+  const AddNewEmployee({
+    super.key,
+    required this.empId,
+    required this.isEdit,
+  });
 
   @override
   State<AddNewEmployee> createState() => _AddNewEmployeeState();
 }
 
 class _AddNewEmployeeState extends State<AddNewEmployee> {
-  final List<String> _items = ['موظف', 'مدير'];
+  final List<String> _items = ['مدير', 'موظف'];
   final List<String> status = ['متوقف', 'نشط'];
 
   String _selectedItemRole = 'موظف';
   String _selectedItem2 = 'نشط';
-  String avatar = '';
-
+  dynamic? avatarUrl;
   int? avatarId;
-
   int? employeeId;
-
   int? employeeUserId;
 
-  var fullName = TextEditingController();
-  var email = TextEditingController();
-  var emailEmp = TextEditingController();
-  var password = TextEditingController();
-  var verifyPassword = TextEditingController();
-  var phone1 = TextEditingController();
-  var phone2 = TextEditingController();
-  var whatsApp = TextEditingController();
-  var address = TextEditingController();
-  var formKeyEmployee = GlobalKey<FormState>();
+  final fullName = TextEditingController();
+  final email = TextEditingController();
+  final emailEmp = TextEditingController();
+  final password = TextEditingController();
+  final verifyPassword = TextEditingController();
+  final phone1 = TextEditingController();
+  final phone2 = TextEditingController();
+  final whatsApp = TextEditingController();
+  final address = TextEditingController();
+  final formKeyEmployee = GlobalKey<FormState>();
 
   File? selectedImage;
+  bool isLoading = false;
 
   Future<void> _pickImage() async {
-    final pickedFile;
+    try {
+      final pickedFile =
+      await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          selectedImage = File(pickedFile.path);
 
-    pickedFile = await ImagePicker.platform
-        .getImageFromSource(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        selectedImage = File(pickedFile.path);
-      });
+          avatarUrl = null;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+      Utils.showSnackBar(context, "Failed to pick image");
     }
   }
 
   Future<void> loadEmployeeData() async {
-    if (EmployeeCubit
-        .get(context)
-        .users == null) return;
+    setState(() => isLoading = true);
 
-    for (int x = 0; x < EmployeeCubit
-        .get(context)
-        .users!
-        .length; x++) {
-      if (widget.empId == EmployeeCubit
-          .get(context)
-          .users![x].id) {
-        _selectedItemRole = EmployeeCubit
-            .get(context)
-            .users![x].role?.id == 3
-            ? 'موظف'
-            : 'مدير';
-        _selectedItem2 =
-        EmployeeCubit
-            .get(context)
-            .users![x].status == 'active'
-            ? 'نشط'
-            : 'متوقف';
+    try {
+      final users = EmployeeCubit.get(context).users;
+      if (users == null || users.isEmpty) return;
 
-        password.text = '1234568';
-        fullName.text =
-        '${EmployeeCubit
-            .get(context)
-            .users![x].first_name ?? ''} ${EmployeeCubit
-            .get(context)
-            .users![x].last_name ?? ''}';
-        email.text =
-            EmployeeCubit
-                .get(context)
-                .users![x].email?.toString() ?? '';
+      final user = users.firstWhere((u) => widget.empId == u.id);
 
-        emailEmp.text = EmployeeCubit
-            .get(context)
-            .users![x]
-            .employee_info
-            ?.isNotEmpty ==
-            true
-            ? EmployeeCubit
-            .get(context)
-            .users![x].employee_info![0].email
-            ?.toString() ??
-            ''
-            : '';
+      // استخراج الدور بشكل آمن
+      final roleId = user.role is int
+          ? user.role
+          : (user.role is Map && user.role['id'] is int)
+          ? user.role['id']
+          : null;
 
-        phone1.text = EmployeeCubit
-            .get(context)
-            .users![x]
-            .employee_info
-            ?.isNotEmpty ==
-            true
-            ? EmployeeCubit
-            .get(context)
-            .users![x].employee_info![0].phone_1
-            ?.toString() ??
-            ''
-            : '';
+      final isEmployee = roleId == 3;
 
-        phone2.text = EmployeeCubit
-            .get(context)
-            .users![x]
-            .employee_info
-            ?.isNotEmpty ==
-            true
-            ? EmployeeCubit
-            .get(context)
-            .users![x].employee_info![0].phone_2
-            ?.toString() ??
-            ''
-            : '';
+      _selectedItemRole = roleId == 1 ? 'مدير' : 'موظف';
+      _selectedItem2 = user.status == 'active' ? 'نشط' : 'متوقف';
 
-        whatsApp.text = EmployeeCubit
-            .get(context)
-            .users?[x]
-            .employee_info
-            ?.isNotEmpty ==
-            true
-            ? EmployeeCubit
-            .get(context)
-            .users![x].employee_info![0].whatsapp
-            ?.toString() ??
-            ''
-            : '';
+      fullName.text = '${user.first_name ?? ''} ${user.last_name ?? ''}'.trim();
+      email.text = user.email ?? '';
+      password.text = password.text;
 
-        address.text = EmployeeCubit
-            .get(context)
-            .users?[x]
-            .employee_info
-            ?.isNotEmpty ==
-            true
-            ? EmployeeCubit
-            .get(context)
-            .users![x].employee_info![0].address
-            ?.toString() ??
-            ''
-            : '';
+      print("📦 password.text: ${password.text}");
+      print("🟡 user.role: ${user.role}");
+      print("🔵 type: ${user.role.runtimeType}");
 
-        avatar = EmployeeCubit
-            .get(context)
-            .users?[x].avatar?.data?.full_url ??
-            '';
-        avatarId = EmployeeCubit
-            .get(context)
-            .users?[x].avatar?.id;
-
-        employeeId = EmployeeCubit
-            .get(context)
-            .users![x]
-            .employee_info
-            ?.isNotEmpty ==
-            true
-            ? EmployeeCubit
-            .get(context)
-            .users![x].employee_info![0].id
-            : null;
-
-        employeeUserId = EmployeeCubit
-            .get(context)
-            .users?[x].id;
+      final employeeInfo = user.employee_info?.firstOrNull;
+      if (employeeInfo != null) {
+        emailEmp.text = employeeInfo.email ?? '';
+        phone1.text = employeeInfo.phone_1 ?? '';
+        phone2.text = employeeInfo.phone_2 ?? '';
+        whatsApp.text = employeeInfo.whatsapp ?? '';
+        address.text = employeeInfo.address ?? '';
+        employeeId = employeeInfo.id;
+      } else {
+        employeeId = isEmployee ? null : 0;
+        debugPrint("⚠️ employeeInfo is null → setting employeeId = ${employeeId ?? 'null'}");
       }
+
+      if (user.avatar?.data?.full_url != null) {
+        avatarUrl = user.avatar!.data!.full_url;
+        debugPrint("✅ Avatar URL loaded: $avatarUrl");
+      } else {
+        debugPrint("⚠️ No avatar found for this employee.");
+      }
+
+      avatarId = user.avatar?.id;
+      employeeUserId = user.id;
+
+      debugPrint("✅ Loaded employee data - ID: $employeeId, Avatar: $avatarUrl");
+    } catch (e, stackTrace) {
+      debugPrint("❌ Error loading employee data: $e");
+      print("stackTrace: $stackTrace");
+      Utils.showSnackBar(context, "فشل تحميل بيانات الموظف");
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
+
   @override
   void initState() {
-    widget.isEdit ? loadEmployeeData() : Container();
     super.initState();
+    if (widget.isEdit) loadEmployeeData();
   }
 
   @override
@@ -236,7 +174,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                           if (state is AddErrorEmployeeInfoState ||
                               state is EditErrorEmployeeInfoState ||
                               state is ErrorEditUserState) {
-                            return Utils.showSnackBar(
+                            Utils.showSnackBar(
                                 context, 'حدثت مشكلة حاول مرة اخرى');
                           }
                           if (state is AddSuccessEmployeeInfoState ||
@@ -244,371 +182,62 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               state is SuccessEditUserState) {
                             if (widget.isEdit) {
                               navigateTo(context, AppRoutes.entryPoint);
-                              return Utils.showSnackBar(
+                              Utils.showSnackBar(
                                   context,
                                   AppLocalizations.of(context)!
                                       .translate("edit_done_successfuly"));
                             } else {
-                              return Utils.showSnackBar(
-                                  context, 'تمت الاضافة بنجاح');
+                              Utils.showSnackBar(context, 'تمت الاضافة بنجاح');
                             }
                           }
                         },
                         builder: (context, state) {
-                          if (state is AddLoadingUserState ||
+                          if (isLoading ||
+                              state is AddLoadingUserState ||
                               state is AddLoadingEmployeeInfoState ||
                               state is PostLoadingFileState ||
                               state is LoadingEditUserState ||
                               state is EditLoadingEmployeeInfoState) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(child: AppLottie.loader),
-                              ],
-                            );
+                            return Center(child: AppLottie.loader);
                           }
 
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Login Data Section
                               SectionHeader(
                                   title: AppLocalizations.of(context)!
                                       .translate("login_data")),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                textDirection: TextDirection.rtl,
-                                context,
-                                keyboardType: TextInputType.text,
-                                validator: (value) {
-                                  if (value == null || value
-                                      .trim()
-                                      .isEmpty) {
-                                    return AppLocalizations.of(context)!
-                                        .translate(
-                                        "Do not leave this field blank.");
-                                  }
-                                  List<String> parts = value.trim().split(' ');
-                                  if (parts.length < 2 ||
-                                      parts.any((part) => part.isEmpty)) {
-                                    return AppLocalizations.of(context)!
-                                        .translate(
-                                        "Please enter both first name and last name.");
-                                  }
-                                  return null;
-                                },
-                                controller: fullName,
-                                label: AppLocalizations.of(context)!
-                                    .translate("choose_employee_name"),
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.person,
-                                  color: AppColors.placeholder,
-                                ),
-                              ),
-
+                              _buildNameField(),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                controller: email,
-                                context,
-                                keyboardType: TextInputType.emailAddress,
-                                textDirection: TextDirection.rtl,
-                                validator: (value) {
-                                  if (value == null || value == '') {
-                                    return AppLocalizations.of(context)
-                                        ?.translate(
-                                        "Do not leave this field blank.");
-                                  }
-                                  return null;
-                                },
-                                label: AppLocalizations.of(context)
-                                    ?.translate("write_email"),
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.email,
-                                  color: AppColors.placeholder,
-                                ),
-                              ),
+                              _buildEmailField(),
+                              if (!widget.isEdit) ...[
+                                SizedBox(height: 16.h),
+                                _buildPasswordField(),
+                                SizedBox(height: 16.h),
+                                _buildVerifyPasswordField(),
+                              ],
                               SizedBox(height: 16.h),
-                              !widget.isEdit
-                                  ? defaultTextFormFeild(
-                                controller: password,
-                                context,
-                                textDirection: TextDirection.rtl,
-                                keyboardType: TextInputType.text,
-                                validator: (value) {
-                                  if (value == null || value == '') {
-                                    return AppLocalizations.of(context)!
-                                        .translate(
-                                        "Do not leave this field blank.");
-                                  }
-                                  return null;
-                                },
-                                label: AppLocalizations.of(context)!
-                                    .translate("write_password"),
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.lock,
-                                  color: AppColors.placeholder,
-                                ),
-                              )
-                                  : Container(),
-                              SizedBox(height: 16.h),
-                              !widget.isEdit
-                                  ? defaultTextFormFeild(
-                                textDirection: TextDirection.rtl,
-                                controller: verifyPassword,
-                                context,
-                                keyboardType: TextInputType.text,
-                                validator: (value) {
-                                  if (value == null || value == '') {
-                                    return AppLocalizations.of(context)
-                                        ?.translate(
-                                        "Do not leave this field blank.");
-                                  }
-                                  if (password.text !=
-                                      verifyPassword.text) {
-                                    return AppLocalizations.of(context)
-                                        ?.translate("Password does not match");
-                                  }
-                                  return null;
-                                },
-                                label: AppLocalizations.of(context)
-                                    ?.translate("password_confirmation"),
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.lock_outline_rounded,
-                                  color: AppColors.placeholder,
-                                ),
-                              )
-                                  : Container(),
-                              !widget.isEdit
-                                  ? SizedBox(height: 16.h)
-                                  : Container(),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    height: 50.h,
-                                    width: 140.w,
-                                    decoration: BoxDecoration(
-                                      border:
-                                      Border.all(color: AppColors.placeholder),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child: DropdownButtonFormField<String>(
-                                      decoration: InputDecoration(
-                                        labelText: AppLocalizations.of(context)!
-                                            .translate("role"),
-                                        labelStyle: TextStyle(
-                                            color: AppColors.placeholder),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              8.0.r),
-                                        ),
-                                      ),
-                                      value: _selectedItemRole,
-                                      items: _items.map((String item) {
-                                        return DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(item),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          _selectedItemRole =
-                                              newValue ?? _selectedItemRole;
-                                        });
-                                      },
-                                      hint: Text(AppLocalizations.of(context)!
-                                          .translate("role")),
-                                      isExpanded: true,
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 50.h,
-                                    width: 140.w,
-                                    decoration: BoxDecoration(
-                                      border:
-                                      Border.all(color: AppColors.placeholder),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child: DropdownButtonFormField<String>(
-                                      decoration: InputDecoration(
-                                        labelText: AppLocalizations.of(context)!
-                                            .translate("status"),
-                                        labelStyle: TextStyle(
-                                            color: AppColors.placeholder),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              8.0.r),
-                                        ),
-                                      ),
-                                      value: _selectedItem2,
-                                      items: status.map((String item) {
-                                        return DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(item),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          _selectedItem2 =
-                                              newValue ?? _selectedItem2;
-                                        });
-                                      },
-                                      hint: Text(AppLocalizations.of(context)!
-                                          .translate("active")),
-                                      isExpanded: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              _buildRoleAndStatusDropdowns(),
                               SizedBox(height: 24.h),
-                              SectionHeader(title: AppLocalizations.of(context)!
-                                  .translate("employee_data")),
+
+                              // Employee Data Section
+                              SectionHeader(
+                                  title: AppLocalizations.of(context)!
+                                      .translate("employee_data")),
                               SizedBox(height: 8.h),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        (widget.isEdit && avatar != '')
-                                            ? SizedBox(
-                                            height: 40.h,
-                                            width: 40.w,
-                                            child: NetworkImageWithLoader(
-                                                avatar))
-                                            : selectedImage != null
-                                            ? Image.file(
-                                          selectedImage!,
-                                          height: 16.h,
-                                          width: 16.w,
-                                        )
-                                            : Icon(
-                                          Icons
-                                              .add_photo_alternate_outlined,
-                                          color:
-                                          AppColors.placeholder,
-                                        ),
-                                        SizedBox(width: 5.w),
-                                        Text(
-                                          AppLocalizations.of(context)!
-                                              .translate("employee_photo"),
-                                          style: AppFonts.style14normal,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 16.w),
-                                  InkWell(
-                                    onTap: () {
-                                      _pickImage();
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(8.h),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: AppColors.placeholder,
-                                        ),
-                                        borderRadius:
-                                        BorderRadius.circular(8.r),
-                                        color: globalDark
-                                            ? AppColors.cardColorDark
-                                            : AppColors.textWhite,
-                                      ),
-                                      child: Text(
-                                        'اختر الصورة',
-                                        style: AppFonts.style14normal,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              _buildAvatarSection(),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                context,
-                                keyboardType: TextInputType.phone,
-                                validator: (value) {
-                                  if (value == null || value == '') {
-                                    return 'لا تترك هذا الحقل فارغا';
-                                  }
-                                  return null;
-                                },
-                                label: 'أكتب رقم الهاتف',
-                                textDirection: TextDirection.rtl,
-                                onTap: () {},
-                                controller: phone1,
-                                prefix: Icon(
-                                  Icons.phone_outlined,
-                                  color: AppColors.placeholder,
-                                ),
-                              ),
+                              _buildPhone1Field(),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                textDirection: TextDirection.rtl,
-                                context,
-                                keyboardType: TextInputType.phone,
-                                validator: (value) {},
-                                controller: phone2,
-                                label: 'أكتب رقم الهاتف البديل',
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.phone_outlined,
-                                  color: AppColors.placeholder,
-                                ),
-                              ),
+                              _buildPhone2Field(),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                textDirection: TextDirection.rtl,
-                                controller: whatsApp,
-                                context,
-                                keyboardType: TextInputType.phone,
-                                validator: (value) {},
-                                label: 'أكتب رقم الواتساب',
-                                onTap: () {},
-                                prefix: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
-                                    height: 14.h,
-                                    width: 14.w,
-                                    child: SvgPicture.asset(
-                                      AppIcons.whatsAap,
-                                      colorFilter: ColorFilter.mode(
-                                          AppColors.placeholder,
-                                          BlendMode.saturation),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              _buildWhatsAppField(),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                textDirection: TextDirection.rtl,
-                                context,
-                                controller: emailEmp,
-                                keyboardType: TextInputType.emailAddress,
-                                validator: (value) {},
-                                label: 'أكتب البريد الالكترونى الخاص',
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.email_outlined,
-                                  color: AppColors.placeholder,
-                                ),
-                              ),
+                              _buildEmployeeEmailField(),
                               SizedBox(height: 16.h),
-                              defaultTextFormFeild(
-                                textDirection: TextDirection.rtl,
-                                context,
-                                keyboardType: TextInputType.text,
-                                validator: (value) {},
-                                controller: address,
-                                label: 'أكتب عنوان الأقامة الحالى',
-                                onTap: () {},
-                                prefix: Icon(
-                                  Icons.home,
-                                  color: AppColors.placeholder,
-                                ),
-                              ),
+                              _buildAddressField(),
                             ],
                           );
                         },
@@ -618,112 +247,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                 ),
               ),
               SizedBox(height: 24.h),
-              widget.isEdit
-                  ? InkWell(
-                  onTap: () {
-                    List<String> nameParts = fullName.text.split(' ');
-                    String firstName =
-                    nameParts.isNotEmpty ? nameParts[0] : '';
-                    String lastName = nameParts.length > 1
-                        ? nameParts.sublist(1).join(' ')
-                        : '';
-
-                    if (formKeyEmployee.currentState!.validate() &&
-                        selectedImage != null &&
-                        _selectedItem2 != null &&
-                        _selectedItemRole != null) {
-                      EmployeeCubit.get(context).uploadFile(
-
-                          idUser: employeeUserId.toString(),
-                          selectedImage!,
-                          employeeId: employeeId.toString(),
-                          edit: widget.isEdit,
-                          firstName: firstName,
-                          password: password.text,
-                          lastName: lastName,
-                          status:
-                          _selectedItem2 == 'نشط' ? 'active' : 'draft',
-                          email: email.text,
-                          role: _selectedItemRole == 'موظف' ? '3' : '1',
-                          emailEmp: emailEmp.text,
-                          address: address.text,
-                          phone1: phone1.text,
-                          phone2: phone2.text,
-                          whatsapp: whatsApp.text);
-                    } else if (formKeyEmployee.currentState!.validate() &&
-                        selectedImage == null &&
-                        _selectedItem2 != null &&
-                        _selectedItemRole != null) {
-                      EmployeeCubit.get(context).editUserFun(
-                        firstName: firstName,
-                        idUser: employeeUserId.toString(),
-                        avatar: avatarId,
-                        employeeId: employeeId.toString(),
-                        lastName: lastName,
-                        status: _selectedItem2 == 'نشط' ? 'active' : 'draft',
-                        email: email.text,
-                        role: _selectedItemRole == 'موظف' ? '3' : '1',
-                        phone1: phone1.text,
-                        address: address.text,
-                        phone2: phone2.text,
-                        whatsapp: whatsApp.text,
-                        emailEmp: emailEmp.text,
-                      );
-                    }
-                  },
-                  child: _buildSubmitButton())
-                  : InkWell(
-                  onTap: () {
-                    List<String> nameParts = fullName.text.split(' ');
-
-                    String firstName =
-                    nameParts.isNotEmpty ? nameParts[0] : '';
-                    String lastName = nameParts.length > 1
-                        ? nameParts.sublist(1).join(' ')
-                        : '';
-
-                    if (formKeyEmployee.currentState!.validate() &&
-                        selectedImage != null &&
-                        _selectedItem2 != null &&
-                        _selectedItemRole != null) {
-                      EmployeeCubit.get(context).uploadFile(selectedImage!,
-                          edit: false,
-                          companyId: companyId,
-                          idUser: employeeUserId.toString(),
-                          employeeId: employeeId.toString(),
-                          firstName: firstName,
-                          lastName: lastName,
-                          status:
-                          _selectedItem2 == 'نشط' ? 'active' : 'draft',
-                          email: email.text,
-                          role: _selectedItemRole == 'موظف' ? '3' : '1',
-                          password: password.text,
-                          emailEmp: emailEmp.text,
-                          address: address.text,
-                          phone1: phone1.text,
-                          phone2: phone2.text,
-                          whatsapp: whatsApp.text);
-                    } else if (formKeyEmployee.currentState!.validate() &&
-                        selectedImage == null &&
-                        _selectedItem2 != null &&
-                        _selectedItemRole != null) {
-                      EmployeeCubit.get(context).adduserFun(
-                        companies: companyId,
-                        firstName: firstName,
-                        lastName: lastName,
-                        status: _selectedItem2 == 'نشط' ? 'active' : 'draft',
-                        email: email.text,
-                        role: _selectedItemRole == 'موظف' ? '3' : '1',
-                        password: password.text,
-                        address: address.text,
-                        phone2: phone2.text,
-                        whatsapp: whatsApp.text,
-                        emailEmp: emailEmp.text,
-                        phone1: phone1.text,
-                      );
-                    }
-                  },
-                  child: _buildSubmitButton()),
+              _buildSubmitButton(),
             ],
           ),
         ),
@@ -731,36 +255,415 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildNameField() {
+    return defaultTextFormFeild(
+      textDirection: TextDirection.rtl,
+      context,
+      keyboardType: TextInputType.text,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return AppLocalizations.of(context)!
+              .translate("Do not leave this field blank.");
+        }
+        List<String> parts = value.trim().split(' ');
+        if (parts.length < 2 || parts.any((part) => part.isEmpty)) {
+          return "من فضلك ادخل كلا من الاسم الاول والتاني";
+        }
+        return null;
+      },
+      controller: fullName,
+      label: AppLocalizations.of(context)!.translate("choose_employee_name"),
+      prefix: Icon(
+        Icons.person,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return defaultTextFormFeild(
+      controller: email,
+      context,
+      keyboardType: TextInputType.emailAddress,
+      textDirection: TextDirection.rtl,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Do not leave this field blank.";
+        }
+        return null;
+      },
+      label: AppLocalizations.of(context)?.translate("write_email"),
+      prefix: Icon(
+        Icons.email,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return defaultTextFormFeild(
+      controller: password,
+      context,
+      textDirection: TextDirection.rtl,
+      keyboardType: TextInputType.text,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return AppLocalizations.of(context)!
+              .translate("Do not leave this field blank.");
+        }
+        return null;
+      },
+      label: AppLocalizations.of(context)!.translate("write_password"),
+      prefix: Icon(
+        Icons.lock,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildVerifyPasswordField() {
+    return defaultTextFormFeild(
+      textDirection: TextDirection.rtl,
+      controller: verifyPassword,
+      context,
+      keyboardType: TextInputType.text,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return AppLocalizations.of(context)
+              ?.translate("Do not leave this field blank.");
+        }
+        if (password.text != value) {
+          return AppLocalizations.of(context)
+              ?.translate("Password does not match");
+        }
+        return null;
+      },
+      label: AppLocalizations.of(context)?.translate("password_confirmation"),
+      prefix: Icon(
+        Icons.lock_outline_rounded,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildRoleAndStatusDropdowns() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'إضافة موظف جديد ',
-          style: AppFonts.style20Normal,
+        _buildDropdown(
+          value: _selectedItemRole,
+          items: _items,
+          label: "role",
+          onChanged: (newValue) =>
+              setState(() => _selectedItemRole = newValue!),
+        ),
+        _buildDropdown(
+          value: _selectedItem2,
+          items: status,
+          label: "status",
+          onChanged: (newValue) => setState(() => _selectedItem2 = newValue!),
         ),
       ],
     );
   }
 
+  Widget _buildDropdown({
+    required String value,
+    required List<String> items,
+    required String label,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Container(
+      height: 50.h,
+      width: 140.w,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.placeholder),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: AppLocalizations.of(context)!.translate(label),
+          labelStyle: TextStyle(color: AppColors.placeholder),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0.r),
+          ),
+        ),
+        value: value,
+        items: items.map((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item),
+          );
+        }).toList(),
+        onChanged: onChanged,
+        isExpanded: true,
+      ),
+    );
+  }
+
+  Widget _buildAvatarSection() {
+    return Row(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              if (selectedImage != null)
+                CircleAvatar(
+                  radius: 20.r,
+                  backgroundImage: FileImage(selectedImage!),
+                )
+              else if (avatarUrl != null && avatarUrl! != "")
+                CircleAvatar(
+                  radius: 20.r,
+                  backgroundImage: NetworkImage(avatarUrl! as String),
+                )
+              else
+                Icon(
+                  Icons.add_photo_alternate_outlined,
+                  color: AppColors.placeholder,
+                  size: 40.r,
+                ),
+              SizedBox(width: 8.w),
+              Text(
+                AppLocalizations.of(context)!.translate("employee_photo"),
+                style: AppFonts.style14normal,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 16.w),
+        InkWell(
+          onTap: _pickImage,
+          child: Container(
+            padding: EdgeInsets.all(8.h),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.placeholder),
+              borderRadius: BorderRadius.circular(8.r),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.cardColorDark
+                  : AppColors.textWhite,
+            ),
+            child: Text(
+              'اختر الصورة',
+              style: AppFonts.style14normal,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhone1Field() {
+    return defaultTextFormFeild(
+      context,
+      keyboardType: TextInputType.phone,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'لا تترك هذا الحقل فارغا';
+        }
+        return null;
+      },
+      label: 'أكتب رقم الهاتف',
+      textDirection: TextDirection.rtl,
+      controller: phone1,
+      prefix: Icon(
+        Icons.phone_outlined,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildPhone2Field() {
+    return defaultTextFormFeild(
+      textDirection: TextDirection.rtl,
+      context,
+      keyboardType: TextInputType.phone,
+      controller: phone2,
+      label: 'أكتب رقم الهاتف البديل',
+      prefix: Icon(
+        Icons.phone_outlined,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildWhatsAppField() {
+    return defaultTextFormFeild(
+      textDirection: TextDirection.rtl,
+      controller: whatsApp,
+      context,
+      keyboardType: TextInputType.phone,
+      label: 'أكتب رقم الواتساب',
+      prefix: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: SizedBox(
+          height: 14.h,
+          width: 14.w,
+          child: SvgPicture.asset(
+            AppIcons.whatsAap,
+            colorFilter:
+            ColorFilter.mode(AppColors.placeholder, BlendMode.saturation),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmployeeEmailField() {
+    return defaultTextFormFeild(
+      textDirection: TextDirection.rtl,
+      context,
+      controller: emailEmp,
+      keyboardType: TextInputType.emailAddress,
+      label: 'أكتب البريد الالكترونى الخاص',
+      prefix: Icon(
+        Icons.email_outlined,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  Widget _buildAddressField() {
+    return defaultTextFormFeild(
+      textDirection: TextDirection.rtl,
+      context,
+      keyboardType: TextInputType.text,
+      controller: address,
+      label: 'أكتب عنوان الأقامة الحالى',
+      prefix: Icon(
+        Icons.home,
+        color: AppColors.placeholder,
+      ),
+    );
+  }
+
+  void _submitForm() {
+    if (!formKeyEmployee.currentState!.validate()) return;
+    if (_selectedItem2 == null || _selectedItemRole == null) {
+      Utils.showSnackBar(context, "Please select role and status");
+      return;
+    }
+
+    final nameParts = fullName.text.split(' ');
+    final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+    final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+    final statusValue = _selectedItem2 == 'نشط' ? 'active' : 'draft';
+    final roleValue = _selectedItemRole == 'موظف' ? '3' : '1';
+
+    if (widget.isEdit) {
+      _handleEditEmployee(firstName, lastName, statusValue, roleValue);
+    } else {
+      _handleAddEmployee(firstName, lastName, statusValue, roleValue);
+    }
+  }
+
+  void _handleEditEmployee(
+      String firstName, String lastName, String statusValue, String roleValue) {
+    if (selectedImage != null) {
+      EmployeeCubit.get(context).uploadFile(
+        selectedImage!,
+        companyId: companyId,
+        idUser: employeeUserId.toString(),
+        employeeId: employeeId.toString(),
+        edit: true,
+        firstName: firstName,
+        password: password.text,
+        lastName: lastName,
+        status: statusValue,
+        email: email.text,
+        role: roleValue,
+        emailEmp: emailEmp.text,
+        address: address.text,
+        phone1: phone1.text,
+        phone2: phone2.text,
+        whatsapp: whatsApp.text,
+
+      );
+    } else {
+      EmployeeCubit.get(context).editUserFun(
+        password: password.text,
+        companies: companyId,
+        firstName: firstName,
+        idUser: employeeUserId.toString(),
+        avatar: avatarId,
+        employeeId: employeeId.toString(),
+        lastName: lastName,
+        status: statusValue,
+        email: email.text,
+        role: roleValue,
+        phone1: phone1.text,
+        address: address.text,
+        phone2: phone2.text,
+        whatsapp: whatsApp.text,
+        emailEmp: emailEmp.text,
+
+      );
+    }
+  }
+
+  void _handleAddEmployee(
+      String firstName, String lastName, String statusValue, String roleValue) {
+    if (selectedImage != null) {
+      EmployeeCubit.get(context).uploadFile(
+        selectedImage!,
+
+        edit: false,
+        companyId: companyId,
+        idUser: employeeUserId?.toString() ?? '',
+        employeeId: employeeId?.toString() ?? '',
+        firstName: firstName,
+        lastName: lastName,
+        status: statusValue,
+        email: email.text,
+        role: roleValue,
+        password: password.text,
+        emailEmp: emailEmp.text,
+        address: address.text,
+        phone1: phone1.text,
+        phone2: phone2.text,
+        whatsapp: whatsApp.text,
+      );
+    } else {
+      EmployeeCubit.get(context).addUserFun(
+        companies: companyId,
+        firstName: firstName,
+        lastName: lastName,
+        status: statusValue,
+        email: email.text,
+        role: roleValue,
+        password: password.text,
+        address: address.text,
+        phone2: phone2.text,
+        whatsapp: whatsApp.text,
+        emailEmp: emailEmp.text,
+        phone1: phone1.text,
+
+      );
+    }
+  }
+
   Widget _buildSubmitButton() {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
-      child: Container(
-        width: double.infinity,
-        height: 56.h,
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Center(
-          child: Text(
-            widget.isEdit ? 'تعديل الموظف' : 'إنشاء الحساب',
-            style: TextStyle(
-              fontFamily: 'Tajawal',
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+      child: InkWell(
+        onTap: _submitForm,
+        child: Container(
+          width: double.infinity,
+          height: 56.h,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Center(
+            child: Text(
+              widget.isEdit ? 'تعديل الموظف' : 'إنشاء الحساب',
+              style: TextStyle(
+                fontFamily: 'Tajawal',
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -779,52 +682,6 @@ class SectionHeader extends StatelessWidget {
     return Text(
       title,
       style: AppFonts.style20Normal,
-    );
-  }
-}
-
-class EmployeeInputField extends StatelessWidget {
-  final String hintText;
-  final IconData icon;
-
-  const EmployeeInputField(
-      {super.key, required this.hintText, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 343.w,
-      height: 52.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Color(0xff686e73)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: Color(0xff848a90),
-          ),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: TextField(
-              textAlign: TextAlign.right,
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: TextStyle(
-                  fontFamily: 'Tajawal',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xff848a90),
-                ),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

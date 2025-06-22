@@ -47,7 +47,7 @@ Widget nothing(context,
 
                color: AppColors.textWhite, size: 32,),
               SizedBox(width: 10.w,),
-              Text('${AppLocalizations.of(context)!.translate("add_button")}$button',style: GoogleFonts.cairo(fontSize: 18.sp,fontWeight: FontWeight.bold, color: AppColors.textWhite)),
+              Text('${AppLocalizations.of(context)!.translate("add")}$button',style: GoogleFonts.cairo(fontSize: 18.sp,fontWeight: FontWeight.bold, color: AppColors.textWhite)),
             ],
           ),
         )),

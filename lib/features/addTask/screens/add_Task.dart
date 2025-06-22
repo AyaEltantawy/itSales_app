@@ -704,6 +704,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             deadlineController.text != '' &&
                             !widget.isEdit) {
                           TasksCubit.get(context).addTaskFun(
+
                             company: companyId ?? 0,
                             status: 'published',
                             assigned_to: role == '1' ? (selectedId) : (userId!),

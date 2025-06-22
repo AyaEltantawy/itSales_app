@@ -24,7 +24,7 @@ class AppCubit extends Cubit<AppStates> {
   AppCubit(this.repo) : super(InitialState());
 
   static AppCubit get(context) => BlocProvider.of(context);
-
+  String? loginPassword;
   bool isChecked = false;
 
   void toggleCheckbox() {
@@ -66,6 +66,7 @@ class AppCubit extends Cubit<AppStates> {
         await CacheHelper.saveData(key: 'lName', value: user.last_name ?? '');
         await CacheHelper.saveData(key: 'email', value: user.email ?? '');
         await CacheHelper.saveData(key: 'userId', value: user.id ?? 0);
+        await CacheHelper.saveData(key: 'password', value: user.password ?? "");
 
         // تحديث القيم العامة
         token = tokenValue;

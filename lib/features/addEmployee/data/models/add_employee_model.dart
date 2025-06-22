@@ -13,6 +13,7 @@ class AddUserRequestModel {
   String? role;
 
   int? companies;
+  int? avatar;
 
   AddUserRequestModel(
       {this.email,
@@ -21,7 +22,8 @@ class AddUserRequestModel {
       this.first_name,
       this.last_name,
       this.role,
-      this.companies});
+      this.companies,
+      this.avatar});
 
   factory AddUserRequestModel.fromJson(Map<String, dynamic> json) =>
       _$AddUserRequestModelFromJson(json);
@@ -31,17 +33,19 @@ class AddUserRequestModel {
 
 @JsonSerializable()
 class EditUserRequestModel {
+  String? id;
   String? email;
   String? status;
   String? first_name;
   String? last_name;
   String? role;
   String? password;
-  int? avatar;
+  dynamic? avatar;
   int? companies;
 
   EditUserRequestModel(
-      {this.email,
+      {this.id,
+      this.email,
       this.status,
       this.first_name,
       this.last_name,
@@ -224,7 +228,7 @@ class DataUserResponse {
   String? timezone;
   String? locale;
   String? locale_options;
-  int? avatar;
+  dynamic? avatar;
   dynamic? companies;
   String? title;
   bool? email_notifications;

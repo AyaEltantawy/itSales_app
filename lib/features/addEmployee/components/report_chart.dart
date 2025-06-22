@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../../HomeEmployee/screens/home_employee.dart'
-    show TaskSummarySection;
+import '../../HomeEmployee/screens/home_employee.dart' show TaskSummarySection;
 import '../../Tasks_Screens/data/cubit/cubit.dart';
 
 class SalesData {
@@ -14,6 +13,8 @@ class SalesData {
 }
 
 class ReportChart extends StatelessWidget {
+  const ReportChart({super.key});
+
   @override
   Widget build(BuildContext context) {
     final taskCubit = TasksCubit.get(context);
@@ -28,13 +29,13 @@ class ReportChart extends StatelessWidget {
 
     final List<SalesData> service1Data = [
       SalesData(
-        AppLocalizations.of(context)!.translate("service_1"),
+        "مكتمل",
         completedTasks.length.toDouble(),
       ),
     ];
     final List<SalesData> service2Data = [
       SalesData(
-        AppLocalizations.of(context)!.translate("service_2"),
+        "غير مكتمل",
         uncompletedTasks.length.toDouble(),
       ),
     ];
@@ -75,4 +76,3 @@ class ReportChart extends StatelessWidget {
     );
   }
 }
-

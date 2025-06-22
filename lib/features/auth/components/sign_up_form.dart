@@ -28,7 +28,7 @@ class SignUpForm extends StatelessWidget {
           const Text("Name"),
           const SizedBox(height: 8),
           TextFormField(
-            validator: Validators.requiredWithFieldName('Name').call,
+            validator: Validators.requiredWithFieldName('Name', context).call,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: AppDefaults.padding),
@@ -36,7 +36,7 @@ class SignUpForm extends StatelessWidget {
           const SizedBox(height: 8),
           TextFormField(
             textInputAction: TextInputAction.next,
-            validator: Validators.required.call,
+            validator: Validators.required.call(context),
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),
@@ -44,13 +44,12 @@ class SignUpForm extends StatelessWidget {
           const Text("Password"),
           const SizedBox(height: 8),
           TextFormField(
-            validator: Validators.required.call,
+            validator: Validators.required.call(context),
             textInputAction: TextInputAction.next,
             obscureText: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               suffixIcon: Material(
                 color: Colors.transparent,
-
               ),
             ),
           ),
