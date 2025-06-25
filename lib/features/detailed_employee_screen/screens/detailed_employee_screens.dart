@@ -11,6 +11,7 @@ import 'package:itsale/core/localization/app_localizations.dart';
 import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/navigation.dart';
+import '../../../core/localization/localization_service.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/token.dart' show role, userId;
 import '../../../core/utils/transition.dart';
@@ -417,7 +418,8 @@ class _TaskListInProfileState extends State<TaskListInProfile> {
                           route: AppRoutes.addTask,
                           button:AppLocalizations.of(context)!.translate("task")
                     ,
-                          text: 'لا يوجد نتائج مطابقة',
+                          text: LocalizationService.tr("no_matching_results")
+                    ,
                         );
                 }
 

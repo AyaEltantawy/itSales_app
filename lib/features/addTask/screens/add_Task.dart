@@ -15,14 +15,13 @@ import 'package:itsale/features/Tasks_Screens/data/cubit/cubit.dart';
 import 'package:itsale/features/Tasks_Screens/data/cubit/states.dart';
 import 'package:itsale/features/auth/data/cubit.dart';
 import 'package:itsale/features/home/data/cubit.dart';
-
 import '../../../core/components/app_text_form_field.dart';
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_animation.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/localization/localization_service.dart';
 import '../../../core/utils/token.dart';
 import 'package:intl/intl.dart';
-
 import '../../../generated/l10n.dart';
 import '../componenets/maps.dart';
 
@@ -55,7 +54,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   var taskTitle = TextEditingController();
   var address = TextEditingController();
   var formKeyTask = GlobalKey<FormState>();
-  String selectedName = '      اختر اسم الموظف';
+  String selectedName = LocalizationService.tr("select_employee_name");
   String selectedStatus = '';
   String selectedId = '';
 
@@ -70,8 +69,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             TasksCubit.get(context).getAllTaskList![x].location != null
                 ? TasksCubit.get(context)
                     .getAllTaskList![x]
-                    .location!
-                    .location
+                    .loc![x]
+                    .address
                     .toString()
                 : '';
         deadlineController.text =
@@ -99,25 +98,30 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             TasksCubit.get(context).getAllTaskList![x].location != null
                 ? TasksCubit.get(context)
                     .getAllTaskList![x]
-                    .location!
-                    .map_url
+                    .loc![x]
+                    .mapUrl
                     .toString()
                 : '';
       }
       switch (selectedStatus) {
         case 'inbox':
-          selectedStatus = 'قيد الانتظار';
+          selectedStatus = LocalizationService.tr("pending");
         case 'completed':
-          selectedStatus = 'مكتمل';
+          selectedStatus = LocalizationService.tr("completed");
         case 'cancelled':
-          selectedStatus = 'ملغي';
+          selectedStatus = LocalizationService.tr("cancelled");
         case 'progress':
-          selectedStatus = 'تم الاستلام';
+          selectedStatus = LocalizationService.tr("received");
       }
     }
   }
 
-  List<String> status = ['قيد الانتظار', 'تم الاستلام', 'ملغي', 'مكتمل'];
+  List<String> status = [
+    LocalizationService.tr("pending"),
+    LocalizationService.tr('received'),
+    LocalizationService.tr('cancelled'),
+    LocalizationService.tr('completed')
+  ];
 
   @override
   void initState() {
@@ -182,12 +186,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           listener: (context, state) {
             if (state is AddErrorUserTaskState ||
                 state is EditErrorUserTaskState) {
-              Utils.showSnackBar(context, 'عفوا حاول مرة اخرى');
+              Utils.showSnackBar(
+                  context, LocalizationService.tr("sorry_try_again"));
             } else if (state is AddSuccessUserTaskState ||
                 state is EditSuccessUserTaskState) {
               widget.isEdit
-                  ? Utils.showSnackBar(context, 'تم تعديل المهمة بنجاح')
-                  : Utils.showSnackBar(context, 'تم اضافة المهمة بنجاح');
+                  ? Utils.showSnackBar(context,
+                      LocalizationService.tr("task_updated_successfully"))
+                  : Utils.showSnackBar(context,
+                      LocalizationService.tr("task_added_successfully"));
               navigateTo(context, AppRoutes.entryPoint);
             }
           },
@@ -213,15 +220,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           SizedBox(height: 10.h),
                           CustomAppBar(
                             back: widget.back,
-                            title:
-                                widget.isEdit ? ' تعديل المهمة' : 'إضافة مهمة',
+                            title: widget.isEdit
+                                ? LocalizationService.tr("edit_task")
+                                : LocalizationService.tr("add_task"),
                           ),
                           const Divider(),
                           SizedBox(height: 10.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const SectionHeader(title: 'بيانات المهمة'),
+                              SectionHeader(
+                                  title: LocalizationService.tr("task_data")),
                               widget.isEdit
                                   ? Container(
                                       width: 164.w,
@@ -285,7 +294,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                         TextFieldConfiguration(
                                       decoration: InputDecoration(
                                           labelStyle: AppFonts.style16Normal,
-                                          labelText: 'اختر اسم الموظف'),
+                                          labelText: LocalizationService.tr(
+                                              "select_employee_name")),
                                       controller:
                                           _dropdownSearchFieldController,
                                     ),
@@ -317,7 +327,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                     suggestionsBoxController:
                                         suggestionBoxController,
                                     validator: (value) => value!.isEmpty
-                                        ? 'اختر اسم الموظف'
+                                        ? LocalizationService.tr(
+                                            "select_employee_name")
                                         : null,
                                     onSaved: (value) {
                                       _selectedFruit = value;
@@ -402,11 +413,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             keyboardType: TextInputType.text,
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                               return null;
                             },
-                            label: 'اسم المهمة',
+                            label: LocalizationService.tr("task_name"),
                             onTap: () {},
                             prefix: Icon(
                               Icons.task,
@@ -421,11 +433,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             keyboardType: TextInputType.datetime,
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                               return null;
                             },
-                            label: 'تحديد مهلة المهمة',
+                            label: LocalizationService.tr("set_task_deadline"),
                             onTap: () => _selectDateTime(context),
                             prefix: Icon(
                               Icons.timelapse,
@@ -436,7 +449,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           TextFormField(
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                               return null;
                             },
@@ -446,7 +460,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             // Set this
                             maxLines: 6,
                             decoration: InputDecoration(
-                              labelText: '        تفاصيل المهمة',
+                              labelText: LocalizationService.tr("task_details"),
 
                               alignLabelWithHint: true,
                               contentPadding: EdgeInsets.symmetric(
@@ -483,18 +497,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           SizedBox(height: 24.h),
-                          const SectionHeader(title: 'الموقع الجغرافي'),
+                          SectionHeader(
+                              title: LocalizationService.tr("location")),
                           SizedBox(height: 8.h),
                           defaultTextFormFeild(
                             context,
                             keyboardType: TextInputType.text,
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                               return null;
                             },
-                            label: 'عنوان المهمة',
+                            label: LocalizationService.tr("task_title"),
                             onTap: () {},
                             controller: address,
                             prefix: Icon(
@@ -508,16 +524,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             keyboardType: TextInputType.text,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
 
                               final uri = Uri.tryParse(value);
                               if (uri == null || !uri.isAbsolute) {
-                                return 'رابط غير صالح';
+                                return LocalizationService.tr("invalid_link");
                               }
                               return null;
                             },
-                            label: 'الصق رابط Google Map الخاص بموقع المهمة',
+                            label:
+                                LocalizationService.tr("paste_google_map_link"),
                             onTap: () {},
                             controller: location,
                             prefix: Icon(
@@ -534,16 +552,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   Clipboard.setData(
                                       ClipboardData(text: location.text));
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('تم نسخ الرابط')),
+                                    SnackBar(
+                                        content: Text(LocalizationService.tr(
+                                            "link_copied"))),
                                   );
                                 }
                               },
                               icon: const Icon(Icons.copy,
                                   size: 18, color: AppColors.primary),
-                              label: const Text(
-                                'نسخ الرابط',
-                                style: TextStyle(color: AppColors.primary),
+                              label: Text(
+                                LocalizationService.tr("copy_link"),
+                                style:
+                                    const TextStyle(color: AppColors.primary),
                               ),
                             ),
                           ),
@@ -564,6 +584,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   final longitude = result['longitude'];
                                   final pickedAddress = result['address'];
                                   final locationId = result['locationId'];
+print ("locationIsssd${locationId}");
+                                  print('🔍 result: $result');
+                                  if (result != null) {
+                                    final locationId = result['locationId'];
+                                    print('✅ Location ID: $locationId');
+                                  } else {
+                                    print('🚫 result is null');
+                                  }
+
 
                                   setState(() {
                                     address.text = pickedAddress;
@@ -603,18 +632,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           SizedBox(height: 24.h),
-                          const SectionHeader(title: 'بيانات العميل'),
+                          SectionHeader(
+                              title: LocalizationService.tr("client_data")),
                           SizedBox(height: 16.h),
                           defaultTextFormFeild(
                             context,
                             keyboardType: TextInputType.name,
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                               return null;
                             },
-                            label: 'أكتب اسم العميل',
+                            label: LocalizationService.tr("enter_client_name"),
                             controller: clientName,
                             onTap: () {},
                             prefix: Icon(
@@ -628,11 +659,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             keyboardType: TextInputType.phone,
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                               return null;
                             },
-                            label: 'أكتب رقم العميل',
+                            label: LocalizationService.tr("enter_client_phone"),
                             controller: clientNumber,
                             onTap: () {},
                             prefix: Icon(
@@ -644,7 +676,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           TextFormField(
                             validator: (value) {
                               if (value == null || value == '') {
-                                return 'لا تترك هذا الحقل فارغا';
+                                return LocalizationService.tr(
+                                    "Do not leave this field blank.");
                               }
                             },
                             controller: notes,
@@ -653,7 +686,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             // Set this
                             maxLines: 6,
                             decoration: InputDecoration(
-                              labelText: '       ملاحظات',
+                              labelText: LocalizationService.tr("notes"),
 
                               alignLabelWithHint: true,
                               contentPadding: EdgeInsets.symmetric(
@@ -704,7 +737,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             deadlineController.text != '' &&
                             !widget.isEdit) {
                           TasksCubit.get(context).addTaskFun(
-
                             company: companyId ?? 0,
                             status: 'published',
                             assigned_to: role == '1' ? (selectedId) : (userId!),
@@ -722,13 +754,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
                         if (widget.isEdit) {
                           switch (selectedStatus) {
-                            case 'قيد الانتظار':
+                            case 'قيد الانتظار' || 'Pending':
                               selectedStatus = 'inbox';
-                            case 'مكتمل':
+                            case 'مكتمل' || 'Completed':
                               selectedStatus = 'completed';
-                            case 'ملغي':
+                            case 'ملغي' || 'Cancelled':
                               selectedStatus = 'cancelled';
-                            case 'تم الاستلام':
+                            case 'تم الاستلام' || 'Received':
                               selectedStatus = 'progress';
                           }
                           TasksCubit.get(context).getLocationFun(
@@ -761,7 +793,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          'إضافة مهمة ',
+          LocalizationService.tr("add_task"),
           style: AppFonts.style20Normal,
         ),
       ],
@@ -780,7 +812,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         ),
         child: Center(
           child: Text(
-            widget.isEdit ? 'تعديل المهمة' : 'إنشاء المهمة',
+            widget.isEdit
+                ? LocalizationService.tr("edit_task")
+                : LocalizationService.tr("create_task"),
             style: TextStyle(
               fontFamily: 'Tajawal',
               fontSize: 20.sp,
@@ -824,13 +858,13 @@ class EmployeeInputField extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Color(0xff686e73)),
+        border: Border.all(color: const Color(0xff686e73)),
       ),
       child: Row(
         children: [
           Icon(
             icon,
-            color: Color(0xff848a90),
+            color: const Color(0xff848a90),
           ),
           SizedBox(width: 8.w),
           Expanded(
@@ -842,7 +876,7 @@ class EmployeeInputField extends StatelessWidget {
                   fontFamily: 'Tajawal',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xff848a90),
+                  color: const Color(0xff848a90),
                 ),
                 border: InputBorder.none,
               ),

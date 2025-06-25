@@ -13,12 +13,13 @@ import 'package:itsale/core/injection/injection.dart';
 import 'package:itsale/core/utils/token.dart';
 import 'package:itsale/features/profile/widgets/language_show_dialog/widgets/restart_widget.dart';
 
+import 'core/localization/app_localizations.dart';
 import 'core/routes/on_generate_route.dart';
 
 //final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 SharedPreferences? sharedPreferences;
-
+late final AppLocalizations localizations;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -43,6 +44,7 @@ Future<void> main() async {
         child: MyApp(
           defaultLocale: defaultLocale,
         ),
+
       ),
     );
   } catch (e, stackTrace) {

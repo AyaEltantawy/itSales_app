@@ -18,6 +18,7 @@ import '../../../core/app/app.dart';
 import '../../../core/cache_helper/cache_helper.dart';
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_animation.dart';
+import '../../../core/localization/localization_service.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/themes/styles.dart';
 import '../../../core/utils/token.dart';
@@ -319,6 +320,7 @@ class TaskSummarySection extends StatefulWidget {
 class _TaskSummarySectionState extends State<TaskSummarySection> {
   @override
   void didChangeDependencies() {
+    LocalizationService.init(context);
     widget.completedTasks = TasksCubit.get(context)
         .getAllTaskList!
         .where((task) => task.task_status == 'completed')
@@ -526,7 +528,8 @@ class CompletedTasksSection extends StatelessWidget {
             shrinkWrap: true,
             itemCount: completedTasks.length,
             itemBuilder: (context, index) {
-              final  task = completedTasks[index];
+              final
+              task = completedTasks[index];
 
 
               return InkWell(

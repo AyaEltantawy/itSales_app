@@ -12,6 +12,7 @@ import '../../../../core/components/network_image.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_fonts.dart';
 import '../../../../core/constants/navigation.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/token.dart';
 import '../../../auth/data/cubit.dart';
@@ -188,7 +189,8 @@ class _EditDataPageState extends State<EditDataPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 10),
-                const CustomAppBar(back: true, title: 'تعديل الحساب'),
+                 CustomAppBar(back: true, title: AppLocalizations.of(context)!.translate("edit_account")
+                ),
                 SizedBox(height: 20.h),
                 ProfileHeader(
                   selectedImage: selectedImageForSetting,
@@ -230,7 +232,8 @@ class _EditDataPageState extends State<EditDataPage> {
                 SizedBox(height: 40.h),
                 defaultButton(
                   context: context,
-                  text: 'حفظ التغييرات',
+                  text: AppLocalizations.of(context)!.translate("save_changes")
+                  ,
                   width: 250.w,
                   height: 48.h,
                   isColor: true,
@@ -313,7 +316,7 @@ class ProfileHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r),
               color: globalDark ? AppColors.textBlack : AppColors.textWhite,
             ),
-            child: Text('اختر صورة', style: AppFonts.style14normal),
+            child: Text(AppLocalizations.of(context)!.translate("pick_image"), style: AppFonts.style14normal),
           ),
         ),
       ],

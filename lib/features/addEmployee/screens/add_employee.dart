@@ -11,12 +11,14 @@ import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/addEmployee/data/models/add_employee_model.dart';
 import 'package:itsale/features/home/data/cubit.dart';
 import 'package:itsale/features/home/data/states.dart';
+import 'package:itsale/main.dart';
 import 'package:svg_flutter/svg.dart';
 import '../../../core/components/app_text_form_field.dart';
 import '../../../core/components/default_app_bar.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/navigation.dart';
+import '../../../core/localization/localization_service.dart';
 import '../../../core/utils/snack_bar.dart';
 import '../../../core/utils/token.dart';
 
@@ -35,11 +37,11 @@ class AddNewEmployee extends StatefulWidget {
 }
 
 class _AddNewEmployeeState extends State<AddNewEmployee> {
-  final List<String> _items = ['مدير', 'موظف'];
-  final List<String> status = ['متوقف', 'نشط'];
+  final List<String> _items = [LocalizationService.tr("manager"), LocalizationService.tr("employee")];
+  final List<String> status = [LocalizationService.tr("inactive"), LocalizationService.tr("active")];
 
-  String _selectedItemRole = 'موظف';
-  String _selectedItem2 = 'نشط';
+  String _selectedItemRole = LocalizationService.tr("employee");
+  String _selectedItem2 = LocalizationService.tr("active");
   dynamic? avatarUrl;
   int? avatarId;
   int? employeeId;
@@ -94,8 +96,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
 
       final isEmployee = roleId == 3;
 
-      _selectedItemRole = roleId == 1 ? 'مدير' : 'موظف';
-      _selectedItem2 = user.status == 'active' ? 'نشط' : 'متوقف';
+      _selectedItemRole = roleId == 1 ? LocalizationService.tr("manager") : LocalizationService.tr("employee");
+      _selectedItem2 = user.status == 'active' ? LocalizationService.tr("active") : LocalizationService.tr("inactive");
 
       fullName.text = '${user.first_name ?? ''} ${user.last_name ?? ''}'.trim();
       email.text = user.email ?? '';
@@ -164,7 +166,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                         title: widget.isEdit
                             ? AppLocalizations.of(context)!
                             .translate("edit_data_of_employee")
-                            : 'إضافة موظف جديد',
+                            : AppLocalizations.of(context)!.translate("add_new_employee")
+                        ,
                         back: true,
                       ),
                       const Divider(),
@@ -175,7 +178,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               state is EditErrorEmployeeInfoState ||
                               state is ErrorEditUserState) {
                             Utils.showSnackBar(
-                                context, 'حدثت مشكلة حاول مرة اخرى');
+                                context, AppLocalizations.of(context)!.translate("something_went_wrong")
+                            );
                           }
                           if (state is AddSuccessEmployeeInfoState ||
                               state is EditSuccessEmployeeInfoState ||
@@ -187,7 +191,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                                   AppLocalizations.of(context)!
                                       .translate("edit_done_successfuly"));
                             } else {
-                              Utils.showSnackBar(context, 'تمت الاضافة بنجاح');
+                              Utils.showSnackBar(context,AppLocalizations.of(context)!.translate("added_successfully")
+                              );
                             }
                           }
                         },
@@ -267,7 +272,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
         }
         List<String> parts = value.trim().split(' ');
         if (parts.length < 2 || parts.any((part) => part.isEmpty)) {
-          return "من فضلك ادخل كلا من الاسم الاول والتاني";
+          return AppLocalizations.of(context)!.translate("enter_full_name");
+
         }
         return null;
       },
@@ -444,7 +450,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                   : AppColors.textWhite,
             ),
             child: Text(
-              'اختر الصورة',
+              AppLocalizations.of(context)!.translate("pick_image"),
               style: AppFonts.style14normal,
             ),
           ),
@@ -459,11 +465,11 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       keyboardType: TextInputType.phone,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'لا تترك هذا الحقل فارغا';
+          return AppLocalizations.of(context)!.translate("Do not leave this field blank.");
         }
         return null;
       },
-      label: 'أكتب رقم الهاتف',
+      label: AppLocalizations.of(context)!.translate("enter_phone_number"),
       textDirection: TextDirection.rtl,
       controller: phone1,
       prefix: Icon(
@@ -479,7 +485,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       context,
       keyboardType: TextInputType.phone,
       controller: phone2,
-      label: 'أكتب رقم الهاتف البديل',
+      label: AppLocalizations.of(context)!.translate("enter_alternative_phone"),
       prefix: Icon(
         Icons.phone_outlined,
         color: AppColors.placeholder,
@@ -493,7 +499,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       controller: whatsApp,
       context,
       keyboardType: TextInputType.phone,
-      label: 'أكتب رقم الواتساب',
+      label: AppLocalizations.of(context)!.translate("enter_whatsapp_number"),
       prefix: Padding(
         padding: const EdgeInsets.all(10.0),
         child: SizedBox(
@@ -515,7 +521,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       context,
       controller: emailEmp,
       keyboardType: TextInputType.emailAddress,
-      label: 'أكتب البريد الالكترونى الخاص',
+      label: AppLocalizations.of(context)!.translate("enter_private_email"),
       prefix: Icon(
         Icons.email_outlined,
         color: AppColors.placeholder,
@@ -529,7 +535,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       context,
       keyboardType: TextInputType.text,
       controller: address,
-      label: 'أكتب عنوان الأقامة الحالى',
+      label:AppLocalizations.of(context)!.translate("enter_current_address"),
       prefix: Icon(
         Icons.home,
         color: AppColors.placeholder,
@@ -548,8 +554,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
     final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
     final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
 
-    final statusValue = _selectedItem2 == 'نشط' ? 'active' : 'draft';
-    final roleValue = _selectedItemRole == 'موظف' ? '3' : '1';
+    final statusValue = _selectedItem2 == LocalizationService.tr("active") ? 'active' : 'draft';
+    final roleValue = _selectedItemRole == LocalizationService.tr("employee") ? '3' : '1';
 
     if (widget.isEdit) {
       _handleEditEmployee(firstName, lastName, statusValue, roleValue);
@@ -657,7 +663,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
           ),
           child: Center(
             child: Text(
-              widget.isEdit ? 'تعديل الموظف' : 'إنشاء الحساب',
+              widget.isEdit ? AppLocalizations.of(context)!.translate("edit_employee"): AppLocalizations.of(context)!.translate("create_account"),
               style: TextStyle(
                 fontFamily: 'Tajawal',
                 fontSize: 20.sp,

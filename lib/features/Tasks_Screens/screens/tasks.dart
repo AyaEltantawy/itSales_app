@@ -157,7 +157,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                       contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
                       prefixIconConstraints:
                           const BoxConstraints(minWidth: 20, minHeight: 20),
-                      labelText: 'ابحث هنا',
+                      labelText: AppLocalizations.of(context)!.translate("search_here"),
                       labelStyle: AppFonts.style14normal,
                     ),
                   ),
@@ -188,7 +188,7 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                     } else {
                       return nothing(context,
                           route: AppRoutes.addTask,
-                          button: 'مهمة',
+                          button: AppLocalizations.of(context)!.translate("task"),
                           text:  AppLocalizations.of(context)!.translate("not_available"));
                     }
                   }
@@ -205,8 +205,8 @@ class _TasksScreenForEmployeeState extends State<TasksScreenForEmployee> {
                   }
                   return nothing(context,
                       route: AppRoutes.addTask,
-                      button: 'مهمة',
-                      text: 'لا يوجد مهام الى الان');
+                      button: AppLocalizations.of(context)!.translate("task"),
+                      text: AppLocalizations.of(context)!.translate("no_tasks_yet"));
                 },
               ),
             ],
@@ -706,12 +706,9 @@ class TaskListForAdminToShowUserTasks extends StatelessWidget {
                           .modified_on
                           .toString(),
                       avatar: TasksCubit.get(context)
-                              .getUserTaskList?[index]
-                              .assigned_to?['avatar']
-                              ['data']
-                              ?['full_url']
-                              ?.toString() ??
-                          'null',
+                          .getUserTaskList?[index]
+                          .assigned_to?['avatar']?['data']?['full_url']?.toString() ?? 'null',
+
                       names:
                           '${TasksCubit.get(context).getUserTaskList![index].assigned_to!['first_name'].toString()} ${TasksCubit.get(context).getUserTaskList![index].assigned_to!['last_name'].toString()}',
                       statusColor: AppColors.inbox,
@@ -1014,23 +1011,28 @@ class TaskListFilter extends StatelessWidget {
                     },
                     child: role == '1'
                         ? TaskCardGrid(
-                            avatar: TasksCubit.get(context)
-                                        .getAllTaskListFilter![index]
-                                        .assigned_to!
-                                        .avatar
-                                        .data!
-                                        .full_url
-                                        .toString() !=
-                                    "null"
-                                ? TasksCubit.get(context)
-                                    .getAllTaskListFilter![index]
-                                    .assigned_to!
-                                    .avatar!
-                                    .data!
-                                    .full_url
-                                    .toString()
-                                : 'null',
-                            names:
+                      avatar: TasksCubit.get(context)
+                          .getAllTaskListFilter?[index]
+                          .assigned_to
+                          ?.avatar
+                          ?.data
+                          ?.full_url != null &&
+                          TasksCubit.get(context)
+                              .getAllTaskListFilter?[index]
+                              .assigned_to
+                              ?.avatar
+                              ?.data
+                              ?.full_url != "null"
+                          ? TasksCubit.get(context)
+                          .getAllTaskListFilter![index]
+                          .assigned_to!
+                          .avatar!
+                          .data!
+                          .full_url!
+                          .toString()
+                          : 'null',
+
+                      names:
                                 '${TasksCubit.get(context).getAllTaskListFilter![index].assigned_to!.first_name.toString()} ${TasksCubit.get(context).getAllTaskListFilter![index].assigned_to!.last_name.toString()}',
                             statusColor: AppColors.inbox,
                             statusText: cubit

@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/components/app_text_form_field.dart'
     show defaultTextFormFeild;
 import '../../../../core/constants/app_icons.dart';
+import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/themes/styles.dart';
 import '../../../../core/utils/validators.dart';
 import 'forget_password_cubit.dart';
@@ -44,18 +45,21 @@ class ForgetPasswordPage extends StatelessWidget {
                           ),
                           SizedBox(width: 10.w),
                           Text(
-                            "نسيت كلمة السر",
+                            AppLocalizations.of(context)!.translate("forgot_password")
+                            ,
                             style: TextStyles.font20Weight500BaseBlack,
                           ),
                         ],
                       ),
                       SizedBox(height: 20.h),
                       Text(
-                        "برجاء كتابة البريد الإلكتروني",
+                        AppLocalizations.of(context)!.translate("please_enter_email")
+                        ,
                         style: TextStyles.font20Weight400Black,
                       ),
                       Text(
-                        "سيتم إرسال رمز للتحقق إلى بريدك الإلكتروني",
+                        AppLocalizations.of(context)!.translate("verification_code_notice")
+,
                         style: TextStyles.font16Weight300Grey,
                       ),
                       SizedBox(height: 40.h),
@@ -64,17 +68,18 @@ class ForgetPasswordPage extends StatelessWidget {
                         keyboardType: TextInputType.emailAddress,
                         controller: cubit.emailController,
                         validator: Validators.requiredWithFieldName(
-                                'البريد الالكتروني',context)
+                               AppLocalizations.of(context)!.translate("email"),context)
                             .call,
                         prefix: const Icon(AppIcons.email),
-                        label: 'اكتب البريد الالكتروني',
+                        label:AppLocalizations.of(context)!.translate("write_email"),
                       ),
                       SizedBox(height: 35.h),
                       state is LoadingForgetPassword
                           ? Center(child: CircularProgressIndicator())
                           : defaultButton(
                               context: context,
-                              text: "إرسال رمز التأكد",
+                              text: AppLocalizations.of(context)!.translate("send_verification_code")
+                        ,
                               width: double.infinity,
                               height: 56.h,
                               isColor: true,

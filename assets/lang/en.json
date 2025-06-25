@@ -3,7 +3,7 @@
   "no_internet_connection": "No Internet Connection",
   "try_again": "Try Again",
   "add": "Add ",
-  "employee": "employee",
+  "employee": "Employee",
   "active": "Active",
   "location_on_map": "Location on map",
   "welcome_back": "Welcome Back",
@@ -110,8 +110,80 @@
   "edit_account_info": "Edit Account Information",
   "change_password": "Change Password",
   "language": "Language",
-  "app_color": "App Color"
+  "app_color": "App Color",
+  "edit_account": "Edit Account",
+  "save_changes": "Save Changes",
+  "forgot_password": "Forgot Password",
+  "please_enter_email": "Please enter the email address",
+  "verification_code_notice": "A verification code will be sent to your email",
+  "send_verification_code": "Send verification code",
+  "no_users": "No users found",
+  "users": "Users",
+  "add_new_employee": "Add New Employee",
+  "something_went_wrong": "Something went wrong. Please try again.",
+  "added_successfully": "Added successfully",
+  "enter_full_name": "Please enter both first and last name",
+  "pending": "Pending",
+  "cancelled": "Cancelled",
+  "completed": "Completed",
+  "received": "Received",
+  "clear_filter": "Clear Filter",
+  "filter_options": "Filter Options",
+  "status": "Status",
+  "date": "Date",
+  "location": "Location",
+  "ok": "OK",
+  "choose_address": "Choose",
+  "choose_date": "Choose Date",
+  "choose_role": "Choose Role",
+  "select_date": "Select Date",
+  "role": "Role",
+  "inactive": "Inactive",
+  "select_employee_name": "Select employee name",
+  "sorry_try_again": "Sorry, please try again",
+  "task_updated_successfully": "Task updated successfully",
+  "task_added_successfully": "Task added successfully",
+  "edit_task": "Edit Task",
+  "add_task": "Add Task",
+  "task_data": "Task Data",
+  "task_name": "Task Name",
+  "set_task_deadline": "Set Task Deadline",
+  "task_details": "Task Details",
+  "location": "Location",
+  "task_title": "Task Title",
+  "invalid_link": "Invalid link",
+  "paste_google_map_link": "Paste the Google Map link for the task location",
+  "link_copied": "Link copied",
+  "copy_link": "Copy link",
+  "client_data": "Client Data",
+  "enter_client_name": "Enter client name",
+  "enter_client_phone": "Enter client phone number",
+  "notes": "Notes",
+  "create_task": "Create Task",
+  "no_matching_results": "No matching results"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 }
+
+
+

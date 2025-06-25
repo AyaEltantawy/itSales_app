@@ -303,8 +303,10 @@ class _AllEmployeeScreenState extends State<AllEmployeeScreen> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.6,
                     child: nothing(context,
-                        button: 'مستخدمين',
-                        text: 'لا يوجد مستخدمين',
+                        button: AppLocalizations.of(context)!.translate("users")
+                        ,
+                        text: AppLocalizations.of(context)!.translate("no_users")
+                        ,
                         route: AppRoutes.addEmployee),
                   ),
                 ),

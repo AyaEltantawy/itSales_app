@@ -715,6 +715,7 @@ class TasksCubit extends Cubit<TasksStates> {
         .updateLocation(
             locationId,
             LocationRequestModel(
+
               status: 'published',
               address: address,
               longitude: '999998',
@@ -723,6 +724,7 @@ class TasksCubit extends Cubit<TasksStates> {
               task: taskId,
             ))
         .then((value) {
+      print("iddddddd$locationId");
       emit(UpdateSuccessLocationState());
       editTaskFun(
         company: companyId,
@@ -783,7 +785,10 @@ class TasksCubit extends Cubit<TasksStates> {
       await repo.getOneLocation(taskId).then((value) {
         emit(GetSuccessLocationState());
         updateLocationFun(
-          locationId: value.location_data![0].id.toString(),
+          locationId:
+          (value.location_data != null && value.location_data!.isNotEmpty)
+              ? value.location_data![0].id.toString()
+              : '',
           title: title,
           description: description,
           client_phone: client_phone,
@@ -796,7 +801,8 @@ class TasksCubit extends Cubit<TasksStates> {
           due_date: due_date,
           task_status: task_status,
         );
-      }).catchError((onError) async {
+
+      }).catchError((onError,stackTrace) async {
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
             MagicRouter.currentContext!,
@@ -807,6 +813,7 @@ class TasksCubit extends Cubit<TasksStates> {
         }
         emit(GetErrorLocationState());
         debugPrint('errrrrror ${onError.toString()}');
+        debugPrint('stackTrace ${stackTrace}');
       });
     }
   }

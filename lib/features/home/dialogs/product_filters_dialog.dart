@@ -6,6 +6,7 @@ import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/features/home/data/cubit.dart';
 
 import '../../../core/constants/constants.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/utils/token.dart';
 import '../../../generated/l10n.dart';
 import '../../Tasks_Screens/data/cubit/cubit.dart';
@@ -36,7 +37,11 @@ class _FilterDialogState extends State<FilterDialog> {
 
   @override
   Widget build(BuildContext context) {
-    states = ['قيد الانتظار', 'ملغي', 'مكتمل', 'تم الاستلام'];
+    states = [AppLocalizations.of(context)!.translate("pending")
+      , AppLocalizations.of(context)!.translate("cancelled")
+      , AppLocalizations.of(context)!.translate("completed")
+      , AppLocalizations.of(context)!.translate("received")
+    ];
 
     // Clear location set before rebuilding
     locationSet.clear();
@@ -108,9 +113,10 @@ class _FilterDialogState extends State<FilterDialog> {
                   children: [
                     const Icon(Icons.cancel_presentation_outlined, size: 20),
                     SizedBox(width: 8.w),
-                    const Text(
-                      "الغي الفلتر ",
-                      style: TextStyle(
+                     Text(
+                      AppLocalizations.of(context)!.translate("clear_filter")
+                      ,
+                      style: const TextStyle(
                         decoration: TextDecoration.underline,
                       ),
                     ),
@@ -118,16 +124,21 @@ class _FilterDialogState extends State<FilterDialog> {
                 ),
               ),
             ),
-            Center(child: Text("خيارات الفلتر", style: AppFonts.style20BoldColored)),
+            Center(child: Text(AppLocalizations.of(context)!.translate("filter_options")
+                , style: AppFonts.style20BoldColored)),
             SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildTabButton(context, "الحالة", 0),
+                _buildTabButton(context, AppLocalizations.of(context)!.translate("status")
+                    , 0),
                 Container(),
-                _buildTabButton(context, "التاريخ", 1),
-                role == '1' ? _buildTabButton(context, "الموظف", 2) : Container(),
-                _buildTabButton(context, "الموقع", 3),
+                _buildTabButton(context, AppLocalizations.of(context)!.translate("date")
+                    , 1),
+                role == '1' ? _buildTabButton(context,AppLocalizations.of(context)!.translate("employee")
+                    , 2) : Container(),
+                _buildTabButton(context, AppLocalizations.of(context)!.translate("location")
+                    , 3),
               ],
             ),
             SizedBox(height: 16.h),
@@ -142,19 +153,20 @@ class _FilterDialogState extends State<FilterDialog> {
               child: defaultButton(
                 width: 243.w,
                 height: 48.h,
-                text: 'موافق',
+                text: AppLocalizations.of(context)!.translate("ok")
+                ,
                 toPage: () {
                   switch (selectedState) {
-                    case 'قيد الانتظار':
+                    case 'قيد الانتظار' || 'Pending':
                       selectedState = 'inbox';
                       break;
-                    case 'مكتمل':
+                    case 'مكتمل'||'Completed':
                       selectedState = 'completed';
                       break;
-                    case 'تم الاستلام':
+                    case 'تم الاستلام'||'Received':
                       selectedState = 'progress';
                       break;
-                    case 'ملغي':
+                    case 'ملغي'||'Cancelled':
                       selectedState = 'cancelled';
                       break;
                     default:
@@ -197,7 +209,7 @@ class _FilterDialogState extends State<FilterDialog> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding:  EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: _selectedTabIndex == index
               ? AppColors.primary
@@ -230,7 +242,7 @@ class _FilterDialogState extends State<FilterDialog> {
     switch (_selectedTabIndex) {
       case 0:
         return _buildDropdown(
-          title: 'الحالة',
+          title: AppLocalizations.of(context)!.translate("status"),
           value: selectedState,
           items: states,
           onChanged: (value) {
@@ -243,7 +255,7 @@ class _FilterDialogState extends State<FilterDialog> {
         return _buildDatePicker();
       case 2:
         return _buildDropdown(
-          title: 'الموظف',
+          title: AppLocalizations.of(context)!.translate("employee"),
           value: selectedEmployee,
           items: employees,
           onChanged: (value) {
@@ -254,7 +266,7 @@ class _FilterDialogState extends State<FilterDialog> {
         );
       case 3:
         return _buildDropdown(
-          title: 'الموقع',
+          title: AppLocalizations.of(context)!.translate("location"),
           value: selectedLocation,
           items: locations,
           onChanged: (value) {
@@ -295,7 +307,8 @@ class _FilterDialogState extends State<FilterDialog> {
               isExpanded: true,
               underline: Container(),
               value: value,
-              hint: const Text("اختار عنوان"),
+              hint:  Text(AppLocalizations.of(context)!.translate("choose_address")
+              ),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
                   value: item,
@@ -317,7 +330,7 @@ class _FilterDialogState extends State<FilterDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("التاريخ", style: TextStyle(fontSize: 16)),
+           Text(AppLocalizations.of(context)!.translate("date"), style: TextStyle(fontSize: 16)),
           SizedBox(height: 8.h),
           GestureDetector(
             onTap: () async {
@@ -344,7 +357,8 @@ class _FilterDialogState extends State<FilterDialog> {
               alignment: Alignment.centerLeft,
               child: Text(
                 selectedDate == null
-                    ? "اختار التاريخ"
+                    ? AppLocalizations.of(context)!.translate("choose_date")
+
                     : selectedDate!.toLocal().toString().split(' ')[0],
                 style: TextStyle(fontSize: 16.sp),
               ),
@@ -365,8 +379,12 @@ class _RoleDialogState extends State<RoleDialog> {
   int _selectedTabIndex = 0; // To track the selected tab
   String? selectedState;
 
+  String tr(BuildContext context, String key) =>
+      AppLocalizations.of(context)!.translate(key);
 
-  List<String> states = ['مدير' , 'موظف'];
+  List<String> states(BuildContext context) {
+    return [tr(context, "manager"), tr(context, "employee")];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -398,14 +416,15 @@ class _RoleDialogState extends State<RoleDialog> {
                 children: [
                   const Icon(Icons.cancel_presentation_outlined, size: 20,),
                   SizedBox(width: 8.w,),
-                   Text("الغي الفلتر", style: TextStyle(
+                   Text(AppLocalizations.of(context)!.translate("clear_filter"), style: TextStyle(
                     decoration: TextDecoration.underline,
                   ),),
                 ],
               )),
             ),
             SizedBox(height: 10.h),
-            Center(child: Text("اختار دور",style: AppFonts.style20BoldColored,)),
+            Center(child: Text(AppLocalizations.of(context)!.translate("choose_role")
+              ,style: AppFonts.style20BoldColored,)),
 
             _buildTabContent(),
             SizedBox(height: 20.h),
@@ -414,13 +433,13 @@ class _RoleDialogState extends State<RoleDialog> {
               child: defaultButton(
                 width: 243.w ,
                 height: 48.h,
-                text: 'موافق',
+                text: AppLocalizations.of(context)!.translate("ok"),
                 toPage: (){
-                 if(selectedState == 'مدير')
+                 if(selectedState == AppLocalizations.of(context)!.translate("manager"))
                  {
                    EmployeeCubit.get(context).getAdmins(role: 1);
                    theRole = 1;
-                 } else if (selectedState == 'موظف')
+                 } else if (selectedState ==  AppLocalizations.of(context)!.translate("employee"))
                  {
                    EmployeeCubit.get(context).getAdmins(role: 3);
                    theRole = 3;
@@ -478,9 +497,10 @@ class _RoleDialogState extends State<RoleDialog> {
     switch (_selectedTabIndex) {
       case 0:
         return _buildDropdown(
-          title: 'الدور',
+          title:AppLocalizations.of(context)!.translate("role")
+          ,
           value: selectedState,
-          items: states,
+          items: states(context),
           onChanged: (value) {
             setState(() {
               selectedState = value;
@@ -526,7 +546,7 @@ class _RoleDialogState extends State<RoleDialog> {
               isExpanded: true,
               underline: Container(),
               value: value,
-              hint: Text("اختار عنوان"),
+              hint: Text(AppLocalizations.of(context)!.translate("choose_address")),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
 
@@ -553,7 +573,7 @@ class _RoleDialogState extends State<RoleDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            Text("التاريخ", style: TextStyle(fontSize: 16)),
+            Text(AppLocalizations.of(context)!.translate("date"), style: const TextStyle(fontSize: 16)),
           SizedBox(height: 8.h),
           GestureDetector(
             onTap: () async {
@@ -576,9 +596,10 @@ class _RoleDialogState extends State<RoleDialog> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text(
-                 'حدد التاريخ',
-                style: TextStyle(fontSize: 16),
+              child:  Text(
+                AppLocalizations.of(context)!.translate("select_date")
+                ,
+                style: const TextStyle(fontSize: 16),
               ),
             ),
           ),

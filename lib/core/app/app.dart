@@ -18,8 +18,10 @@ import '../../features/auth/data/cubit.dart';
 import '../../features/home/data/cubit.dart';
 import '../../features/profile/widgets/language_show_dialog/language_show_dialog_cubit.dart';
 import '../../features/profile/widgets/language_show_dialog/language_show_dialog_state.dart';
+import '../../main.dart';
 import '../injection/injection.dart';
 import '../localization/app_localizations.dart';
+import '../localization/localization_service.dart';
 import '../models/enums/language_event_type.dart';
 import '../routes/app_routes.dart';
 import '../utils/transition.dart';
@@ -114,6 +116,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarIconBrightness: Brightness.dark,
@@ -127,6 +130,7 @@ class _MyAppState extends State<MyApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
+
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => getIt<AppCubit>()),
@@ -148,7 +152,9 @@ class _MyAppState extends State<MyApp> {
                 }
               },
               builder: (context, state) {
+                //LocalizationService.init(context);
                 return MaterialApp(
+
                   debugShowCheckedModeBanner: false,
                   onGenerateRoute: RouteGenerator.onGenerate,
                   locale: locale,
