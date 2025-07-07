@@ -37,11 +37,27 @@ class AddNewEmployee extends StatefulWidget {
 }
 
 class _AddNewEmployeeState extends State<AddNewEmployee> {
-  final List<String> _items = [LocalizationService.tr("manager"), LocalizationService.tr("employee")];
-  final List<String> status = [LocalizationService.tr("inactive"), LocalizationService.tr("active")];
+  List<String> _items = [];
+  List<String> status = [];
+  String _selectedItem2='';
+  String _selectedItemRole='';
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LocalizationService.init(context);
+    _selectedItemRole = LocalizationService.tr("employee");
+    _items = [
+      LocalizationService.tr("manager"),
+      LocalizationService.tr("employee")
+    ];
+    status = [
+      LocalizationService.tr("inactive"),
+      LocalizationService.tr("active")
+    ];
+   _selectedItem2 = LocalizationService.tr("active");
+  }
 
-  String _selectedItemRole = LocalizationService.tr("employee");
-  String _selectedItem2 = LocalizationService.tr("active");
+
+
   dynamic? avatarUrl;
   int? avatarId;
   int? employeeId;
@@ -64,7 +80,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
   Future<void> _pickImage() async {
     try {
       final pickedFile =
-      await ImagePicker().pickImage(source: ImageSource.gallery);
+          await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
           selectedImage = File(pickedFile.path);
@@ -91,13 +107,17 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       final roleId = user.role is int
           ? user.role
           : (user.role is Map && user.role['id'] is int)
-          ? user.role['id']
-          : null;
+              ? user.role['id']
+              : null;
 
       final isEmployee = roleId == 3;
 
-      _selectedItemRole = roleId == 1 ? LocalizationService.tr("manager") : LocalizationService.tr("employee");
-      _selectedItem2 = user.status == 'active' ? LocalizationService.tr("active") : LocalizationService.tr("inactive");
+      _selectedItemRole = roleId == 1
+          ? LocalizationService.tr("manager")
+          : LocalizationService.tr("employee");
+      _selectedItem2 = user.status == 'active'
+          ? LocalizationService.tr("active")
+          : LocalizationService.tr("inactive");
 
       fullName.text = '${user.first_name ?? ''} ${user.last_name ?? ''}'.trim();
       email.text = user.email ?? '';
@@ -117,7 +137,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
         employeeId = employeeInfo.id;
       } else {
         employeeId = isEmployee ? null : 0;
-        debugPrint("⚠️ employeeInfo is null → setting employeeId = ${employeeId ?? 'null'}");
+        debugPrint(
+            "⚠️ employeeInfo is null → setting employeeId = ${employeeId ?? 'null'}");
       }
 
       if (user.avatar?.data?.full_url != null) {
@@ -130,7 +151,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       avatarId = user.avatar?.id;
       employeeUserId = user.id;
 
-      debugPrint("✅ Loaded employee data - ID: $employeeId, Avatar: $avatarUrl");
+      debugPrint(
+          "✅ Loaded employee data - ID: $employeeId, Avatar: $avatarUrl");
     } catch (e, stackTrace) {
       debugPrint("❌ Error loading employee data: $e");
       print("stackTrace: $stackTrace");
@@ -139,7 +161,6 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       if (mounted) setState(() => isLoading = false);
     }
   }
-
 
   @override
   void initState() {
@@ -165,9 +186,9 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                       CustomAppBar(
                         title: widget.isEdit
                             ? AppLocalizations.of(context)!
-                            .translate("edit_data_of_employee")
-                            : AppLocalizations.of(context)!.translate("add_new_employee")
-                        ,
+                                .translate("edit_data_of_employee")
+                            : AppLocalizations.of(context)!
+                                .translate("add_new_employee"),
                         back: true,
                       ),
                       const Divider(),
@@ -178,8 +199,9 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                               state is EditErrorEmployeeInfoState ||
                               state is ErrorEditUserState) {
                             Utils.showSnackBar(
-                                context, AppLocalizations.of(context)!.translate("something_went_wrong")
-                            );
+                                context,
+                                AppLocalizations.of(context)!
+                                    .translate("something_went_wrong"));
                           }
                           if (state is AddSuccessEmployeeInfoState ||
                               state is EditSuccessEmployeeInfoState ||
@@ -191,8 +213,10 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
                                   AppLocalizations.of(context)!
                                       .translate("edit_done_successfuly"));
                             } else {
-                              Utils.showSnackBar(context,AppLocalizations.of(context)!.translate("added_successfully")
-                              );
+                              Utils.showSnackBar(
+                                  context,
+                                  AppLocalizations.of(context)!
+                                      .translate("added_successfully"));
                             }
                           }
                         },
@@ -273,7 +297,6 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
         List<String> parts = value.trim().split(' ');
         if (parts.length < 2 || parts.any((part) => part.isEmpty)) {
           return AppLocalizations.of(context)!.translate("enter_full_name");
-
         }
         return null;
       },
@@ -465,7 +488,8 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       keyboardType: TextInputType.phone,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context)!.translate("Do not leave this field blank.");
+          return AppLocalizations.of(context)!
+              .translate("Do not leave this field blank.");
         }
         return null;
       },
@@ -508,7 +532,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
           child: SvgPicture.asset(
             AppIcons.whatsAap,
             colorFilter:
-            ColorFilter.mode(AppColors.placeholder, BlendMode.saturation),
+                ColorFilter.mode(AppColors.placeholder, BlendMode.saturation),
           ),
         ),
       ),
@@ -535,7 +559,7 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
       context,
       keyboardType: TextInputType.text,
       controller: address,
-      label:AppLocalizations.of(context)!.translate("enter_current_address"),
+      label: AppLocalizations.of(context)!.translate("enter_current_address"),
       prefix: Icon(
         Icons.home,
         color: AppColors.placeholder,
@@ -554,8 +578,10 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
     final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
     final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
 
-    final statusValue = _selectedItem2 == LocalizationService.tr("active") ? 'active' : 'draft';
-    final roleValue = _selectedItemRole == LocalizationService.tr("employee") ? '3' : '1';
+    final statusValue =
+        _selectedItem2 == LocalizationService.tr("active") ? 'active' : 'draft';
+    final roleValue =
+        _selectedItemRole == LocalizationService.tr("employee") ? '3' : '1';
 
     if (widget.isEdit) {
       _handleEditEmployee(firstName, lastName, statusValue, roleValue);
@@ -584,7 +610,6 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
         phone1: phone1.text,
         phone2: phone2.text,
         whatsapp: whatsApp.text,
-
       );
     } else {
       EmployeeCubit.get(context).editUserFun(
@@ -603,7 +628,6 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
         phone2: phone2.text,
         whatsapp: whatsApp.text,
         emailEmp: emailEmp.text,
-
       );
     }
   }
@@ -613,7 +637,6 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
     if (selectedImage != null) {
       EmployeeCubit.get(context).uploadFile(
         selectedImage!,
-
         edit: false,
         companyId: companyId,
         idUser: employeeUserId?.toString() ?? '',
@@ -644,7 +667,6 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
         whatsapp: whatsApp.text,
         emailEmp: emailEmp.text,
         phone1: phone1.text,
-
       );
     }
   }
@@ -663,7 +685,9 @@ class _AddNewEmployeeState extends State<AddNewEmployee> {
           ),
           child: Center(
             child: Text(
-              widget.isEdit ? AppLocalizations.of(context)!.translate("edit_employee"): AppLocalizations.of(context)!.translate("create_account"),
+              widget.isEdit
+                  ? AppLocalizations.of(context)!.translate("edit_employee")
+                  : AppLocalizations.of(context)!.translate("create_account"),
               style: TextStyle(
                 fontFamily: 'Tajawal',
                 fontSize: 20.sp,

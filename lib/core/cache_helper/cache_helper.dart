@@ -31,12 +31,10 @@ class CacheHelper {
     return false;
   }
 
-  /// ✅ مسح قيمة معينة فقط
   static Future<bool> removeData(String key) async {
     return await sharedPreferences!.remove(key);
   }
 
-  /// ❗ فقط استخدمها إذا أردت مسح كل البيانات نهائيًا
   static Future<bool> clearAll() async {
     return await sharedPreferences!.clear();
   }

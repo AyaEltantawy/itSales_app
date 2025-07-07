@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -715,7 +714,6 @@ class TasksCubit extends Cubit<TasksStates> {
         .updateLocation(
             locationId,
             LocationRequestModel(
-
               status: 'published',
               address: address,
               longitude: '999998',
@@ -784,11 +782,16 @@ class TasksCubit extends Cubit<TasksStates> {
 
       await repo.getOneLocation(taskId).then((value) {
         emit(GetSuccessLocationState());
+        List<DataLocationModel>? data;
+        print("🔍 FULL value: ${value.toJson()}"); // تأكد أن `data` مش null هنا
+        final locationId = value.data?.isNotEmpty == true
+            ? value.data!.first.id.toString()
+            : null;
+
+        print("📍 Location ID: ${locationId ?? 'null'}");
+
         updateLocationFun(
-          locationId:
-          (value.location_data != null && value.location_data!.isNotEmpty)
-              ? value.location_data![0].id.toString()
-              : '',
+          locationId: locationId??'',
           title: title,
           description: description,
           client_phone: client_phone,
@@ -801,8 +804,7 @@ class TasksCubit extends Cubit<TasksStates> {
           due_date: due_date,
           task_status: task_status,
         );
-
-      }).catchError((onError,stackTrace) async {
+      }).catchError((onError, stackTrace) async {
         if (await InternetConnectionChecker().hasConnection == false) {
           Utils.showSnackBar(
             MagicRouter.currentContext!,

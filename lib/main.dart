@@ -5,21 +5,18 @@ import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_links/app_links.dart';
-
 import 'package:itsale/core/app/app.dart';
 import 'package:itsale/core/cache_helper/cache_helper.dart';
 import 'package:itsale/core/constants/storage_constants.dart';
 import 'package:itsale/core/injection/injection.dart';
 import 'package:itsale/core/utils/token.dart';
 import 'package:itsale/features/profile/widgets/language_show_dialog/widgets/restart_widget.dart';
-
 import 'core/localization/app_localizations.dart';
 import 'core/routes/on_generate_route.dart';
 
-//final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 SharedPreferences? sharedPreferences;
 late final AppLocalizations localizations;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -35,7 +32,6 @@ Future<void> main() async {
     passwordLogin = CacheHelper.getData(key: 'password');
     idMainUser = CacheHelper.getData(key: 'id_user');
     passwordAddMain = CacheHelper.getData(key: 'password_add_$idMainUser');
-
     print("passMainLogin$passwordLogin");
     final defaultLocale = sharedPreferences?.getString('lang') ?? 'ar';
 
@@ -44,7 +40,6 @@ Future<void> main() async {
         child: MyApp(
           defaultLocale: defaultLocale,
         ),
-
       ),
     );
   } catch (e, stackTrace) {

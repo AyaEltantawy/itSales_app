@@ -94,14 +94,14 @@ Map<String, dynamic> _$LocationModelToJson(LocationModel instance) =>
 
 GetLocationModel _$GetLocationModelFromJson(Map<String, dynamic> json) =>
     GetLocationModel(
-      location_data: (json['location_data'] as List<dynamic>?)
+      data: (json['data'] as List<dynamic>?)
           ?.map((e) => DataLocationModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$GetLocationModelToJson(GetLocationModel instance) =>
     <String, dynamic>{
-      'location_data': instance.location_data,
+      'data': instance.data,
     };
 
 LocationRequestModel _$LocationRequestModelFromJson(

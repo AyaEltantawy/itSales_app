@@ -97,8 +97,10 @@ DataUser _$DataUserFromJson(Map<String, dynamic> json) => DataUser(
       timezone: json['timezone'] as String?,
       locale: json['locale'] as String?,
       locale_options: json['locale_options'] as String?,
-      avatar: json['avatar'] is Map<String, dynamic>
-          ? Avatar.fromJson(json['avatar'] as Map<String, dynamic>)
+      avatar: json['avatar'] is Map
+          ? Avatar.fromJson(json['avatar'])
+          : json['avatar'] is int
+          ? Avatar(id: json['avatar']) // assuming Avatar has named constructor
           : null,
 
       companies: json['companies'],

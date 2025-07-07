@@ -152,9 +152,7 @@ class _MyAppState extends State<MyApp> {
                 }
               },
               builder: (context, state) {
-                //LocalizationService.init(context);
                 return MaterialApp(
-
                   debugShowCheckedModeBanner: false,
                   onGenerateRoute: RouteGenerator.onGenerate,
                   locale: locale,

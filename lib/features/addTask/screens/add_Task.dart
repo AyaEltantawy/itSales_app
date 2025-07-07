@@ -45,6 +45,22 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  @override
+  String selectedName = "";
+  List<String> status = [];
+
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LocalizationService.init(context);
+    selectedName = LocalizationService.tr("select_employee_name");
+    status = [
+      LocalizationService.tr("pending"),
+      LocalizationService.tr('received'),
+      LocalizationService.tr('cancelled'),
+      LocalizationService.tr('completed')
+    ];
+  }
+
   var deadlineController = TextEditingController();
   var details = TextEditingController();
   var location = TextEditingController();
@@ -54,7 +70,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   var taskTitle = TextEditingController();
   var address = TextEditingController();
   var formKeyTask = GlobalKey<FormState>();
-  String selectedName = LocalizationService.tr("select_employee_name");
+
   String selectedStatus = '';
   String selectedId = '';
 
@@ -65,14 +81,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       if (widget.taskId == TasksCubit.get(context).getAllTaskList![x].id) {
         taskTitle.text =
             TasksCubit.get(context).getAllTaskList![x].title.toString();
-        address.text =
-            TasksCubit.get(context).getAllTaskList![x].location != null
-                ? TasksCubit.get(context)
-                    .getAllTaskList![x]
-                    .loc![x]
-                    .address
-                    .toString()
-                : '';
+        address.text = TasksCubit.get(context).getAllTaskList![x].loc != null
+            ? TasksCubit.get(context)
+                .getAllTaskList![x]
+                .loc![0]
+                .address
+                .toString()
+            : '';
         deadlineController.text =
             TasksCubit.get(context).getAllTaskList![x].due_date.toString();
         details.text =
@@ -94,14 +109,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             TasksCubit.get(context).getAllTaskList![x].client_name.toString();
         clientNumber.text =
             TasksCubit.get(context).getAllTaskList![x].client_phone.toString();
-        location.text =
-            TasksCubit.get(context).getAllTaskList![x].location != null
-                ? TasksCubit.get(context)
-                    .getAllTaskList![x]
-                    .loc![x]
-                    .mapUrl
-                    .toString()
-                : '';
+        location.text = TasksCubit.get(context).getAllTaskList![x].loc != null
+            ? TasksCubit.get(context)
+                .getAllTaskList![x]
+                .loc![0]
+                .mapUrl
+                .toString()
+            : '';
       }
       switch (selectedStatus) {
         case 'inbox':
@@ -116,13 +130,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  List<String> status = [
-    LocalizationService.tr("pending"),
-    LocalizationService.tr('received'),
-    LocalizationService.tr('cancelled'),
-    LocalizationService.tr('completed')
-  ];
-
   @override
   void initState() {
     widget.isEdit ? loadTaskData() : Container();
@@ -135,7 +142,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       });
     }
 
-    // TODO: implement initState
     super.initState();
   }
 
@@ -178,6 +184,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    LocalizationService.init(context);
     int? _locationId;
     return Scaffold(
       body: Padding(
@@ -584,7 +591,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   final longitude = result['longitude'];
                                   final pickedAddress = result['address'];
                                   final locationId = result['locationId'];
-print ("locationIsssd${locationId}");
+                                  print("locationIsssd${locationId}");
                                   print('🔍 result: $result');
                                   if (result != null) {
                                     final locationId = result['locationId'];
@@ -592,7 +599,6 @@ print ("locationIsssd${locationId}");
                                   } else {
                                     print('🚫 result is null');
                                   }
-
 
                                   setState(() {
                                     address.text = pickedAddress;
