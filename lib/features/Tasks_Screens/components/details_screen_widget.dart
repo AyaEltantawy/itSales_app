@@ -18,6 +18,7 @@ import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/features/Tasks_Screens/data/models/get_task_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/constants/app_animation.dart';
 import '../../../core/utils/snack_bar.dart';
 import '../../../generated/l10n.dart';
 import '../data/download_image.dart';
@@ -483,7 +484,8 @@ class AttachmentsSection extends StatelessWidget {
                   ),
                 );
               },
-              child: _buildAttachmentItem(context,
+              child: _buildAttachmentItem(
+                context,
                 fullUrl: fullUrl,
                 fileName,
                 uploadedOn,
@@ -496,7 +498,8 @@ class AttachmentsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildAttachmentItem( BuildContext context,String fileName, String date, IconData icon,
+  Widget _buildAttachmentItem(
+      BuildContext context, String fileName, String date, IconData icon,
       {required String fullUrl}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
@@ -532,18 +535,27 @@ class AttachmentsSection extends StatelessWidget {
                     color: Colors.black),
               ),
               onPressed: () async {
-                if (fullUrl.isNotEmpty) {
-                  await saveImageToGallery(fullUrl);
+                if (fullUrl.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('✅ تم حفظ الصورة في المعرض')),
+                    const SnackBar(content: Text('❌ الرابط فارغ')),
                   );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('❌ الرابط فارغ')),
-                  );
+                  return;
                 }
-              }
-          ),
+
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => Center(child: AppLottie.loader),
+                );
+
+                await saveImageToGallery(fullUrl);
+
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('✅ تم حفظ الصورة في المعرض')),
+                );
+              }),
         ],
       ),
     );

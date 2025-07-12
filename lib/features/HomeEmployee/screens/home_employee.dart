@@ -51,8 +51,7 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final id = CacheHelper.getData(key: 'company_id');
-      final role = CacheHelper.getData(
-          key: 'role');
+      final role = CacheHelper.getData(key: 'role');
 
       debugPrint('Fetched companyId: $id (type: ${id.runtimeType})');
       debugPrint('Fetched role: $role (type: ${role.runtimeType})');
@@ -238,8 +237,9 @@ class _HomeEmployeeScreenState extends State<HomeEmployeeScreen> {
                                       uncompletedTasksForUser:
                                           uncompletedTasksForUser,
                                     )
-                                  :  Center(child: Text(AppLocalizations.of(context)!.translate("no_tasks")
-                              ));
+                                  : Center(
+                                      child: Text(AppLocalizations.of(context)!
+                                          .translate("no_tasks")));
                             },
                           ),
                           SizedBox(height: 20.h),
@@ -484,9 +484,8 @@ class SimpleBarChart extends StatelessWidget {
       ),
     );
   }
-
-
 }
+
 class CompletedTasksSection extends StatelessWidget {
   const CompletedTasksSection({super.key, required this.data});
 
@@ -498,9 +497,14 @@ class CompletedTasksSection extends StatelessWidget {
     final userTasks = TasksCubit.get(context).getUserTaskList ?? [];
 
     final List completedTasks = role == "3"
-        ? userTasks.where((e) => e.task_status?.toString().toLowerCase() == 'completed').toList()
-        : allTasks.where((e) => e.task_status?.toString().toLowerCase() == 'completed').toList();
-
+        ? userTasks
+            .where(
+                (e) => e.task_status?.toString().toLowerCase() == 'completed')
+            .toList()
+        : allTasks
+            .where(
+                (e) => e.task_status?.toString().toLowerCase() == 'completed')
+            .toList();
 
     print("✅ Filtered completed tasks length: ${completedTasks.length}");
     return Container(
@@ -524,68 +528,78 @@ class CompletedTasksSection extends StatelessWidget {
           ),
           completedTasks.isNotEmpty
               ? ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: completedTasks.length,
-            itemBuilder: (context, index) {
-              final
-              task = completedTasks[index];
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: completedTasks.length,
+                  itemBuilder: (context, index) {
+                    final task = completedTasks[index];
 
-
-              return InkWell(
-                onTap: () {print("y${data!.length}");
-                  Navigator.push(
-                    context,
-                    animatedNavigation(
-                      screen: TaskDetailsScreen(
-                        file: task.files?.isNotEmpty == true ? task.files : [],
-                        task_status: task.task_status.toString(),
-                        id: task.id!.toInt(),
-                        locationId: task.loc != null ? task.loc!.toString() : '10',
-                        nameTask: task.title.toString(),
-                        nameEmployee: '${task.assigned_to['first_name']?? ''} ${task.assigned_to?['last_name']?? ''}',
-                        nameClient: task.client_name.toString(),
-                        phoneClient: task.client_phone.toString(),
-                        notes: task.notes.toString(),
-                        address: task.loc != null && task.loc!.isNotEmpty
+                    return InkWell(
+                      onTap: () {
+                        print("y${data!.length}");
+                        Navigator.push(
+                          context,
+                          animatedNavigation(
+                            screen: TaskDetailsScreen(
+                              file: task.files?.isNotEmpty == true
+                                  ? task.files
+                                  : [],
+                              task_status: task.task_status.toString(),
+                              id: task.id!.toInt(),
+                              locationId: task.loc != null
+                                  ? task.loc!.toString()
+                                  : '10',
+                              nameTask: task.title.toString(),
+                              nameEmployee:
+                                  '${task.assigned_to is Map ? task.assigned_to['first_name'] : task.assigned_to?.first_name ?? ''} '
+                                  '${task.assigned_to is Map ? task.assigned_to['last_name'] : task.assigned_to?.last_name ?? ''}',
+                              nameClient: task.client_name.toString(),
+                              phoneClient: task.client_phone.toString(),
+                              notes: task.notes.toString(),
+                              address: task.loc != null && task.loc!.isNotEmpty
+                                  ? task.loc![0].address.toString()
+                                  : AppLocalizations.of(context)!
+                                      .translate("not_available"),
+                              link: task.loc?[0].mapUrl.toString() ??
+                                  AppLocalizations.of(context)!
+                                      .translate("not_available"),
+                              deadline: task.due_date.toString(),
+                              description: task.description.toString(),
+                            ),
+                          ),
+                        );
+                      },
+                      child: TaskListItem(
+                        index: index + 1,
+                        taskName: task.title.toString(),
+                        location: task.loc != null && task.loc!.isNotEmpty
                             ? task.loc![0].address.toString()
-                            : AppLocalizations.of(context)!.translate("not_available"),
-                        link: task.loc?[0].mapUrl.toString() ?? AppLocalizations.of(context)!.translate("not_available"),
-                        deadline: task.due_date.toString(),
-                        description: task.description.toString(),
+                            : AppLocalizations.of(context)!
+                                .translate("not_available"),
+                        time: task.complete_date?.toString() ?? 'غير محدد',
                       ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Divider(
+                      color: globalDark
+                          ? AppColors.borderColorDark
+                          : AppColors.borderColor,
                     ),
-                  );
-                },
-                child: TaskListItem(
-                  index: index + 1,
-                  taskName: task.title.toString(),
-                  location: task.loc != null && task.loc!.isNotEmpty
-                      ? task.loc![0].address.toString()
-                      :AppLocalizations.of(context)!.translate("not_available"),
-                  time: task.complete_date?.toString() ?? 'غير محدد',
-                ),
-              );
-            },
-            separatorBuilder: (context, index) => Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Divider(
-                color: globalDark
-                    ? AppColors.borderColorDark
-                    : AppColors.borderColor,
-              ),
-            ),
-          )
+                  ),
+                )
               : Column(
-            children: [
-              SizedBox(height: 20.h),
-              Center(
-                child: Text(AppLocalizations.of(context)!.translate("no_data")
-                    , style: AppFonts.style12light),
-              ),
-              SizedBox(height: 20.h),
-            ],
-          ),
+                  children: [
+                    SizedBox(height: 20.h),
+                    Center(
+                      child: Text(
+                          AppLocalizations.of(context)!.translate("no_data"),
+                          style: AppFonts.style12light),
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
         ],
       ),
     );
