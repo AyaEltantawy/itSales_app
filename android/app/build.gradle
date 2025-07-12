@@ -19,7 +19,9 @@ def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "
 def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 android {
-    namespace = "com.guessit.geotask"
+    namespace "com.guessit.geotask"
+
+
 
     compileSdk = 35
     ndkVersion = flutter.ndkVersion

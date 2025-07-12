@@ -179,7 +179,7 @@ class _CompleteTaskState extends State<CompleteTask> {
   Future<String?> uploadImageToDirectus(File file) async {
     try {
       final dio = Dio(BaseOptions(
-        connectTimeout: const Duration(seconds: 180),  // 3 دقائق
+        connectTimeout: const Duration(seconds: 180), // 3 دقائق
         receiveTimeout: const Duration(seconds: 180),
         sendTimeout: const Duration(seconds: 180),
       ));
@@ -226,7 +226,6 @@ class _CompleteTaskState extends State<CompleteTask> {
       return null;
     }
   }
-
 
   void _showMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
@@ -312,8 +311,8 @@ class _CompleteTaskState extends State<CompleteTask> {
                             }
 
                             await TasksCubit.get(context).editTaskFun(
-                              complete_date: DateFormat("yyyy-MM-dd").format(DateTime.now()),
-
+                              complete_date: DateFormat("yyyy-MM-dd")
+                                  .format(DateTime.now()),
                               company: companyId,
                               taskId: widget.taskId.toString(),
                               task_status: 'completed',

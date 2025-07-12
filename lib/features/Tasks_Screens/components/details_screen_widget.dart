@@ -1,12 +1,24 @@
+import 'dart:typed_data';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:itsale/core/routes/magic_router.dart';
+import 'package:media_store_plus/media_store_plus.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:itsale/core/app/app.dart';
 import 'package:itsale/core/constants/app_fonts.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/localization/app_localizations.dart';
 import 'package:itsale/features/Tasks_Screens/data/models/get_task_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import '../../../core/utils/snack_bar.dart';
 import '../../../generated/l10n.dart';
 import '../data/download_image.dart';
 import '../screens/end_task/web_view.dart';
@@ -155,7 +167,11 @@ class LocationSection extends StatelessWidget {
           SizedBox(height: 8.h),
           InkWell(
               onTap: () async {
-                if (link == null || link!.isEmpty || link == AppLocalizations.of(context)!.translate("not_available")) {
+                if (link == null ||
+                    link!.isEmpty ||
+                    link ==
+                        AppLocalizations.of(context)!
+                            .translate("not_available")) {
                   print('Invalid or empty link, cannot open.');
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('الرابط غير متوفر')),
@@ -188,7 +204,10 @@ class LocationSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _buildRow(
-                        label: 'رابط الموقع', value: link ?? AppLocalizations.of(context)!.translate("not_available")),
+                        label: 'رابط الموقع',
+                        value: link ??
+                            AppLocalizations.of(context)!
+                                .translate("not_available")),
                   ),
                   Container(
                     height: 40.h,
@@ -356,10 +375,71 @@ class AttachmentsSection extends StatelessWidget {
 
   final List<dynamic>? files;
 
+  Future<int> _getAndroidSdkInt() async {
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+    return androidInfo.version.sdkInt;
+  }
+
+  Future<void> saveImageToGallery(String imageUrl) async {
+    try {
+      // ✅ صلاحيات حسب إصدار Android
+      if (Platform.isAndroid) {
+        final sdkInt = await _getAndroidSdkInt();
+
+        final permission = sdkInt >= 33
+            ? await Permission.photos.request()
+            : sdkInt >= 30
+                ? await Permission.manageExternalStorage.request()
+                : await Permission.storage.request();
+
+        if (!permission.isGranted) {
+          print("❌ Permission denied");
+          return;
+        }
+      }
+
+      // ✅ تحميل الصورة
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode != 200) {
+        print("❌ Download failed");
+        return;
+      }
+
+      Uint8List bytes = response.bodyBytes;
+
+      // ✅ حفظها مؤقتاً
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = File(
+          '${tempDir.path}/img_${DateTime.now().millisecondsSinceEpoch}.jpg');
+      await tempFile.writeAsBytes(bytes);
+
+      // ✅ تهيئة MediaStore وتحديد مجلد الحفظ
+      await MediaStore.ensureInitialized();
+      MediaStore.appFolder = 'GeoTaskApp'; // هذا السطر مهم جدًا
+
+      // ✅ حفظ في المعرض
+      final result = await MediaStore().saveFile(
+        tempFilePath: tempFile.path,
+        dirType: DirType.photo,
+        dirName: DirName.pictures,
+        relativePath: 'GeoTaskApp',
+      );
+
+      if (result != null) {
+        print('✅ Image saved to gallery: ${result.uri}');
+      } else {
+        print('❌ Save failed');
+      }
+    } catch (e) {
+      print("❌ Error occurred: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (files == null || files!.isEmpty) {
-      return const SizedBox(); // لا توجد ملفات
+      return const SizedBox();
     }
 
     return Column(
@@ -377,16 +457,14 @@ class AttachmentsSection extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (context, index) {
             final fileItem = files![index];
-
-            // حاول استخراج البيانات بشكل آمن
             final fileData = fileItem is Map<String, dynamic>
                 ? fileItem['directus_files_id']
                 : null;
 
-            final fullUrl = (fileData is Map<String, dynamic> && fileData['location_data'] is Map)
-                ? fileData['location_data']['full_url']?.toString() ?? ''
-                : '';
-
+            final fullUrl =
+                (fileData is Map<String, dynamic> && fileData['data'] is Map)
+                    ? fileData['data']['full_url']?.toString() ?? ''
+                    : '';
 
             final fileName = fileData is Map<String, dynamic>
                 ? fileData['title']?.toString() ?? 'ملف بدون اسم'
@@ -405,7 +483,7 @@ class AttachmentsSection extends StatelessWidget {
                   ),
                 );
               },
-              child: _buildAttachmentItem(
+              child: _buildAttachmentItem(context,
                 fullUrl: fullUrl,
                 fileName,
                 uploadedOn,
@@ -418,7 +496,7 @@ class AttachmentsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildAttachmentItem(String fileName, String date, IconData icon,
+  Widget _buildAttachmentItem( BuildContext context,String fileName, String date, IconData icon,
       {required String fullUrl}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
@@ -443,28 +521,31 @@ class AttachmentsSection extends StatelessWidget {
           Text(date, style: TextStyle(fontSize: 14.sp, color: Colors.grey)),
           SizedBox(width: 10.w),
           IconButton(
-            icon: Container(
-              height: 36.h,
-              width: 36.w,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(5.r),
+              icon: Container(
+                height: 36.h,
+                width: 36.w,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+                child: const Icon(Icons.file_download_outlined,
+                    color: Colors.black),
               ),
-              child: const Icon(Icons.file_download_outlined, color: Colors.black),
-            ),
-            onPressed: () {
-              if (fullUrl.isNotEmpty) {
-                downloadImage(fullUrl, fileName);
+              onPressed: () async {
+                if (fullUrl.isNotEmpty) {
+                  await saveImageToGallery(fullUrl);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('✅ تم حفظ الصورة في المعرض')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('❌ الرابط فارغ')),
+                  );
+                }
               }
-            },
           ),
         ],
       ),
     );
   }
 }
-
-
-
-
-

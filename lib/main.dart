@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:itsale/core/constants/constants.dart';
 import 'package:itsale/core/routes/app_routes.dart';
 import 'package:itsale/features/auth/screens/reset_password/reset_password_view.dart';
+import 'package:media_store_plus/media_store_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:app_links/app_links.dart';
 import 'package:itsale/core/app/app.dart';
@@ -19,6 +20,7 @@ late final AppLocalizations localizations;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MediaStore.ensureInitialized();
   try {
     await getInit();
     sharedPreferences = await SharedPreferences.getInstance();

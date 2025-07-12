@@ -543,7 +543,7 @@ class CompletedTasksSection extends StatelessWidget {
                         id: task.id!.toInt(),
                         locationId: task.loc != null ? task.loc!.toString() : '10',
                         nameTask: task.title.toString(),
-                        nameEmployee: '${task.assigned_to.first_name?? ''} ${task.assigned_to?.last_name ?? ''}',
+                        nameEmployee: '${task.assigned_to['first_name']?? ''} ${task.assigned_to?['last_name']?? ''}',
                         nameClient: task.client_name.toString(),
                         phoneClient: task.client_phone.toString(),
                         notes: task.notes.toString(),

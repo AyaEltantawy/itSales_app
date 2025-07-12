@@ -64,24 +64,20 @@ class ChangePasswordPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppDefaults.padding),
-
-                /* <---- Confirm Password-----> */
                 const Text("Confirm Password"),
                 const SizedBox(height: 8),
                 TextFormField(
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     suffixIcon: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16),
                       child: Icon(AppIcons.eye),
                     ),
-                    suffixIconConstraints: const BoxConstraints(),
+                    suffixIconConstraints: BoxConstraints(),
                   ),
                 ),
                 const SizedBox(height: AppDefaults.padding),
-
-                /* <---- Submit -----> */
                 const SizedBox(height: AppDefaults.padding),
                 SizedBox(
                   width: double.infinity,

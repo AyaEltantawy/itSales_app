@@ -266,7 +266,7 @@ class TasksCubit extends Cubit<TasksStates> {
     emit(GetLoadingAllTaskState());
 
     try {
-      final filters = {'fields': '*.*', 'filter[company]': companyId};
+      final filters = {'fields': '*.*.*', 'filter[company]': companyId};
       print("CompanyId: $companyId");
 
       final value = await repo.getAllTasks(filters);

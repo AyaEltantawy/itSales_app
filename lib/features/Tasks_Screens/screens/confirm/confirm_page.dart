@@ -107,7 +107,7 @@ class _ConfirmTaskListPageState extends State<ConfirmTaskListPage> {
                       : nothing(context,
                           text: 'لا يوجد مهمات واردة حتى الان',
                           route: AppRoutes.addTask,
-                          button: 'مهمة ');
+                          button: '  مهمة   ');
                 },
                 listener: (context, state) {
                   if (state is EditSuccessUserTaskState) {
