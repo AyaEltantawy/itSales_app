@@ -37,6 +37,7 @@ Future<void> main() async {
     print("passMainLogin$passwordLogin");
     final defaultLocale = sharedPreferences?.getString('lang') ?? 'ar';
 //aya
+    //aya
     runApp(
       RestartWidget(
         child: MyApp(
