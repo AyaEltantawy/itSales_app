@@ -36,7 +36,7 @@ Future<void> main() async {
     passwordAddMain = CacheHelper.getData(key: 'password_add_$idMainUser');
     print("passMainLogin$passwordLogin");
     final defaultLocale = sharedPreferences?.getString('lang') ?? 'ar';
-
+//aya
     runApp(
       RestartWidget(
         child: MyApp(
