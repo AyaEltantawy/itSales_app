@@ -2,7 +2,7 @@ name: Build macOS App
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]  # أو main حسب الفرع الأساسي لديك
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
         run: flutter pub get
 
       - name: Build macOS App
-        run: flutter build macos
+        run: flutter build macos --release
 
       - name: Upload macOS build
         uses: actions/upload-artifact@v3
