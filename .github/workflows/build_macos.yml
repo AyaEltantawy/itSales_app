@@ -9,12 +9,14 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Install Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-         flutter-version: 'stable'
+          channel: stable
+          flutter-version: "3.35.6"  # اختاري نسخة محددة بدل مجرد 'stable'
 
       - name: Get dependencies
         run: flutter pub get
