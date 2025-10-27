@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> {
 
     _appLinks = AppLinks();
 
-    // Delay the initial app link handling until after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleInitialAppLink();
       _handleIncomingAppLinks();
@@ -89,14 +88,11 @@ class _MyAppState extends State<MyApp> {
       await CacheHelper.saveData(key: "reset_token", value: resetToken);
 
       if (resetToken != null && resetToken.isNotEmpty) {
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ResetPasswordPage()),
-
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ResetPasswordPage()),
         );
       } else {
-        // No navigation — just show a simple message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Invalid or missing reset token.'),
@@ -116,7 +112,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarIconBrightness: Brightness.dark,
@@ -130,7 +125,6 @@ class _MyAppState extends State<MyApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => getIt<AppCubit>()),

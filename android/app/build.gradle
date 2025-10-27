@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId = "com.guessit.geotask"
-        minSdk = 21
+        minSdkVersion = flutter.minSdkVersion
         targetSdk = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
